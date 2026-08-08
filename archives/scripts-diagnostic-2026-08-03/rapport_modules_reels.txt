@@ -1,0 +1,10 @@
+﻿
+FullName                                                    LastWriteTime      
+--------                                                    -------------      
+C:\pngie-rdc\pngie-backend\src\aiAgent.js                   19/07/2026 00:25:40
+C:\pngie-rdc\pngie-backend\43-seed-rnpt-min-finances.js     23/07/2026 11:27:43
+C:\pngie-rdc\pngie-backend\65-alter-ordre-paiement.js       24/07/2026 01:43:22
+C:\pngie-rdc\pngie-backend\66-seed-regles-seuil-paiement.js 24/07/2026 01:44:25
+C:\pngie-rdc\pngie-backend\check-finances-units.js          23/07/2026 11:25:37
+
+

@@ -1,0 +1,1 @@
+ALTER TABLE permission ADD COLUMN IF NOT EXISTS code TEXT GENERATED ALWAYS AS (entite || ':' || action) STORED;

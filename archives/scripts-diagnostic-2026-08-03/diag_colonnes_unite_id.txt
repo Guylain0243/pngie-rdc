@@ -1,0 +1,8 @@
+﻿    table_name     |   column_name   
+-------------------+-----------------
+ poste             | unite_id
+ ref_greffe        | unite_id
+ ref_parquet       | unite_id
+ rnso_modele_poste | modele_unite_id
+(4 lignes)
+

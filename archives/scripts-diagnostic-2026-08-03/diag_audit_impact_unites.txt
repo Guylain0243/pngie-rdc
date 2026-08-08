@@ -1,0 +1,28 @@
+﻿ institution  |    code    |                  nom                  | statut  |          created_at           | nb_postes | nb_unites_enfants | nb_ref_parquet | nb_ref_greffe 
+--------------+------------+---------------------------------------+---------+-------------------------------+-----------+-------------------+----------------+---------------
+ MIN_5        | DIR-BUDGET | Direction du Budget                   | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 1 |              0 |             0
+ MIN_5        | DGI-MIN5   | Direction Générale des Impôts         | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 0 |              0 |             0
+ MIN_5        | IG-MIN5    | Inspection Générale des Finances      | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 0 |              0 |             0
+ MIN_5        | SG-MIN5    | Secrétariat Général                   | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 0 |              0 |             0
+ MIN_5        | CAB-MIN5   | Cabinet du Ministre                   | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 0 |              0 |             0
+ MIN_5        | DIV-RECOUV | Division Recouvrement                 | ACTIF   | 2026-07-25 12:46:58.062204+02 |         1 |                 0 |              0 |             0
+ MIN_5        | D_TRESOR   | Direction du Trésor                   | INACTIF | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | CABINET    | Cabinet du Ministre                   | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | SG         | Secrétariat Général                   | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | IG         | Inspection Générale                   | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | D_BUDGET   | Direction du Budget                   | INACTIF | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | D_COMPTA   | Direction de la Comptabilité Publique | INACTIF | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | D_DETTE    | Direction de la Dette Publique        | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | D_ETUDES   | Direction des Études et Prévisions    | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_5        | CELL_PNGIE | Cellule PNGIE                         | ACTIF   | 2026-07-29 11:17:22.395582+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | D_BUDGET   | Direction du Budget                   | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | D_ETUDES   | Direction des Études et Prévisions    | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | CELL_PNGIE | Cellule PNGIE                         | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | IG         | Inspection Générale                   | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | SG         | Secrétariat Général                   | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | CABINET    | Cabinet du Ministre                   | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | D_TRESOR   | Direction du Trésor                   | INACTIF | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | D_DETTE    | Direction de la Dette Publique        | ACTIF   | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+ MIN_FINANCES | D_COMPTA   | Direction de la Comptabilité Publique | INACTIF | 2026-07-29 11:09:51.307314+02 |         1 |                 0 |              0 |             0
+(24 lignes)
+

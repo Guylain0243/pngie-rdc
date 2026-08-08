@@ -1,0 +1,107 @@
+BEGIN
+REVOKE
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+GRANT
+COMMIT
+ nb_tables_avec_grant 
+----------------------
+                   87
+(1 ligne)
+
+ table_schema |           table_name           |           privileges           
+--------------+--------------------------------+--------------------------------
+ public       | accord_cooperation             | DELETE, INSERT, SELECT, UPDATE
+ public       | affectation                    | DELETE, INSERT, SELECT, UPDATE
+ public       | agent                          | DELETE, INSERT, SELECT, UPDATE
+ public       | agent_ia                       | DELETE, INSERT, SELECT, UPDATE
+ public       | agent_ia_interaction           | DELETE, INSERT, SELECT, UPDATE
+ public       | appel_offres                   | DELETE, INSERT, SELECT, UPDATE
+ public       | audit_log                      | DELETE, INSERT, SELECT, UPDATE
+ public       | autorisation_industrielle      | DELETE, INSERT, SELECT, UPDATE
+ public       | bien_culturel_protege          | DELETE, INSERT, SELECT, UPDATE
+ public       | bien_patrimonial               | DELETE, INSERT, SELECT, UPDATE
+ public       | certificat_pki                 | DELETE, INSERT, SELECT, UPDATE
+ public       | competence                     | DELETE, INSERT, SELECT, UPDATE
+ public       | corps                          | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_action                | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_gouvernementale       | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_institutionnelle      | DELETE, INSERT, SELECT, UPDATE
+ public       | declaration_douaniere          | DELETE, INSERT, SELECT, UPDATE
+ public       | declaration_fiscale            | DELETE, INSERT, SELECT, UPDATE
+ public       | delegation_perimetre           | DELETE, INSERT, SELECT, UPDATE
+ public       | delegation_pouvoir             | DELETE, INSERT, SELECT, UPDATE
+ public       | document                       | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_administratif          | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_agent_rh               | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_entreprise             | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_judiciaire             | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_logistique_defense     | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_projet_investissement  | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_recouvrement           | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_scolaire               | DELETE, INSERT, SELECT, UPDATE
+ public       | ecriture_comptable             | DELETE, INSERT, SELECT, UPDATE
+ public       | enquete_statistique            | DELETE, INSERT, SELECT, UPDATE
+ public       | entity_event                   | DELETE, INSERT, SELECT, UPDATE
+ public       | etude_impact_environnemental   | DELETE, INSERT, SELECT, UPDATE
+ public       | execution_rapport              | DELETE, INSERT, SELECT, UPDATE
+ public       | exploitation_agricole          | DELETE, INSERT, SELECT, UPDATE
+ public       | facture                        | DELETE, INSERT, SELECT, UPDATE
+ public       | federation_sportive            | DELETE, INSERT, SELECT, UPDATE
+ public       | fonction                       | DELETE, INSERT, SELECT, UPDATE
+ public       | grade                          | DELETE, INSERT, SELECT, UPDATE
+ public       | immatriculation_vehicule       | DELETE, INSERT, SELECT, UPDATE
+ public       | incident_securitaire           | DELETE, INSERT, SELECT, UPDATE
+ public       | index_recherche_global         | INSERT, SELECT, UPDATE
+ public       | institution                    | DELETE, INSERT, SELECT, UPDATE
+ public       | institution_relation           | DELETE, INSERT, SELECT, UPDATE
+ public       | instruction                    | DELETE, INSERT, SELECT, UPDATE
+ public       | instruction_historique         | DELETE, INSERT, SELECT, UPDATE
+ public       | journal_audit                  | INSERT
+ public       | licence_commerciale            | DELETE, INSERT, SELECT, UPDATE
+ public       | licence_telecom                | DELETE, INSERT, SELECT, UPDATE
+ public       | ligne_budgetaire               | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_notification_rule         | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_rule                      | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_workflow_transition       | DELETE, INSERT, SELECT, UPDATE
+ public       | multi_institution_participant  | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_formulaire              | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow                | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow_etape          | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow_instance       | DELETE, INSERT, SELECT, UPDATE
+ public       | notification                   | DELETE, INSERT, SELECT, UPDATE
+ public       | ordre_paiement                 | DELETE, INSERT, SELECT, UPDATE
+ public       | organization_type              | DELETE, INSERT, SELECT, UPDATE
+ public       | permis_minier                  | DELETE, INSERT, SELECT, UPDATE
+ public       | permission                     | DELETE, INSERT, SELECT, UPDATE
+ public       | personne                       | DELETE, INSERT, SELECT, UPDATE
+ public       | personne_role                  | DELETE, INSERT, SELECT, UPDATE
+ public       | plan_developpement             | DELETE, INSERT, SELECT, UPDATE
+ public       | poste                          | DELETE, INSERT, SELECT, UPDATE
+ public       | pouvoir                        | DELETE, INSERT, SELECT, UPDATE
+ public       | processus                      | DELETE, INSERT, SELECT, UPDATE
+ public       | projet_recherche               | DELETE, INSERT, SELECT, UPDATE
+ public       | raccordement_energetique       | DELETE, INSERT, SELECT, UPDATE
+ public       | reclamation_citoyenne          | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_grande_instance   | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_arborescence       | DELETE, INSERT, SELECT, UPDATE
+ public       | relation_interinstitutionnelle | DELETE, INSERT, SELECT, UPDATE
+ public       | relations                      | DELETE, INSERT, SELECT, UPDATE
+ public       | rni_lien_hierarchique          | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_modification              | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_relation                  | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_texte                     | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_texte_historique          | INSERT, SELECT
+ public       | role                           | DELETE, INSERT, SELECT, UPDATE
+ public       | session_utilisateur            | DELETE, INSERT, SELECT, UPDATE
+ public       | signalement_sanitaire          | DELETE, INSERT, SELECT, UPDATE
+ public       | unite_organisationnelle        | DELETE, INSERT, SELECT, UPDATE
+ public       | validation                     | DELETE, INSERT, SELECT, UPDATE
+ public       | verification                   | DELETE, INSERT, SELECT, UPDATE
+(87 lignes)
+

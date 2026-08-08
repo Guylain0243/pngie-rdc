@@ -1,0 +1,16 @@
+{
+  "date": "2026-08-07T09:24:25.078Z",
+  "database": "postgresql://pngie_app@localhost:5432/pngie_rdc_rls_test",
+  "policies_before_patch": [
+    {
+      "schemaname": "public",
+      "tablename": "personne_role",
+      "policyname": "personne_role_scope_institution",
+      "permissive": "PERMISSIVE",
+      "roles": "{public}",
+      "cmd": "ALL",
+      "qual": "((COALESCE(current_setting('app.bypass_rls'::text, true), 'false'::text) = 'true'::text) OR (scope_institution_id = (NULLIF(current_setting('app.current_institution_id'::text, true), ''::text))::uuid))",
+      "with_check": "((COALESCE(current_setting('app.bypass_rls'::text, true), 'false'::text) = 'true'::text) OR (scope_institution_id = (NULLIF(current_setting('app.current_institution_id'::text, true), ''::text))::uuid))"
+    }
+  ]
+}

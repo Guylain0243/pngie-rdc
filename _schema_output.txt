@@ -1,0 +1,167 @@
+=== affectation ===
+affectation_id:uuid, personne_id:uuid, poste_id:uuid, type_affectation:character varying, date_debut:date, date_fin:date, texte_nomination:character varying, statut:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== agent_ia ===
+agent_id:uuid, code:character varying, nom:character varying, type_agent:character varying, institution_id:uuid, modele_reference:character varying, perimetre_donnees:text, statut:character varying, created_at:timestamp with time zone
+
+=== agent_ia_interaction ===
+interaction_id:uuid, agent_id:uuid, personne_id:uuid, requete:text, reponse:text, entite_liee:character varying, entite_liee_ref_id:uuid, created_at:timestamp with time zone
+
+=== audit_log ===
+log_id:bigint, person_id:uuid, action:character varying, entite:character varying, entite_id:text, detail:jsonb, hash_prec:character, hash_actuel:character, created_at:timestamp with time zone
+
+=== competence ===
+competence_id:uuid, institution_id:uuid, libelle:character varying, description:text, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean, source_document:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== delegation_pouvoir ===
+delegation_id:uuid, delegant_id:uuid, delegataire_id:uuid, perimetre:text, date_debut:timestamp with time zone, date_fin:timestamp with time zone, texte_reference:character varying, statut:character varying, created_at:timestamp with time zone
+
+=== document ===
+document_id:uuid, type_document_id:uuid, institution_id:uuid, titre:character varying, reference:character varying, resume:text, contenu_texte:text, fichier_url:text, fichier_hash:text, langue:character varying, statut:character varying, confidentialite:character varying, auteur_id:uuid, date_publication:date, created_at:timestamp with time zone, updated_at:timestamp with time zone, recherche_vecteur:tsvector
+
+=== document_version ===
+version_id:uuid, document_id:uuid, numero_version:integer, fichier_url:text, fichier_hash:text, modifie_par_id:uuid, commentaire_version:text, created_at:timestamp with time zone
+
+=== entity_event ===
+event_id:uuid, entity:character varying, entity_id:text, evenement:character varying, donnees_avant:jsonb, donnees_apres:jsonb, utilisateur_id:uuid, created_at:timestamp with time zone
+
+=== entity_relation ===
+relation_id:uuid, source_entity:character varying, source_id:text, relation:character varying, target_entity:character varying, target_id:text, date_fin:timestamp with time zone, created_at:timestamp with time zone
+
+=== fiche_tome ===
+fiche_id:uuid, institution_id:uuid, identification:text, base_juridique:text, mission:text, attributions:text, organisation_officielle:text, postes_officiels:text, roles_responsabilites:text, processus_metier:text, objets_metier:text, documents:text, relations_interinstitutionnelles:text, indicateurs:text, statut:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== fonction ===
+fonction_id:uuid, code:character varying, libelle:character varying, categorie:character varying, niveau_hierarchique:integer, description:text, types_institution_applicables:ARRAY, statut:character varying, created_at:timestamp with time zone
+
+=== index_recherche_global ===
+index_id:uuid, type_entite:character varying, entite_ref_id:uuid, titre:character varying, extrait:text, institution_id:uuid, recherche_vecteur:tsvector, date_reference:timestamp with time zone, updated_at:timestamp with time zone
+
+=== indicateur ===
+indicateur_id:uuid, institution_id:uuid, libelle:character varying, unite_mesure:character varying, valeur:numeric, periode:character varying, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean, source_document:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== institution ===
+institution_id:uuid, code:character varying, nom:character varying, sigle:character varying, type_institution:character varying, institution_parent_id:uuid, niveau_hierarchique:integer, description:text, adresse:text, latitude:numeric, longitude:numeric, telephone:character varying, email:character varying, site_web:character varying, statut:character varying, date_creation_legale:date, texte_creation:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== journal_audit ===
+audit_id:uuid, personne_id:uuid, entite:character varying, entite_ref_id:uuid, action:character varying, valeurs_avant:jsonb, valeurs_apres:jsonb, adresse_ip:inet, user_agent:text, created_at:timestamp with time zone, hash_prec:character, hash_actuel:character
+
+=== journal_audit_default ===
+audit_id:uuid, personne_id:uuid, entite:character varying, entite_ref_id:uuid, action:character varying, valeurs_avant:jsonb, valeurs_apres:jsonb, adresse_ip:inet, user_agent:text, created_at:timestamp with time zone, hash_prec:character, hash_actuel:character
+
+=== journal_connexion ===
+connexion_id:uuid, personne_id:uuid, email_tente:character varying, adresse_ip:inet, resultat:character varying, user_agent:text, created_at:timestamp with time zone
+
+=== manuel_architecture ===
+chapitre_id:character varying, numero_chapitre:integer, institution:character varying, titre_chapitre:character varying, contenu_narratif:text, recherche_vecteur:tsvector, created_at:timestamp with time zone
+
+=== meta_entity ===
+entity_id:uuid, nom_table:character varying, pk_column:character varying, libelle:character varying, created_at:timestamp with time zone
+
+=== meta_notification_rule ===
+rule_id:uuid, entite:character varying, evenement:character varying, condition_json:jsonb, message_template:text, canal:character varying, destinataire_role_code:character varying, statut:character varying, created_at:timestamp with time zone
+
+=== meta_permission ===
+permission_id:uuid, role_code:character varying, entity:character varying, action:character varying, statut:character varying, condition_json:jsonb, created_at:timestamp with time zone
+
+=== meta_rule ===
+rule_id:uuid, entite:character varying, nom:character varying, description:text, evenement:character varying, condition_json:jsonb, message_erreur:text, statut:character varying, created_at:timestamp with time zone
+
+=== meta_workflow_transition ===
+transition_id:uuid, entite:character varying, from_statut:character varying, to_statut:character varying, role_code_requis:character varying, condition_json:jsonb, statut:character varying, created_at:timestamp with time zone
+
+=== nocode_formulaire ===
+formulaire_id:uuid, code:character varying, nom:character varying, workflow_id:uuid, schema_champs:jsonb, statut:character varying, created_at:timestamp with time zone
+
+=== nocode_workflow ===
+workflow_id:uuid, code:character varying, nom:character varying, institution_id:uuid, description:text, statut:character varying, created_at:timestamp with time zone
+
+=== nocode_workflow_etape ===
+etape_id:uuid, workflow_id:uuid, code:character varying, nom:character varying, ordre:integer, role_metier_id:uuid, type_etape:character varying, created_at:timestamp with time zone
+
+=== nocode_workflow_instance ===
+instance_id:uuid, workflow_id:uuid, etape_courante_id:uuid, donnees:jsonb, statut:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== notification ===
+notification_id:uuid, destinataire_id:uuid, type_notification:character varying, canal:character varying, titre:character varying, contenu:text, entite_liee:character varying, entite_liee_ref_id:uuid, lu:boolean, date_envoi:timestamp with time zone, date_lecture:timestamp with time zone, created_at:timestamp with time zone
+
+=== ordre_paiement ===
+ordre_paiement_id:uuid, beneficiaire:character varying, montant:numeric, institution:character varying, statut:character varying, valide_par_budget:character varying, valide_par_finances:character varying, valide_par_primature:character varying, valide_par_presidence:character varying, valide_par_igf:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== organization ===
+organization_id:uuid, code:character varying, nom:character varying, type_id:integer, parent_id:uuid, niveau:integer, description:text, statut:character varying, created_at:timestamp with time zone
+
+=== organization_type ===
+id:integer, code:character varying, libelle:character varying, pouvoir_id:integer
+
+=== permission ===
+permission_id:uuid, role_id:uuid, entite:character varying, action:character varying, condition_json:jsonb, statut:character varying, created_at:timestamp with time zone, code:text
+
+=== permission_compat ===
+permission_id:uuid, role_id:uuid, code:text, nom:character varying
+
+=== person ===
+person_id:uuid, matricule:character varying, nom:character varying, prenom:character varying, email:character varying, password_hash:text, statut:character varying, created_at:timestamp with time zone
+
+=== person_role ===
+person_role_id:uuid, person_id:uuid, role_id:uuid, scope_org_id:uuid, date_attribution:timestamp with time zone, date_expiration:timestamp with time zone, statut:character varying
+
+=== personne ===
+personne_id:uuid, matricule:character varying, nom:character varying, prenom:character varying, date_naissance:date, lieu_naissance:character varying, sexe:character, numero_identite_nationale:character varying, email:character varying, telephone:character varying, photo_url:text, password_hash:text, mfa_active:boolean, mfa_secret:text, langue_preferee:character varying, fuseau_horaire:character varying, statut:character varying, date_derniere_connexion:timestamp with time zone, created_at:timestamp with time zone, updated_at:timestamp with time zone, tentatives_echouees:integer, verrouille_jusqu_a:timestamp with time zone
+
+=== personne_role ===
+personne_role_id:uuid, personne_id:uuid, role_id:uuid, scope_institution_id:uuid, date_attribution:timestamp with time zone, date_expiration:timestamp with time zone, statut:character varying
+
+=== poste ===
+poste_id:uuid, unite_id:uuid, code:character varying, intitule:character varying, poste_hierarchique_id:uuid, niveau_hierarchique:integer, categorie:character varying, missions:text, attributions:text, responsabilites:text, competences_requises:text, nombre_postes_autorises:integer, statut:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean
+
+=== poste_role_metier ===
+poste_id:uuid, role_metier_id:uuid, created_at:timestamp with time zone
+
+=== pouvoir ===
+pouvoir_id:integer, code:character varying, libelle:character varying
+
+=== processus ===
+processus_id:uuid, institution_id:uuid, libelle:character varying, description:text, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean, source_document:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone
+
+=== processus_etape ===
+etape_id:uuid, processus_id:uuid, ordre:integer, libelle:character varying, description:text, created_at:timestamp with time zone
+
+=== referentiel_national ===
+referentiel_id:uuid, code:character varying, nom:character varying, institution_id:uuid, description:text, statut:character varying, created_at:timestamp with time zone
+
+=== referentiel_national_item ===
+item_id:uuid, section_id:uuid, code_item:character varying, libelle:text, metadata_json:jsonb, created_at:timestamp with time zone
+
+=== referentiel_national_section ===
+section_id:uuid, referentiel_id:uuid, numero_section:integer, titre:character varying, created_at:timestamp with time zone, code_officiel:character varying, contenu_texte:text
+
+=== referentiel_niveau_national ===
+rang:integer, libelle_canonique:character varying, source_document:character varying, hors_chaine_autorite:boolean, niveau_confiance:character varying, pourcentage_confiance:integer
+
+=== relation_interinstitutionnelle ===
+relation_id:uuid, mode:character varying, institution_source_id:uuid, institution_cible_id:uuid, type_source:character varying, type_cible:character varying, nature_relation:character varying, echange_principal:text, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean, source_document:character varying, created_at:timestamp with time zone
+
+=== role ===
+role_id:uuid, code:character varying, nom:character varying, categorie:character varying, description:text, statut:character varying, created_at:timestamp with time zone
+
+=== role_metier ===
+role_metier_id:uuid, code:character varying, libelle:character varying, categorie:character varying, description:text, statut:character varying, created_at:timestamp with time zone
+
+=== role_permission ===
+role_id:uuid, permission_id:uuid
+
+=== session_utilisateur ===
+session_id:uuid, personne_id:uuid, token_hash:text, adresse_ip:inet, user_agent:text, date_debut:timestamp with time zone, date_expiration:timestamp with time zone, date_revocation:timestamp with time zone, statut:character varying
+
+=== signature_electronique ===
+signature_id:uuid, personne_id:uuid, entite:character varying, entite_ref_id:uuid, type_signature:character varying, empreinte_document:text, certificat_reference:text, horodatage:timestamp with time zone, adresse_ip:inet, statut:character varying
+
+=== type_document ===
+type_document_id:uuid, code:character varying, nom:character varying, modele_url:text, duree_conservation_ans:integer, regle_archivage:text
+
+=== unite_organisationnelle ===
+unite_id:uuid, institution_id:uuid, unite_parent_id:uuid, code:character varying, nom:character varying, type_unite:character varying, niveau_hierarchique:integer, mission:text, statut:character varying, created_at:timestamp with time zone, updated_at:timestamp with time zone, niveau_confiance:character varying, pourcentage_confiance:integer, participe_calculs:boolean
+
+=== validation ===
+validation_id:uuid, entite:character varying, entite_ref_id:uuid, etape:character varying, valideur_id:uuid, role_valideur_code:character varying, decision:character varying, commentaire:text, signature_electronique_id:uuid, date_echeance:timestamp with time zone, date_decision:timestamp with time zone, created_at:timestamp with time zone

@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNGIE-RDC — Plateforme Nationale de Gouvernance Intégrée</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Couleurs du drapeau de la RDC */
+  --blue:#003DA5;--blue2:#0057C2;--blue3:#001E52;--sky:#3E9AE8;
+  --yellow:#FFD100;--yellow2:#FFE066;--yellow3:#B38F00;
+  --red:#CE1126;--red2:#E8384F;
+  --cream:#F7F6F0;--w:#fff;--text:#132043;--muted:#525C74;--light:#F1F1EC;--border:rgba(0,0,0,0.09);
+  --green:#1A7A3C;--amber:#B45309;--purple:#6B21A8;
+}
+body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--text)}
+.app{display:grid;grid-template-rows:54px 1fr 26px;height:100vh;overflow:hidden}
+.statusbar{background:var(--blue3);border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:16px;padding:0 14px;font-size:10px;color:rgba(255,255,255,0.55);overflow-x:auto;white-space:nowrap}
+.sb-stat{display:flex;align-items:center;gap:5px}
+.sb-stat i{font-size:12px}
+.sb-spacer{flex:1}
+.sb-online{color:var(--green) !important}
+.sb-offline{color:var(--red) !important}
+
+/* DRAPEAU MINI (logo) */
+.flag{position:relative;overflow:hidden;background:var(--blue);flex-shrink:0}
+.flag::before{content:'';position:absolute;left:-15%;top:38%;width:135%;height:26%;background:var(--yellow);transform:rotate(-32deg)}
+.flag::after{content:'';position:absolute;left:-15%;top:44%;width:135%;height:14%;background:var(--red);transform:rotate(-32deg)}
+.flag .star{position:absolute;left:14%;top:14%;color:var(--yellow);font-size:.9em;z-index:2;text-shadow:0 0 2px rgba(0,0,0,.3)}
+.flag-emblem{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--yellow)}
+.flag-emblem .star{font-size:12px}
+.flag-big{width:64px;height:64px;border-radius:14px;border:2px solid var(--yellow);margin:0 auto 10px}
+.flag-big .star{font-size:20px}
+
+.topbar{background:var(--blue3);display:flex;align-items:center;padding:0 14px;border-bottom:2px solid var(--yellow)}
+.tb-logo{display:flex;align-items:center;gap:9px;padding-right:16px;border-right:1px solid rgba(255,255,255,0.12)}
+.tb-name{font-family:'Cinzel',serif;color:var(--yellow);font-size:13px;font-weight:600}
+.tb-sub{color:rgba(255,255,255,0.4);font-size:9px}
+.tb-nav{display:flex;gap:1px;padding:0 10px;flex:1;overflow-x:auto}
+.tb-btn{background:none;border:none;color:rgba(255,255,255,0.6);font-size:11px;font-family:'Source Sans 3',sans-serif;padding:5px 9px;border-radius:5px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb-btn:hover,.tb-btn.act{background:rgba(255,209,0,0.15);color:var(--yellow)}
+.tb-right{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid rgba(255,255,255,0.12)}
+.tb-avatar{width:26px;height:26px;border-radius:50%;background:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--blue3)}
+.tb-uname{color:rgba(255,255,255,0.7);font-size:11px}
+.tb-inst{color:rgba(255,255,255,0.4);font-size:9px}
+.tb-badge{background:var(--red);color:#fff;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700}
+.tb-logout{background:none;border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.55);font-size:11px;padding:4px 8px;border-radius:5px;cursor:pointer}
+
+.body{display:grid;grid-template-columns:216px 1fr;height:calc(100vh - 54px);overflow:hidden;width:100%}
+.sidebar{background:var(--blue3);overflow-y:auto;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column}
+.sb-section{padding:10px 8px 3px}
+.sb-label{font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,0.3);padding:0 8px;text-transform:uppercase;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.6);font-size:11.5px;margin:1px 0}
+.sb-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+.sb-item.act{background:rgba(255,209,0,0.16);color:var(--yellow)}
+.sb-item i{font-size:15px;width:17px;text-align:center}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:8px;padding:1px 5px;border-radius:20px;font-weight:700}
+.sb-divider{height:1px;background:rgba(255,255,255,0.06);margin:6px 10px}
+.sb-bottom{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,0.06)}
+.sb-info{font-size:9.5px;color:rgba(255,255,255,0.25);padding:4px 8px;line-height:1.6}
+.main{overflow-y:auto;background:var(--cream);width:100%;min-width:0}
+.page{display:none;padding:20px 24px;animation:fadeIn .22s ease;width:100%;min-width:0}
+.page.act{display:block;width:100%}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.ph-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:var(--blue)}
+.ph-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ph-actions{display:flex;gap:7px;flex-wrap:wrap}
+.btn{padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:11.5px;font-family:'Source Sans 3',sans-serif;cursor:pointer;font-weight:500;transition:all .17s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{border-color:var(--blue2);color:var(--blue2)}
+.btn.primary{background:var(--blue);color:var(--yellow);border-color:var(--blue)}
+.btn.primary:hover{background:var(--blue2);color:#fff}
+.btn.success{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.sm{padding:4px 9px;font-size:10.5px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;width:100%}
+.kpi{background:#fff;border:0.5px solid var(--border);border-radius:11px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--yellow))}
+.kpi-lbl{font-size:10.5px;color:var(--muted);margin-bottom:5px}
+.kpi-val{font-size:23px;font-weight:700;color:var(--blue);font-family:'Cinzel',serif;line-height:1}
+.kpi-tr{font-size:10.5px;margin-top:4px;font-weight:500}
+.tup{color:var(--green)}.tdn{color:var(--red)}.twn{color:var(--amber)}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:11px;padding:18px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.card-title i{font-size:15px;color:var(--yellow3)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead th{background:var(--blue);color:rgba(255,255,255,0.85);padding:9px 11px;text-align:left;font-weight:500;font-size:10.5px}
+tbody tr{border-bottom:.5px solid var(--border);transition:background .12s}
+tbody tr:hover{background:var(--cream)}
+tbody td{padding:8px 11px;vertical-align:middle}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700}
+.bg{background:#DCFCE7;color:#166534}.br{background:#FEE2E2;color:#991B1B}
+.ba{background:#FEF3C7;color:#92400E}.bb{background:#DBEAFE;color:#1E40AF}
+.bn{background:#FFF6D6;color:#7A5E00}.bp{background:#F3E8FF;color:#6B21A8}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border)}
+.sr:last-child{border:none}
+.sr-n{font-size:11.5px;color:var(--text)}.sr-v{font-size:12px;font-weight:600;color:var(--blue)}
+.prog{margin-bottom:10px}
+.prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px}
+.prog-tr{height:6px;background:var(--light);border-radius:10px;overflow:hidden}
+.prog-fl{height:100%;border-radius:10px}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:8px;border:.5px solid transparent}
+.a-cr{background:#FEE2E2;border-color:#FCA5A5}.a-wn{background:#FEF3C7;border-color:#FCD34D}
+.a-in{background:#DBEAFE;border-color:#93C5FD}.a-ok{background:#DCFCE7;border-color:#86EFAC}
+.alert-icon{font-size:16px;flex-shrink:0}
+.alert-body{flex:1}
+.alert-title{font-size:11.5px;font-weight:600;color:var(--blue);margin-bottom:2px}
+.alert-desc{font-size:10.5px;color:var(--muted)}
+.alert-time{font-size:9.5px;color:var(--muted);flex-shrink:0}
+.ia-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px}
+.ia-msgs{height:190px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--light)}
+.ia-msg{max-width:85%;padding:8px 12px;border-radius:10px;font-size:11.5px;line-height:1.5;white-space:pre-line}
+.ia-msg.bot{background:var(--blue);color:rgba(255,255,255,0.9);align-self:flex-start}
+.ia-msg.user{background:var(--yellow);color:var(--blue3);align-self:flex-end;font-weight:500}
+.ia-input-row{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid var(--border)}
+.ia-input-row input{flex:1;border:.5px solid var(--border);border-radius:6px;padding:7px 11px;font-size:11.5px;font-family:'Source Sans 3',sans-serif;outline:none}
+.ia-input-row input:focus{border-color:var(--blue2)}
+.mb{display:none;position:fixed;inset:0;background:rgba(0,20,60,0.65);align-items:center;justify-content:center;z-index:1000;padding:20px}
+.mb.open{display:flex}
+.modal{background:#fff;border-radius:13px;width:100%;max-width:540px;overflow:hidden;max-height:90vh;overflow-y:auto}
+.modal-hdr{background:var(--blue);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.modal-hdr-title{font-family:'Cinzel',serif;color:var(--yellow);font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:18px;cursor:pointer}
+.modal-body{padding:18px}
+.modal-footer{padding:12px 18px;border-top:.5px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ff{display:flex;flex-direction:column;gap:3px}
+.ff label{font-size:10.5px;color:var(--muted);font-weight:500}
+.ff input,.ff select,.ff textarea{border:.5px solid var(--border);border-radius:6px;padding:8px 11px;font-size:11.5px;font-family:'Source Sans 3',sans-serif;background:#fff;color:var(--text);outline:none}
+.ff input:focus,.ff select:focus{border-color:var(--blue2)}
+.ff.full{grid-column:1/-1}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--blue3);color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;z-index:2000;display:none;border-left:4px solid var(--yellow);min-width:260px}
+.toast.show{display:block}
+.toast.ok{border-color:var(--green)}.toast.err{border-color:var(--red)}
+
+/* LOGIN */
+#loginScreen{display:flex;min-height:100vh;background:linear-gradient(160deg,var(--blue3),var(--blue));align-items:center;justify-content:center;padding:20px}
+.login-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,209,0,0.3);border-radius:15px;padding:32px;width:100%;max-width:380px;backdrop-filter:blur(2px)}
+.login-title{font-family:'Cinzel',serif;color:var(--yellow);font-size:20px;font-weight:600;text-align:center}
+.login-sub{color:rgba(255,255,255,0.4);font-size:10px;text-align:center;margin-top:3px;margin-bottom:18px}
+.login-field{margin-bottom:11px}
+.login-field label{display:block;font-size:10.5px;color:rgba(255,255,255,0.5);margin-bottom:4px}
+.login-field input,.login-field select{width:100%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:9px 12px;color:#fff;font-size:12.5px;font-family:'Source Sans 3',sans-serif;outline:none}
+.login-field select option{color:#111}
+.role-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px}
+.rc{padding:7px 5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:7px;text-align:center;cursor:pointer;transition:all .18s}
+.rc:hover,.rc.sel{background:rgba(255,209,0,0.16);border-color:var(--yellow3)}
+.rc-name{font-size:9.5px;color:#fff;font-weight:600}
+.rc-sub{font-size:8px;color:rgba(255,255,255,0.4);margin-top:1px}
+.otp-row{display:flex;gap:6px}
+.otp-row input{width:38px;text-align:center;font-size:16px;letter-spacing:0}
+.bio-box{border:1.5px dashed var(--yellow3);border-radius:9px;padding:12px;text-align:center;margin-bottom:12px;cursor:pointer;transition:all .2s}
+.bio-box:hover{border-color:var(--yellow)}
+.bio-box i{font-size:22px;color:var(--yellow);display:block;margin-bottom:4px}
+.bio-box span{font-size:9.5px;color:rgba(255,255,255,0.5)}
+.login-btn{width:100%;background:var(--yellow);color:var(--blue3);border:none;border-radius:7px;padding:11px;font-size:13px;font-weight:700;font-family:'Cinzel',serif;cursor:pointer;margin-top:4px;letter-spacing:.04em}
+.login-btn:hover{background:var(--yellow2)}
+.login-log{background:rgba(0,0,0,0.2);border-radius:7px;padding:8px 10px;margin-top:14px;max-height:70px;overflow-y:auto}
+.j-line{padding:2px 0;font-family:monospace;font-size:9px;color:rgba(255,255,255,0.5);line-height:1.7}
+
+/* Cartes institutions/ministères */
+.ent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px;width:100%;min-width:0}
+.ent-card{background:#fff;border:.5px solid var(--border);border-radius:10px;padding:12px 13px;cursor:pointer;transition:all .17s;position:relative}
+.ent-card:hover{border-color:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,61,165,.08)}
+.ent-card::before{content:'';position:absolute;left:0;top:10px;bottom:10px;width:3px;border-radius:3px;background:var(--yellow)}
+.ent-ico{width:30px;height:30px;border-radius:8px;background:var(--cream);display:flex;align-items:center;justify-content:center;color:var(--blue);font-size:15px;margin-bottom:8px}
+.ent-name{font-size:11.5px;font-weight:600;color:var(--text);line-height:1.3}
+.ent-tag{font-size:9px;color:var(--muted);margin-top:3px}
+
+/* Organigramme arbre */
+.tree{list-style:none}
+.tree .node{background:var(--blue);color:#fff;padding:8px 12px;border-radius:8px;display:inline-block;font-size:11.5px;font-weight:600;margin-bottom:6px;border-left:3px solid var(--yellow)}
+.tree ul{list-style:none;margin-left:16px;padding-left:16px;border-left:1.5px dashed var(--border)}
+.tree li{position:relative;padding:5px 0}
+.tree li::before{content:'';position:absolute;left:-16px;top:16px;width:14px;border-top:1.5px dashed var(--border)}
+.tree .leaf{background:#fff;border:.5px solid var(--border);padding:5px 11px;border-radius:7px;font-size:11px;display:inline-block;color:var(--text)}
+.tree .leaf i{color:var(--blue2);margin-right:5px}
+
+/* Tabs portail */
+.tabs{display:flex;gap:2px;border-bottom:1.5px solid var(--border);margin-bottom:14px;overflow-x:auto}
+.tab{padding:8px 14px;font-size:11.5px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap}
+.tab.act{color:var(--blue);border-color:var(--yellow)}
+.tabpage{display:none}
+.tabpage.act{display:block}
+
+/* Espace personnel */
+.wgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.tasklist{display:flex;flex-direction:column;gap:7px}
+.task{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;background:var(--cream);font-size:11.5px}
+.task input{accent-color:var(--blue)}
+.task.done{opacity:.5;text-decoration:line-through}
+
+/* Messagerie */
+.mail-list{display:flex;flex-direction:column}
+.mail-row{display:flex;gap:10px;padding:10px 8px;border-bottom:.5px solid var(--border);cursor:pointer;align-items:flex-start}
+.mail-row:hover{background:var(--cream)}
+.mail-row.unread .mail-subj{font-weight:700}
+.mail-av{width:28px;height:28px;border-radius:50%;background:var(--blue);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.mail-body{flex:1;min-width:0}
+.mail-from{font-size:11px;font-weight:600;color:var(--text)}
+.mail-subj{font-size:11px;color:var(--text);margin-top:1px}
+.mail-prev{font-size:10.5px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mail-time{font-size:9.5px;color:var(--muted);flex-shrink:0}
+
+/* RBAC */
+.rbac-tbl th,.rbac-tbl td{text-align:center}
+.rbac-tbl td:first-child,.rbac-tbl th:first-child{text-align:left}
+.chk{color:var(--green);font-size:14px}
+.crx{color:rgba(0,0,0,0.12);font-size:14px}
+
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:9.5px;font-weight:700;background:var(--cream);color:var(--blue)}
+.cmd-field{margin-bottom:11px}
+.cmd-field label{display:block;font-size:10.5px;color:var(--muted);margin-bottom:4px;font-weight:600}
+.cmd-field input,.cmd-field select,.cmd-field textarea{width:100%;background:#fff;border:1px solid var(--border);border-radius:7px;padding:8px 11px;color:var(--text);font-size:12px;font-family:'Source Sans 3',sans-serif;outline:none}
+.cmd-field textarea{resize:vertical}
+.cmd-field input:focus,.cmd-field select:focus,.cmd-field textarea:focus{border-color:var(--blue2)}
+.cmd-link-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:.5px solid var(--border);font-size:11.5px}
+.cmd-link-row:last-child{border:none}
+.avatar-lg{width:52px;height:52px;border-radius:12px;background:var(--blue);color:var(--yellow);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ ÉCRAN DE CONNEXION SÉCURISÉ ═══════════════ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="flag-big" style="position:relative"><span class="star">★</span></div>
+    <div class="login-title">PNGIE-RDC</div>
+    <div class="login-sub">Plateforme Nationale de Gouvernance Intégrée<br>République Démocratique du Congo</div>
+
+    <div class="login-field">
+      <label>Choix de l'institution</label>
+      <select id="lInst" onchange="onInstChange(this.value)"></select>
+    </div>
+    <div class="login-field"><label>Identifiant (ID)</label><input id="lu" value="admin.presidence@pngie-rdc.gov.cd"></div>
+    <div class="login-field"><label>Mot de passe</label><input type="password" id="lp" value="••••••••"></div>
+
+    <div id="otpBlock" style="display:none">
+      <div class="login-field">
+        <label>Authentification à deux facteurs — Code OTP envoyé par SMS</label>
+        <div class="otp-row">
+          <input maxlength="1" class="login-field-otp"><input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1"><input maxlength="1">
+        </div>
+      </div>
+    </div>
+    <button class="btn sm" style="width:100%;margin-bottom:10px;justify-content:center;background:rgba(255,255,255,0.08);color:#fff;border-color:rgba(255,255,255,0.15)" onclick="sendOtp()">Envoyer le code OTP</button>
+
+    <div class="bio-box" id="bioBox" onclick="scanBioLogin()">
+      <i class="ti ti-fingerprint"></i>
+      <span id="bioTxt">Vérification biométrique (empreinte / reconnaissance faciale)</span>
+    </div>
+
+    <button class="login-btn" onclick="login()">ACCÈS SÉCURISÉ →</button>
+
+    <div class="login-log" id="loginLog"></div>
+    <div style="font-size:8px;color:rgba(255,255,255,0.18);text-align:center;margin-top:12px">CONFIDENTIEL — Présidence de la République Démocratique du Congo<br>PNGIE-RDC — Journal de connexion horodaté et chiffré (AES-256)</div>
+  </div>
+</div>
+
+<!-- ═══════════════ APPLICATION PRINCIPALE ═══════════════ -->
+<div class="app" id="mainApp" style="display:none">
+  <div class="topbar">
+    <div class="tb-logo">
+      <div class="flag flag-emblem" style="position:relative"><span class="star">★</span></div>
+      <div><div class="tb-name">PNGIE-RDC</div><div class="tb-sub">Gouvernance Numérique Nationale</div></div>
+    </div>
+    <div class="tb-nav" id="tbNav">
+      <button class="tb-btn act" onclick="nav(this,'dashboard')"><i class="ti ti-layout-dashboard"></i> Cockpit</button>
+      <button class="tb-btn" onclick="nav(this,'institutions')"><i class="ti ti-building-bank"></i> Institutions</button>
+      <button class="tb-btn" onclick="nav(this,'ministeres')"><i class="ti ti-building-castle"></i> Ministères</button>
+      <button class="tb-btn" onclick="nav(this,'provinces')"><i class="ti ti-map-2"></i> Provinces</button>
+      <button class="tb-btn" onclick="nav(this,'rh')"><i class="ti ti-users"></i> RH</button>
+      <button class="tb-btn" onclick="nav(this,'espace')"><i class="ti ti-layout-grid"></i> Mon espace</button>
+      <button class="tb-btn" onclick="nav(this,'messagerie')"><i class="ti ti-mail"></i> Messagerie</button>
+      <button class="tb-btn" onclick="nav(this,'droits')"><i class="ti ti-shield-lock"></i> Droits</button>
+    </div>
+    <div class="tb-right">
+      <span class="tb-badge" id="tbAlertCount">7</span>
+      <div class="tb-avatar" id="tbAv">PR</div>
+      <div><div class="tb-uname" id="tbNm">Présidence</div><div class="tb-inst" id="tbInstLbl">Présidence de la République</div></div>
+      <button class="tb-logout" onclick="logout()" title="Déconnexion"><i class="ti ti-power"></i></button>
+    </div>
+  </div>
+
+  <div class="body">
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar"></div>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <!-- ═══ TABLEAU DE BORD NATIONAL (Présidence) ═══ -->
+      <div class="page act" id="pg-dashboard">
+        <div class="ph">
+          <div><div class="ph-title" id="dashTitle">Tableau de bord national — Présidence de la République</div><div class="ph-sub">Vue consolidée : 26 provinces · institutions · ministères · finances publiques · projets nationaux</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="runIA()"><i class="ti ti-brain"></i> Lancer analyse IA globale</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:var(--blue)"><div class="kpi-lbl">Provinces</div><div class="kpi-val" id="kProv">—</div><div class="kpi-tr">Territoire national</div></div>
+          <div class="kpi" style="--kc:var(--yellow3)"><div class="kpi-lbl">Ministères</div><div class="kpi-val" id="kMin">—</div><div class="kpi-tr">Gouvernement central</div></div>
+          <div class="kpi" style="--kc:var(--red)"><div class="kpi-lbl">Institutions</div><div class="kpi-val" id="kInst">—</div><div class="kpi-tr">Constitutionnelles & publiques</div></div>
+          <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Budget exécuté</div><div class="kpi-val" style="font-size:14px;color:var(--muted)">Non disponible</div><div class="kpi-tr" style="color:var(--muted)">Référentiel Finances non branché</div></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:var(--purple);cursor:pointer" onclick="nav(null,'entreprises')"><div class="kpi-lbl">Entreprises publiques</div><div class="kpi-val" id="kEntr">—</div><div class="kpi-tr">Portefeuille de l'État →</div></div>
+          <div class="kpi" style="--kc:var(--amber);cursor:pointer" onclick="nav(null,'etablissements')"><div class="kpi-lbl">Établissements publics</div><div class="kpi-val" id="kEtab">—</div><div class="kpi-tr">Organismes publics →</div></div>
+          <div class="kpi" style="--kc:var(--blue2);cursor:pointer" onclick="nav(null,'etd')"><div class="kpi-lbl">ETD</div><div class="kpi-val" id="kEtd">—</div><div class="kpi-tr">Entités territoriales →</div></div>
+          <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Agents publics</div><div class="kpi-val" style="font-size:14px;color:var(--muted)">Non disponible</div><div class="kpi-tr" style="color:var(--muted)">Référentiel RH non branché</div></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-cash"></i>Finances publiques — synthèse</div>
+            <div style="color:var(--muted);font-size:12px;padding:6px 0">Aucune donnée réelle disponible — le référentiel Finances (recettes, dépenses, dette) n'est pas encore exposé par l'API.</div>
+          </div>
+          <div class="card"><div class="card-title"><i class="ti ti-chart-arrows"></i>Indicateurs nationaux</div>
+            <div style="color:var(--muted);font-size:12px;padding:6px 0">Aucune donnée réelle disponible — population, PIB et indicateurs sociaux ne sont pas encore rattachés à un référentiel du PNGIE-RDC.</div>
+          </div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-bell-ringing"></i>Alertes IA — sécurité & fraude <span class="badge ba" style="margin-left:6px">Démonstration</span></div><div id="dashAlerts"></div><div style="color:var(--muted);font-size:10.5px;margin-top:6px">Illustration du fonctionnement futur des agents IA — aucun agent n'est encore connecté à des données réelles.</div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-clipboard-list"></i>Projets nationaux prioritaires <span class="badge ba" style="margin-left:6px">Démonstration</span></div><div id="dashProjets"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-server-2"></i>État du serveur <span class="badge bg" style="margin-left:6px">Données réelles — /api/health</span></div>
+          <div id="dashServerState" style="color:var(--muted);font-size:12px;padding:6px 0">Chargement...</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-apps"></i>État des modules PNGIE-RDC <span class="badge bg" style="margin-left:6px">Données réelles — /api/db-summary</span></div>
+          <div id="dashModulesMsg" style="color:var(--muted);font-size:12px;padding:6px 0"></div>
+          <div class="tw"><table>
+            <thead><tr><th>Module</th><th>Statut</th><th>Enregistrements</th></tr></thead>
+            <tbody id="dashModulesTbl"></tbody>
+          </table></div>
+        </div>
+        <div class="card" id="iaResCard" style="display:none">
+          <div class="card-title"><i class="ti ti-robot"></i>Résultat — Analyse IA nationale multi-agents</div>
+          <div id="iaRes"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-map-2"></i>Aperçu des 26 provinces</div>
+          <div class="tw"><table><thead><tr><th>Province</th><th>Chef-lieu</th><th>Population</th><th>Budget alloué</th><th>Exécution</th></tr></thead><tbody id="dashProvTbl"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ═══ INSTITUTIONS ═══ -->
+      <div class="page" id="pg-institutions">
+        <div class="ph">
+          <div><div class="ph-title">Institutions de la République</div><div class="ph-sub">Chaque institution ouvre son propre portail (tableau de bord, organigramme, budget, personnel, documents)</div></div>
+        </div>
+        <div class="ent-grid" id="instGrid"></div>
+      </div>
+
+      <!-- ═══ MINISTÈRES ═══ -->
+      <div class="page" id="pg-ministeres">
+        <div class="ph">
+          <div><div class="ph-title">Ministères du Gouvernement</div><div class="ph-sub">Chaque ministère dispose de son interface dédiée</div></div>
+        </div>
+        <div class="ent-grid" id="minGrid"></div>
+      </div>
+
+      <!-- ═══ PORTAIL DYNAMIQUE (institution / ministère / province) ═══ -->
+      <div class="page" id="pg-portail">
+        <div class="ph">
+          <div><div class="ph-title" id="pInstTitle">—</div><div class="ph-sub" id="pInstSub">Portail institutionnel</div></div>
+          <div class="ph-actions"><button class="btn sm" onclick="backToList()"><i class="ti ti-arrow-left"></i> Retour</button></div>
+        </div>
+        <div class="kpi-grid" id="pInstKpi"></div>
+        <div class="tabs">
+          <div class="tab act" onclick="pTab(this,'org')">Organigramme</div>
+          <div class="tab" onclick="pTab(this,'arb')">Directions & Services</div>
+          <div class="tab" id="tabTerr" onclick="pTab(this,'terr')" style="display:none">Territoires & ETD</div>
+          <div class="tab" onclick="pTab(this,'proj')">Projets</div>
+          <div class="tab" onclick="pTab(this,'bud')">Budget</div>
+          <div class="tab" onclick="pTab(this,'pers')">Personnel</div>
+          <div class="tab" onclick="pTab(this,'doc')">Documents</div>
+        </div>
+        <div class="tabpage act" id="pt-org"><div class="card"><div class="card-title"><i class="ti ti-sitemap"></i>Organigramme dynamique</div><div id="pOrgChart"></div></div></div>
+        <div class="tabpage" id="pt-arb"><div class="card"><div class="card-title"><i class="ti ti-list-tree"></i>Arborescence administrative</div>
+          <div class="tw"><table><thead><tr><th>Direction</th><th>Divisions</th><th>Bureaux</th><th>Effectif</th><th>Responsable</th></tr></thead><tbody id="pArbTbl"></tbody></table></div></div></div>
+        <div class="tabpage" id="pt-terr"><div class="card"><div class="card-title"><i class="ti ti-map-2"></i>Référentiel administratif — Territoires, ETD et subdivisions</div><div id="pTerrChart"></div></div></div>
+        <div class="tabpage" id="pt-proj"><div class="card"><div class="card-title"><i class="ti ti-clipboard-list"></i>Projets en cours</div><div id="pProjList"></div></div></div>
+        <div class="tabpage" id="pt-bud"><div class="card"><div class="card-title"><i class="ti ti-chart-pie"></i>Exécution budgétaire</div><div id="pBudList"></div></div></div>
+        <div class="tabpage" id="pt-pers"><div class="card"><div class="card-title"><i class="ti ti-users"></i>Personnel affecté</div>
+          <div class="tw"><table><thead><tr><th>Nom</th><th>Fonction</th><th>Direction</th><th>Grade</th><th>Statut</th></tr></thead><tbody id="pPersTbl"></tbody></table></div></div></div>
+        <div class="tabpage" id="pt-doc"><div class="card"><div class="card-title"><i class="ti ti-file-text"></i>Documents & archives</div><div id="pDocList"></div></div></div>
+      </div>
+
+      <!-- ═══ PROVINCES ═══ -->
+      <div class="page" id="pg-provinces">
+        <div class="ph"><div><div class="ph-title">Les 26 Provinces de la RDC</div><div class="ph-sub">Chaque province ouvre son propre portail (gouvernorat, budget, territoires & ETD, statistiques)</div></div></div>
+        <div class="ent-grid" id="provGrid"></div>
+      </div>
+
+      <!-- ═══ ENTREPRISES PUBLIQUES ═══ -->
+      <div class="page" id="pg-entreprises">
+        <div class="ph"><div><div class="ph-title">Entreprises Publiques</div><div class="ph-sub">Portefeuille de l'État — chaque entreprise ouvre son propre portail</div></div></div>
+        <div class="ent-grid" id="entrGrid"></div>
+      </div>
+
+      <!-- ═══ ÉTABLISSEMENTS PUBLICS ═══ -->
+      <div class="page" id="pg-etablissements">
+        <div class="ph"><div><div class="ph-title">Établissements Publics</div><div class="ph-sub">Organismes publics à caractère administratif, technique ou social</div></div></div>
+        <div class="ent-grid" id="etabGrid"></div>
+      </div>
+
+      <!-- ═══ ETD — ENTITÉS TERRITORIALES DÉCENTRALISÉES ═══ -->
+      <div class="page" id="pg-etd">
+        <div class="ph"><div><div class="ph-title">ETD — Entités Territoriales Décentralisées</div><div class="ph-sub">Villes, communes, secteurs et chefferies dotées de la personnalité juridique</div></div></div>
+        <div class="ent-grid" id="etdGrid"></div>
+      </div>
+
+      <!-- ═══ RESSOURCES HUMAINES ═══ -->
+      <div class="page" id="pg-rh">
+        <div class="ph">
+          <div><div class="ph-title">Ressources Humaines</div><div class="ph-sub">Mouvements de personnel (donnees reelles) et registre agents (a venir)</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mMouvementRh')"><i class="ti ti-user-plus"></i> Nouveau mouvement</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-arrows-exchange"></i>Mouvements de personnel <span class="badge bg" style="margin-left:6px">Donnees reelles — API /api/dossier_agent_rhs</span></div>
+          <div id="rhMouvementsMsg" style="color:var(--muted);font-size:12px;padding:6px 0"></div>
+          <div class="tw"><table>
+            <thead><tr><th>Agent concerne</th><th>Type de mouvement</th><th>Poste vise</th><th>Statut</th><th>Cree le</th></tr></thead>
+            <tbody id="rhMouvementsTbl"></tbody>
+          </table></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-id-badge-2"></i>Registre des agents (fiches de poste, biometrie, signature) <span class="badge ba" style="margin-left:6px">Démonstration</span></div>
+          <div style="color:var(--muted);font-size:12px;padding:6px 0">Aucun référentiel réel d'agents (biométrie, signature électronique, carte professionnelle) n'existe encore côté serveur. Les lignes ci-dessous illustrent la structure cible attendue.</div>
+          <div class="tw"><table>
+            <thead><tr><th>Matricule</th><th>Agent</th><th>Fonction</th><th>Institution</th><th>Grade</th><th>Biométrie</th><th>Signature</th><th>Droits</th><th></th></tr></thead>
+            <tbody id="rhTbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Modale : nouveau mouvement RH (reel) -->
+      <div class="mb" id="mMouvementRh"><div class="modal">
+        <div class="modal-hdr"><span>Nouveau mouvement de personnel</span><i class="ti ti-x" onclick="closeM('mMouvementRh')"></i></div>
+        <div class="modal-body">
+          <div class="login-field"><label>Agent concerné</label><input id="mrAgent" placeholder="Nom de l'agent"></div>
+          <div class="login-field"><label>Type de mouvement</label>
+            <select id="mrType">
+              <option value="NOMINATION">Nomination</option>
+              <option value="MUTATION">Mutation</option>
+              <option value="PROMOTION">Promotion</option>
+              <option value="AFFECTATION">Affectation</option>
+            </select>
+          </div>
+          <div class="login-field"><label>Poste visé</label><input id="mrPoste" placeholder="Intitulé du poste"></div>
+          <button class="btn primary sm" onclick="creerMouvementRh()">Créer le dossier</button>
+        </div>
+      </div></div>
+
+
+      <!-- ═══ ESPACE DE TRAVAIL PERSONNEL ═══ -->
+      <div class="page" id="pg-espace">
+        <div class="ph"><div><div class="ph-title">Mon espace de travail</div><div class="ph-sub" id="espaceSub">Agenda, tâches, documents, notifications, workflow, assistance IA</div></div></div>
+        <div class="wgrid">
+          <div class="card"><div class="card-title"><i class="ti ti-calendar-event"></i>Agenda du jour</div><div id="agendaList"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-checklist"></i>Tâches</div><div class="tasklist" id="taskList"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-bell"></i>Notifications</div><div id="notifList"></div></div>
+        </div>
+        <div class="wgrid">
+          <div class="card"><div class="card-title"><i class="ti ti-folder"></i>Documents & dossiers</div><div id="docPersList"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-git-branch"></i>Workflow — validations en attente</div><div id="workflowList"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-video"></i>Visioconférence</div>
+            <div style="text-align:center;padding:14px 0">
+              <i class="ti ti-video" style="font-size:30px;color:var(--blue)"></i>
+              <div style="font-size:11px;color:var(--muted);margin:8px 0">3 réunions programmées aujourd'hui</div>
+              <button class="btn primary sm" onclick="toast('Salle de visioconférence ouverte','ok')">Démarrer une réunion</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>Assistant IA personnel</div>
+          <div class="ia-wrap"><div class="ia-msgs" id="chat-esp"></div>
+            <div class="ia-input-row"><input id="inp-esp" placeholder="Demandez un résumé, un rappel, une rédaction…" onkeydown="if(event.key==='Enter')sendMsg('esp')"><button class="btn primary sm" onclick="sendMsg('esp')">Envoyer</button></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MESSAGERIE GOUVERNEMENTALE ═══ -->
+      <div class="page" id="pg-messagerie">
+        <div class="ph">
+          <div><div class="ph-title">Messagerie gouvernementale</div><div class="ph-sub" id="mailAddr">prenom.nom@pngie-rdc.gov.cd</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mCompose')"><i class="ti ti-pencil"></i> Nouveau message</button></div>
+        </div>
+        <div class="g2" style="grid-template-columns:2fr 1fr">
+          <div class="card" style="padding:0"><div class="card-title" style="padding:16px 18px 0"><i class="ti ti-inbox"></i>Boîte de réception</div><div class="mail-list" id="mailList"></div></div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-calendar"></i>Calendrier partagé</div>
+            <div id="mailCal"></div>
+            <div class="card-title" style="margin-top:16px"><i class="ti ti-address-book"></i>Contacts institutionnels</div>
+            <div id="mailContacts"></div>
+            <div class="card-title" style="margin-top:16px"><i class="ti ti-apps"></i>Fonctionnalités liées</div>
+            <div class="sr" style="cursor:pointer" onclick="nav(null,'espace')"><span class="sr-n"><i class="ti ti-video" style="color:var(--blue2);margin-right:6px"></i>Visioconférence</span><span class="sr-v" style="font-weight:400;color:var(--muted)">Ouvrir →</span></div>
+            <div class="sr" style="cursor:pointer" onclick="nav(null,'espace')"><span class="sr-n"><i class="ti ti-folder-share" style="color:var(--blue2);margin-right:6px"></i>Partage de documents</span><span class="sr-v" style="font-weight:400;color:var(--muted)">Ouvrir →</span></div>
+            <div class="sr" style="cursor:pointer" onclick="nav(null,'espace')"><span class="sr-n"><i class="ti ti-git-branch" style="color:var(--blue2);margin-right:6px"></i>Workflow de validation</span><span class="sr-v" style="font-weight:400;color:var(--muted)">Ouvrir →</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ GESTION DES DROITS (RBAC) ═══ -->
+      <div class="page" id="pg-droits">
+        <div class="ph"><div><div class="ph-title">Gestion des droits — Contrôle d'accès basé sur les rôles (RBAC)</div><div class="ph-sub">Chaque rôle voit uniquement les données et modules autorisés</div></div></div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-shield-lock"></i>Matrice des rôles et permissions</div>
+          <div class="tw"><table class="rbac-tbl">
+            <thead><tr><th>Rôle</th><th>Voir</th><th>Créer</th><th>Modifier</th><th>Valider</th><th>Administrer</th><th>Portée des données</th></tr></thead>
+            <tbody id="rbacTbl"></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-history"></i>Journal de connexion</div>
+          <div id="journalList" style="font-family:monospace;font-size:10.5px;color:var(--muted)"></div>
+        </div>
+      </div>
+
+      <!-- ═══ CHAÎNE DE COMMANDEMENT (RNI — hiérarchie dynamique, instructions, rapports, vérification) ═══ -->
+      <div class="page" id="pg-commandement">
+        <div class="ph">
+          <div><div class="ph-title">Chaîne de commandement</div><div class="ph-sub">Hiérarchie inter-institutions, instructions, rapports d'exécution et vérification — données réelles</div></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-building-bank"></i>Institution observée</div>
+          <div class="cmd-field"><label>Choisir une institution</label>
+            <select id="cmdInstSelect" onchange="cmdSelectInstitution(this.value)"></select>
+          </div>
+        </div>
+
+        <div class="g2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-arrow-up"></i>Institutions supérieures (tutelle / hiérarchie)</div>
+            <div id="cmdParents" style="color:var(--muted);font-size:12px">Sélectionnez une institution ci-dessus.</div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-arrow-down"></i>Institutions subordonnées</div>
+            <div id="cmdEnfants" style="color:var(--muted);font-size:12px">Sélectionnez une institution ci-dessus.</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-link"></i>Rattacher à une institution supérieure</div>
+          <div class="g3">
+            <div class="cmd-field"><label>Institution supérieure (tutelle)</label><select id="cmdParentSelect"></select></div>
+            <div class="cmd-field"><label>Nature du lien</label>
+              <select id="cmdTypeLien">
+                <option value="TUTELLE">Tutelle</option>
+                <option value="HIERARCHIQUE">Hiérarchique</option>
+                <option value="FONCTIONNEL">Fonctionnel</option>
+                <option value="COORDINATION">Coordination</option>
+              </select>
+            </div>
+            <div class="cmd-field"><label>Référence juridique (optionnel)</label><input id="cmdRefJuridique" placeholder="Ex : Décret n°..."></div>
+          </div>
+          <button class="btn primary sm" onclick="cmdCreerLien()" style="margin-top:6px"><i class="ti ti-plus"></i> Créer le lien</button>
+        </div>
+
+        <div class="ph" style="margin-top:6px">
+          <div><div class="ph-title" style="font-size:15px">Instructions</div><div class="ph-sub">Ordres émis et reçus par l'institution sélectionnée, avec suivi d'exécution</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="cmdOuvrirNouvelleInstruction()"><i class="ti ti-send"></i> Nouvelle instruction</button></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-arrow-up-right"></i>Instructions émises</div>
+          <div class="tw"><table>
+            <thead><tr><th>Objet</th><th>Destinataire</th><th>Priorité</th><th>Statut</th><th>Échéance</th><th></th></tr></thead>
+            <tbody id="cmdInstrEmisesTbl"></tbody>
+          </table></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-arrow-down-left"></i>Instructions reçues</div>
+          <div class="tw"><table>
+            <thead><tr><th>Objet</th><th>Émetteur</th><th>Priorité</th><th>Statut</th><th>Échéance</th><th></th></tr></thead>
+            <tbody id="cmdInstrRecuesTbl"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- Modale : nouvelle instruction -->
+      <div class="mb" id="mNouvelleInstruction"><div class="modal">
+        <div class="modal-hdr"><span class="modal-hdr-title">Nouvelle instruction</span><i class="ti ti-x" style="color:#fff;cursor:pointer" onclick="closeM('mNouvelleInstruction')"></i></div>
+        <div class="modal-body">
+          <div class="cmd-field"><label>Institution destinataire</label><select id="niDestinataire"></select></div>
+          <div class="cmd-field"><label>Objet</label><input id="niObjet" placeholder="Objet de l'instruction"></div>
+          <div class="cmd-field"><label>Description</label><textarea id="niDescription" rows="3" placeholder="Détail de l'instruction"></textarea></div>
+          <div class="g2">
+            <div class="cmd-field"><label>Priorité</label>
+              <select id="niPriorite">
+                <option value="NORMALE">Normale</option><option value="BASSE">Basse</option>
+                <option value="HAUTE">Haute</option><option value="URGENTE">Urgente</option>
+              </select>
+            </div>
+            <div class="cmd-field"><label>Échéance</label><input id="niEcheance" type="date"></div>
+          </div>
+          <div class="cmd-field"><label>Référence juridique (optionnel)</label><input id="niRefJuridique" placeholder="Ex : Circulaire n°..."></div>
+        </div>
+        <div class="modal-footer"><button class="btn sm" onclick="closeM('mNouvelleInstruction')">Annuler</button><button class="btn primary sm" onclick="cmdCreerInstruction()">Émettre</button></div>
+      </div></div>
+
+      <!-- Modale : détail d'une instruction (rapports + vérification) -->
+      <div class="mb" id="mInstrDetail"><div class="modal" style="max-width:680px">
+        <div class="modal-hdr"><span class="modal-hdr-title" id="idTitre">Instruction</span><i class="ti ti-x" style="color:#fff;cursor:pointer" onclick="closeM('mInstrDetail')"></i></div>
+        <div class="modal-body" id="idBody">Chargement…</div>
+      </div></div>
+
+      <!-- ═══ ARCHITECTURE TECHNIQUE & INTÉGRATION SERVEUR ═══ -->
+      <div class="page" id="pg-archi">
+        <div class="ph"><div><div class="ph-title">Architecture Technique & Intégration</div><div class="ph-sub">Connexion de cette interface au serveur applicatif PNGIE-RDC en cours de construction</div></div></div>
+        <div class="card a-in" style="border-left:4px solid var(--blue2)">
+          <div class="card-title"><i class="ti ti-plug-connected"></i>État de l'intégration serveur</div>
+          <div style="font-size:11.5px;color:var(--muted);line-height:1.6">Cette interface est conçue pour se brancher, module par module, sur le serveur applicatif national actuellement en construction (même logique fonctionnelle et organisationnelle). Chaque écran ci-dessous correspond à un service backend prévu ; le statut indique l'avancement de la liaison.</div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-stack-2"></i>Pile technologique retenue</div>
+          <div class="tw"><table><thead><tr><th>Couche</th><th>Technologie</th><th>Rôle</th><th>Statut</th></tr></thead><tbody id="stackTbl"></tbody></table></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-api"></i>Catalogue des API / services à connecter</div>
+          <div class="tw"><table><thead><tr><th>Service</th><th>Domaine</th><th>Protocole</th><th>Statut liaison</th></tr></thead><tbody id="apiTbl"></tbody></table></div>
+        </div>
+      </div>
+
+      <!-- ═══ EXPLOITATION, MAINTENANCE & ÉVOLUTION (TOME 12) ═══ -->
+      <div class="page" id="pg-exploitation">
+        <div class="ph"><div><div class="ph-title">Exploitation, Maintenance et Évolution</div><div class="ph-sub">Tome 12 du Schéma Directeur — fonctionnement continu de la plateforme nationale</div></div></div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-topology-star"></i>Chaîne d'exploitation</div>
+          <ul class="tree">
+            <li><div class="node">Utilisateurs</div>
+              <ul>
+                <li><span class="leaf"><i class="ti ti-headset"></i>Centre National de Support</span>
+                  <ul>
+                    <li><span class="leaf"><i class="ti ti-server-2"></i>Centre d'Exploitation (NOC)</span>
+                      <ul>
+                        <li><span class="leaf"><i class="ti ti-shield-lock"></i>Centre de Cybersécurité (SOC)</span></li>
+                        <li><span class="leaf"><i class="ti ti-code"></i>Équipe Applicative</span></li>
+                        <li><span class="leaf"><i class="ti ti-cloud"></i>Cloud Gouvernemental</span>
+                          <ul><li><span class="leaf"><i class="ti ti-building-bank"></i>Plateforme PNGIE-RDC</span></li></ul>
+                        </li>
+                      </ul>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-users-group"></i>Organisation de l'exploitation</div><div id="exploEquipes"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-headset"></i>Support aux utilisateurs — niveaux</div><div id="exploSupport"></div></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-tool"></i>Maintenance</div><div id="exploMaintenance"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-git-commit"></i>Gestion des versions</div><div id="exploVersions"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-activity"></i>Objectifs de disponibilité par service</div>
+          <div class="tw"><table><thead><tr><th>Service</th><th>Objectif</th></tr></thead><tbody id="exploDispo"></tbody></table></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-refresh"></i>Amélioration continue</div><div id="exploAmelio"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-clipboard-check"></i>Gouvernance & audit / conformité</div><div id="exploGouv"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-telescope"></i>Vision à long terme</div>
+          <div style="font-size:11.5px;color:var(--muted);line-height:1.7">Le PNGIE-RDC est conçu comme une plateforme évolutive capable d'intégrer de nouveaux ministères et institutions, de nouveaux services numériques, de nouvelles technologies, des capacités d'analyse avancée et de nouveaux assistants d'IA — sans remettre en cause son architecture.</div>
+        </div>
+      </div>
+
+      <!-- ═══ DOCUMENTATION DU PROGRAMME (DCD 30 VOLUMES) ═══ -->
+      <div class="page" id="pg-docprog">
+        <div class="ph"><div><div class="ph-title">Documentation du Programme</div><div class="ph-sub">Schéma Directeur (12 Tomes) & Dossier de Conception Détaillée (30 Volumes)</div></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-books"></i>Schéma Directeur — 12 Tomes</div><div id="tomesList"></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-file-stack"></i>Dossier de Conception Détaillée (DCD) — 30 Volumes</div><div id="volumesList"></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-package"></i>Livrables techniques complémentaires</div><div id="livrablesList"></div></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BARRE D'ETAT -->
+  <div class="statusbar" id="statusbar">
+    <div class="sb-stat" id="sbOnline"><i class="ti ti-plug-connected"></i><span>Vérification…</span></div>
+    <div class="sb-stat"><i class="ti ti-clock-hour-4"></i><span id="sbTimezone">UTC+1 (Kinshasa)</span></div>
+    <div class="sb-stat"><i class="ti ti-calendar"></i><span id="sbDate">—</span></div>
+    <div class="sb-stat"><i class="ti ti-clock"></i><span id="sbTime">—</span></div>
+    <div class="sb-stat" title="Nécessite une route serveur dédiée, non encore branchée"><i class="ti ti-server-2"></i><span>Serveur : non disponible</span></div>
+    <div class="sb-stat" title="Nécessite une route serveur dédiée, non encore branchée"><i class="ti ti-activity"></i><span>Latence : non disponible</span></div>
+    <div class="sb-stat sb-spacer"></div>
+    <div class="sb-stat"><i class="ti ti-shield-check"></i><span>Session chiffrée AES-256</span></div>
+    <div class="sb-stat"><i class="ti ti-versions"></i><span>PNGIE-RDC v1.0</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════ MODALS ═══════════════ -->
+<div class="mb" id="mAgent"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvelle fiche de poste — Agent</div><button class="modal-close" onclick="closeM('mAgent')">✕</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Nom complet</label><input placeholder="Ex: KABEYA Antoine"></div>
+    <div class="ff"><label>Matricule</label><input placeholder="Auto-généré"></div>
+    <div class="ff"><label>Fonction</label><input placeholder="Ex: Chef de Bureau"></div>
+    <div class="ff"><label>Institution / Ministère</label><select id="agInst"></select></div>
+    <div class="ff"><label>Direction</label><input placeholder="Ex: Direction des RH"></div>
+    <div class="ff"><label>Grade</label><input placeholder="Ex: Attaché de 1ère classe"></div>
+    <div class="ff"><label>Rôle RBAC</label><select><option>Agent</option><option>Chef de Bureau</option><option>Chef de Division</option><option>Directeur</option><option>Secrétaire Général</option><option>Vice-Ministre</option><option>Ministre</option><option>Auditeur</option><option>Administrateur système</option></select></div>
+    <div class="ff"><label>Biométrie</label><select><option>Empreinte digitale</option><option>Reconnaissance faciale</option><option>En attente</option></select></div>
+    <div class="ff full"><label>Photo</label><input type="file"></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mAgent')">Annuler</button><button class="btn primary sm" onclick="closeM('mAgent');toast('Fiche de poste créée','ok')">Enregistrer</button></div>
+</div></div>
+
+<div class="mb" id="mCompose"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouveau message</div><button class="modal-close" onclick="closeM('mCompose')">✕</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff full"><label>Destinataire</label><input placeholder="prenom.nom@pngie-rdc.gov.cd"></div>
+    <div class="ff full"><label>Objet</label><input placeholder="Objet du message"></div>
+    <div class="ff full"><label>Message</label><textarea rows="6" placeholder="Rédigez votre message…"></textarea></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mCompose')">Annuler</button><button class="btn primary sm" onclick="closeM('mCompose');toast('Message envoyé','ok')">Envoyer</button></div>
+</div></div>
+
+<div class="mb" id="mAgentView"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Fiche agent</div><button class="modal-close" onclick="closeM('mAgentView')">✕</button></div>
+  <div class="modal-body" id="agentViewBody"></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mAgentView')">Fermer</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+// DONNÉES DE RÉFÉRENCE
+// ════════════════════════════════════════════════
+const INSTITUTIONS=[
+ ["Présidence","ti-star"],["Primature","ti-building-bank"],["Assemblée Nationale","ti-gavel"],
+ ["Sénat","ti-gavel"],["Cour Constitutionnelle","ti-scale"],["Cour de Cassation","ti-scale"],
+ ["Conseil d'État","ti-scale"],["CENI","ti-ballot"],["Banque Centrale du Congo","ti-building-bank"],
+ ["DGI","ti-file-invoice"],["DGDA","ti-truck"],["DGRAD","ti-receipt"],["IGF","ti-search"],
+ ["ANR","ti-shield"],["Police Nationale","ti-shield-star"],["FARDC","ti-shield-star"],
+ ["ANAPI","ti-briefcase"],["ARSP","ti-certificate"],["BCECO","ti-building"],["ONEM","ti-user-search"],
+ ["CNSS","ti-heart-handshake"],["SONAS","ti-shield-check"],["FONER","ti-road"]
+];
+const MINISTERES=[
+ ["Présidence","ti-star"],["Primature","ti-building-bank"],["Défense","ti-shield-star"],["Intérieur","ti-lock"],
+ ["Justice","ti-gavel"],["Finances","ti-cash"],["Budget","ti-chart-pie"],["Plan","ti-target"],
+ ["Environnement","ti-leaf"],["Mines","ti-pick"],["Hydrocarbures","ti-droplet"],["Agriculture","ti-plant-2"],
+ ["Pêche","ti-fish"],["Santé","ti-heart-rate-monitor"],["Enseignement Primaire, Secondaire et Technique","ti-school"],
+ ["Enseignement Supérieur et Universitaire","ti-school"],["Infrastructures","ti-road"],["Transport","ti-bus"],
+ ["Numérique","ti-device-laptop"],["Affaires Sociales","ti-heart-handshake"],["Culture","ti-palette"],
+ ["Jeunesse","ti-users"],["Sports","ti-ball-football"],["Genre, Famille et Enfant","ti-baby-carriage"]
+];
+const PROVINCES=["Kinshasa","Kongo Central","Kwango","Kwilu","Mai-Ndombe","Kasaï","Kasaï Central","Kasaï Oriental","Lomami","Sankuru","Maniema","Sud-Kivu","Nord-Kivu","Ituri","Haut-Uele","Bas-Uele","Tshopo","Tshuapa","Équateur","Sud-Ubangi","Nord-Ubangi","Mongala","Tanganyika","Haut-Lomami","Lualaba","Haut-Katanga"];
+const ENTREPRISES_PUBLIQUES=[
+ ["SNEL — Société Nationale d'Électricité","ti-bolt"],["REGIDESO — Régie de Distribution d'Eau","ti-droplet"],
+ ["SCPT — Congo Télécom","ti-antenna"],["SNCC — Société Nationale des Chemins de fer","ti-train"],
+ ["RVA — Régie des Voies Aériennes","ti-plane"],["RVF — Régie des Voies Fluviales","ti-anchor"],
+ ["GÉCAMINES","ti-pick"],["MIBA — Minière de Bakwanga","ti-diamond"],["OKIMO","ti-pick"],["OCPT — Office Congolais des Postes","ti-mailbox"]
+];
+const ETABLISSEMENTS_PUBLICS=[
+ ["INSS — Institut National de Sécurité Sociale","ti-heart-handshake"],["INPP — Institut National de Préparation Professionnelle","ti-school"],
+ ["ONATRA","ti-anchor"],["OGEFREM","ti-ship"],["Office des Routes","ti-road"],
+ ["Office de Voirie et Drainage","ti-tools"],["ARPTC — Régulation Postes & Télécoms","ti-antenna"],
+ ["ARMP — Régulation des Marchés Publics","ti-contract"],["FPI — Fonds de Promotion de l'Industrie","ti-cash"],
+ ["Office National du Tourisme","ti-map"]
+];
+const ETD=[
+ ["Ville de Kinshasa","ti-building-skyscraper"],["Commune de la Gombe","ti-map-pin"],["Commune de Lemba","ti-map-pin"],
+ ["Ville de Lubumbashi","ti-building-skyscraper"],["Ville de Goma","ti-building-skyscraper"],
+ ["Secteur de la Lukaya","ti-map-pin"],["Chefferie de Bafuliru","ti-map-pin"],["Chefferie des Bashi","ti-map-pin"],
+ ["Ville de Kisangani","ti-building-skyscraper"],["Secteur de Luozi","ti-map-pin"]
+];
+const TERR_TYPES={Kinshasa:"ville",default:"province"};
+function genTerritoires(prov){
+  const nT=3+((prov.length*7)%3);
+  const comSuffixes=["Centre","Nord","Sud","Est","Ouest","Plateau","Rivière"];
+  const provCode='RDC-'+prov.slice(0,2).toUpperCase();
+  return Array.from({length:nT}).map((_,i)=>{
+    const tName=`Territoire de ${prov.split(' ')[0]}${i+1}`;
+    const tCode=`${provCode}-T${String(i+1).padStart(2,'0')}`;
+    const nC=2+((i*3)%3);
+    const communes=Array.from({length:nC}).map((_,j)=>({
+      name:`Secteur / Chefferie ${comSuffixes[(i+j)%comSuffixes.length]}`,
+      code:`${tCode}-S${String(j+1).padStart(2,'0')}`,
+      villages:2+((i+j)%3)
+    }));
+    return {name:tName,code:tCode,communes};
+  });
+}
+function renderTerritoiresTree(prov){
+  const data=genTerritoires(prov);
+  const provCode='RDC-'+prov.slice(0,2).toUpperCase();
+  const html=`<ul class="tree"><li><div class="node">Province — ${prov} <span style="opacity:.7;font-weight:400">(code ${provCode})</span></div><ul>`+
+   data.map(t=>`<li><span class="leaf"><i class="ti ti-map-2"></i>${t.name} <code style="font-size:9px;color:var(--muted)">${t.code}</code></span>
+     <ul>${t.communes.map(c=>`<li><span class="leaf"><i class="ti ti-map-pin"></i>${c.name} <code style="font-size:9px;color:var(--muted)">${c.code}</code></span>
+       <ul>${Array.from({length:c.villages}).map((_,k)=>`<li><span class="leaf"><i class="ti ti-home"></i>Village / Quartier ${k+1} <code style="font-size:9px;color:var(--muted)">${c.code}-V${k+1}</code></span></li>`).join('')}</ul>
+     </li>`).join('')}</ul>
+   </li>`).join('')+`</ul></li></ul>`;
+  return html;
+}
+const CHEFLIEUX={Kinshasa:"Kinshasa","Kongo Central":"Matadi",Kwango:"Kenge",Kwilu:"Bandundu","Mai-Ndombe":"Inongo",Kasaï:"Tshikapa","Kasaï Central":"Kananga","Kasaï Oriental":"Mbuji-Mayi",Lomami:"Kabinda",Sankuru:"Lusambo",Maniema:"Kindu","Sud-Kivu":"Bukavu","Nord-Kivu":"Goma",Ituri:"Bunia","Haut-Uele":"Isiro","Bas-Uele":"Buta",Tshopo:"Kisangani",Tshuapa:"Boende","Équateur":"Mbandaka","Sud-Ubangi":"Gemena","Nord-Ubangi":"Businga",Mongala:"Lisala",Tanganyika:"Kalemie","Haut-Lomami":"Kamina",Lualaba:"Kolwezi","Haut-Katanga":"Lubumbashi"};
+const ROLES=[
+ ["Président","Toutes les données nationales"],["Premier Ministre","Toutes les données gouvernementales"],
+ ["Ministre","Données de son ministère"],["Vice-Ministre","Données de son ministère (lecture étendue)"],
+ ["Secrétaire Général","Données de son institution"],["Directeur","Données de sa direction"],
+ ["Chef de Division","Données de sa division"],["Chef de Bureau","Données de son bureau"],
+ ["Agent","Ses dossiers et tâches assignées"],["Auditeur","Lecture transversale à des fins de contrôle"],
+ ["Administrateur système","Configuration technique et sécurité"]
+];
+const PERMS={
+ "Président":[1,1,1,1,1],"Premier Ministre":[1,1,1,1,0],"Ministre":[1,1,1,1,0],"Vice-Ministre":[1,1,1,0,0],
+ "Secrétaire Général":[1,1,1,1,0],"Directeur":[1,1,1,0,0],"Chef de Division":[1,1,1,0,0],
+ "Chef de Bureau":[1,1,0,0,0],"Agent":[1,0,0,0,0],"Auditeur":[1,0,0,0,0],"Administrateur système":[1,1,1,0,1]
+};
+const NOMS=["MUAMBA Jean-Baptiste","NSIMBA Marie-Claire","KABONGO Pierre","TSHIAMALA Cécile","LUFWA Augustin","KASONGO Emmanuel","MBOMBO Grâce","ILUNGA Patrick","KALALA Espérance","MUKENDI Joseph","BADIBANGA Sarah","NGOY Christian"];
+
+let CUR={inst:"Présidence de la République",role:"Président",code:"PR",restricted:false};
+
+// ════════════════════════════════════════════════
+// CONNEXION AU VRAI SERVEUR PNGIE-RDC (backend Express + PostgreSQL)
+// ════════════════════════════════════════════════
+const API_BASE='';
+let authToken=null;
+let REAL_GROUPS={};
+
+async function apiGet(path){
+  const resp=await fetch(`${API_BASE}${path}`,{headers:{Authorization:`Bearer ${authToken}`}});
+  const data=await resp.json().catch(()=>({}));
+  if(!resp.ok){ const e=new Error(data.error||'Erreur serveur'); e.status=resp.status; throw e; }
+  return data;
+}
+async function apiPost(path,body){
+  const resp=await fetch(`${API_BASE}${path}`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json',Authorization:`Bearer ${authToken}`},
+    body:JSON.stringify(body||{})
+  });
+  const data=await resp.json().catch(()=>({}));
+  if(!resp.ok){ const e=new Error(data.error||'Erreur serveur'); e.status=resp.status; throw e; }
+  return data;
+}
+// Charge la vraie liste des institutions, regroupees par type_institution cote serveur.
+async function loadRealInstitutions(){
+  try{
+    const resp=await fetch(`${API_BASE}/api/public/institutions`);
+    if(!resp.ok) throw new Error('http '+resp.status);
+    REAL_GROUPS=await resp.json();
+  }catch(e){
+    REAL_GROUPS={};
+    toast('Serveur injoignable — impossible de charger les institutions réelles','er');
+  }
+}
+function groupFor(...types){
+  const out=[];
+  Object.keys(REAL_GROUPS).forEach(t=>{ if(types.includes(t)) (REAL_GROUPS[t]||[]).forEach(i=>out.push(i)); });
+  return out;
+}
+function groupForOther(excludedTypes){
+  const out=[];
+  Object.keys(REAL_GROUPS).forEach(t=>{ if(!excludedTypes.includes(t)) (REAL_GROUPS[t]||[]).forEach(i=>out.push(Object.assign({},i,{_type:t}))); });
+  return out;
+}
+
+// ════════════════════════════════════════════════
+// LOGIN
+// ════════════════════════════════════════════════
+// Le menu deroulant "Choix de l'institution" est une simple aide de saisie
+// (pre-remplit l'identifiant a titre d'exemple) ; le role et les droits reels
+// viennent de la reponse du serveur lors du login, jamais devines cote client.
+function fillLoginSelect(){
+  const all=["Présidence de la République",...INSTITUTIONS.map(i=>i[0]),...MINISTERES.map(i=>i[0]),...PROVINCES.map(p=>"Province — "+p)];
+  document.getElementById('lInst').innerHTML=[...new Set(all)].map(n=>`<option>${n}</option>`).join('');
+  onInstChange(document.getElementById('lInst').value);
+}
+function onInstChange(inst){
+  document.getElementById('lu').value=inst.toLowerCase().split(' ')[0].replace(/[^a-zéèêàôûîç]/gi,'')+'@pngie-rdc.gov.cd';
+}
+function sendOtp(){
+  document.getElementById('otpBlock').style.display='block';
+  toast('Code OTP envoyé par SMS (démonstration : 000000)','ok');
+}
+function scanBioLogin(){
+  const b=document.getElementById('bioBox'),t=document.getElementById('bioTxt');
+  b.style.borderColor='var(--yellow)';t.textContent='Analyse biométrique en cours…';
+  setTimeout(()=>{t.textContent='✓ Identité vérifiée';b.style.borderColor='var(--green)';},1400);
+}
+async function login(){
+  const email=document.getElementById('lu').value.trim();
+  const password=document.getElementById('lp').value;
+  const btn=document.querySelector('.login-btn');
+  const orig=btn.textContent; btn.textContent='Connexion…'; btn.disabled=true;
+
+  let resp,data;
+  try{
+    resp=await fetch(`${API_BASE}/api/auth/login`,{
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email,password})
+    });
+    data=await resp.json();
+  }catch(e){
+    btn.textContent=orig; btn.disabled=false;
+    toast('Serveur injoignable — vérifiez que le backend tourne (node src\\server.js)','er');
+    return;
+  }
+  btn.textContent=orig; btn.disabled=false;
+  if(!resp.ok){ toast(data.error||'Connexion refusée','er'); return; }
+
+  authToken=data.token;
+  const person=data.person||{}; const roles=data.roles||[];
+  CUR.role = roles[0] ? (roles[0].nom||roles[0].code) : 'Agent';
+  CUR.code = roles[0] ? (roles[0].code||'AG') : 'AG';
+  CUR.inst = person.email||email;
+  CUR.restricted=false;
+  CUR.personId = person.personne_id || null;
+
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='grid';
+  document.getElementById('tbAv').textContent=CUR.code;
+  document.getElementById('tbNm').textContent=`${person.prenom||''} ${person.nom||''}`.trim()||CUR.role;
+  document.getElementById('tbInstLbl').textContent=email;
+
+  await loadRealInstitutions();
+  buildSidebar();
+  await buildAll();
+  toast('Connexion sécurisée établie — bienvenue '+CUR.role,'ok');
+}
+function logout(){
+  authToken=null; REAL_GROUPS={};
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('lp').value='';
+}
+
+// journal de connexion (login screen)
+function renderLoginLog(){
+  const lines=[
+   "2027-01-15 08:41 — Présidence — connexion réussie",
+   "2027-01-15 08:12 — Min. Finances — connexion réussie",
+   "2027-01-15 07:58 — DGI Kinshasa — connexion réussie",
+   "2027-01-14 22:03 — Gouvernorat Nord-Kivu — connexion réussie",
+   "2027-01-14 19:47 — IGF Audit — connexion réussie",
+   "2027-01-14 17:30 — Tentative échouée — mot de passe invalide",
+  ];
+  document.getElementById('loginLog').innerHTML=lines.map(l=>`<div class="j-line">${l}</div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+function nav(el,id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  const pg=document.getElementById('pg-'+id); if(pg)pg.classList.add('act');
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('act'));
+  if(el)el.classList.add('act');
+  document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('act'));
+}
+
+function buildSidebar(){
+  const sb=document.getElementById('sidebar');
+  let h='';
+  h+=`<div class="sb-section"><div class="sb-label">Cockpit National</div>
+    <div class="sb-item act" onclick="nav(this,'dashboard')"><i class="ti ti-layout-dashboard"></i>${CUR.restricted?'Mon tableau de bord':'Vue présidentielle'}</div>`;
+  if(!CUR.restricted) h+=`<div class="sb-item" onclick="nav(this,'dashboard');runIA()"><i class="ti ti-bell"></i>Alertes IA <span class="sb-badge">7</span></div>`;
+  h+=`</div><div class="sb-divider"></div>`;
+
+  if(!CUR.restricted){
+    h+=`<div class="sb-section"><div class="sb-label">Structure de l'État</div>
+      <div class="sb-item" onclick="nav(this,'institutions')"><i class="ti ti-building-bank"></i>Institutions</div>
+      <div class="sb-item" onclick="nav(this,'ministeres')"><i class="ti ti-building-castle"></i>Ministères</div>
+      <div class="sb-item" onclick="nav(this,'provinces')"><i class="ti ti-map-2"></i>26 Provinces</div>
+      <div class="sb-item" onclick="nav(this,'entreprises')"><i class="ti ti-building-factory-2"></i>Entreprises Publiques</div>
+      <div class="sb-item" onclick="nav(this,'etablissements')"><i class="ti ti-building-community"></i>Établissements Publics</div>
+      <div class="sb-item" onclick="nav(this,'etd')"><i class="ti ti-map-pin-cog"></i>ETD</div>
+    </div><div class="sb-divider"></div>`;
+  }else{
+    h+=`<div class="sb-section"><div class="sb-label">Mon institution</div>
+      <div class="sb-item" onclick="nav(this,'portail')"><i class="ti ti-building"></i>Mon portail</div>
+    </div><div class="sb-divider"></div>`;
+  }
+
+  h+=`<div class="sb-section"><div class="sb-label">Ressources Humaines</div>
+    <div class="sb-item" onclick="nav(this,'rh')"><i class="ti ti-users"></i>${CUR.restricted?'Mon dossier':'Gestion RH complète'}</div>
+    <div class="sb-item" onclick="nav(this,'espace')"><i class="ti ti-layout-grid"></i>Espace personnel</div>
+    <div class="sb-item" onclick="nav(this,'messagerie')"><i class="ti ti-mail"></i>Messagerie <span class="sb-badge">4</span></div>
+  </div><div class="sb-divider"></div>`;
+
+  h+=`<div class="sb-section"><div class="sb-label">Sécurité & Gouvernance</div>
+    <div class="sb-item" onclick="nav(this,'droits')"><i class="ti ti-shield-lock"></i>Gestion des droits</div>
+  </div><div class="sb-divider"></div>`;
+
+  h+=`<div class="sb-section"><div class="sb-label">Gouvernance & Commandement</div>
+    <div class="sb-item" onclick="nav(this,'commandement')"><i class="ti ti-sitemap"></i>Chaîne de commandement</div>
+  </div><div class="sb-divider"></div>`;
+
+  if(!CUR.restricted){
+    h+=`<div class="sb-section"><div class="sb-label">Plateforme & Programme</div>
+      <div class="sb-item" onclick="nav(this,'archi')"><i class="ti ti-plug-connected"></i>Architecture & Intégration</div>
+      <div class="sb-item" onclick="nav(this,'exploitation')"><i class="ti ti-server-2"></i>Exploitation & Support</div>
+      <div class="sb-item" onclick="nav(this,'docprog')"><i class="ti ti-books"></i>Documentation du Programme</div>
+    </div>`;
+  }
+
+  h+=`<div class="sb-bottom"><div class="sb-info">PNGIE-RDC v1.0<br>Session chiffrée AES-256<br>© République Démocratique du Congo<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:6px 0"><span style="color:rgba(255,255,255,0.45);font-weight:700;letter-spacing:.05em">PROMOTEUR DU PROGRAMME</span><br><span style="color:rgba(255,255,255,0.55);font-weight:600">Mr MASSA LEMBA Guylain</span><br>Gestionnaire Comptable et Fiscal • IR en Informatique<br>Initiateur, Concepteur, AMOA Stratégique et Directeur du Programme<br>+33 6 17 34 97 81<br>guylainmassalemba@gmail.com</div></div>`;
+  sb.innerHTML=h;
+}
+
+// ════════════════════════════════════════════════
+// TABLEAU DE BORD NATIONAL
+// ════════════════════════════════════════════════
+async function renderDashboard(){
+  document.getElementById('dashTitle').textContent=CUR.restricted? 'Tableau de bord — '+CUR.inst : 'Tableau de bord national — Présidence de la République';
+
+  const realCount=(...types)=>{
+    if(!REAL_GROUPS||!Object.keys(REAL_GROUPS).length) return null;
+    return types.reduce((n,t)=>n+((REAL_GROUPS[t]||[]).length),0);
+  };
+  const setKpi=(id,val)=>{ document.getElementById(id).textContent = (val===null||val===undefined) ? '—' : val; };
+  setKpi('kProv', realCount('PROVINCE'));
+  setKpi('kMin', realCount('MINISTERE'));
+  setKpi('kEntr', realCount('ENTREPRISE_PUBLIQUE'));
+  setKpi('kEtd', realCount('ETD'));
+  setKpi('kEtab', Object.keys(REAL_GROUPS||{}).filter(t=>t.includes('ETABLISS')).reduce((n,t)=>n+(REAL_GROUPS[t]||[]).length,0) || null);
+  setKpi('kInst', REAL_GROUPS && Object.keys(REAL_GROUPS).length
+    ? groupForOther(['MINISTERE','PROVINCE','ENTREPRISE_PUBLIQUE','ETD']).length
+    : null);
+
+  // État du serveur — donnees reelles via /api/health (route publique, pas d'auth requise)
+  const srvEl=document.getElementById('dashServerState');
+  try{
+    const resp=await fetch(`${API_BASE}/api/health`);
+    const h=await resp.json();
+    srvEl.innerHTML = resp.ok
+      ? `<div class="sr"><span class="sr-n">Statut</span><span class="sr-v tup">✓ ${h.status||'ok'}</span></div>
+         <div class="sr"><span class="sr-n">Service</span><span class="sr-v">${h.service||'—'}</span></div>
+         <div class="sr"><span class="sr-n">Moteur de base de données</span><span class="sr-v">${h.db_driver||'—'}</span></div>`
+      : `<div style="color:var(--red)">Serveur injoignable (statut ${resp.status})</div>`;
+  }catch(e){
+    srvEl.innerHTML=`<div style="color:var(--red)">Serveur injoignable — vérifiez que node src\\server.js tourne.</div>`;
+  }
+
+  // État des modules — donnees reelles via /api/db-summary (necessite un token valide)
+  const msgEl=document.getElementById('dashModulesMsg');
+  const tblEl=document.getElementById('dashModulesTbl');
+  try{
+    const summary=await apiGet('/api/db-summary');
+    msgEl.textContent = `${summary.total_tables} tables suivies — moteur : ${summary.driver}`;
+    const rows=Object.entries(summary.counts).filter(([,v])=>v!==null);
+    tblEl.innerHTML = rows.length
+      ? rows.sort((a,b)=>a[0].localeCompare(b[0])).map(([nom,n])=>
+          `<tr><td><code>${nom}</code></td><td>${badge(n>0?'Actif':'Vide (table créée)', n>0?'bg':'ba')}</td><td>${n}</td></tr>`
+        ).join('')
+      : `<tr><td colspan="3" style="text-align:center;color:var(--muted)">Aucun module actif detecté.</td></tr>`;
+  }catch(e){
+    msgEl.textContent = 'Erreur de chargement (' + (e.status||'') + ' ' + (e.message||'') + ')';
+    tblEl.innerHTML='';
+  }
+
+  const alerts=[
+   ["a-cr","🔴","HERMÈS — Doublon de paie bloqué","Dossier AG-047821 — $2 840 — DGI Kinshasa","il y a 4 min"],
+   ["a-wn","🟠","IRIS — Déclarations TVA suspectes","847 déclarations signalées ce mois","il y a 22 min"],
+   ["a-cr","🔴","SIGMA — Surfacturation marché public","AO-0443 — écart de 340% confirmé","il y a 1 h"],
+   ["a-wn","🟠","GAÏA — Export minier non déclaré","2 exports cobalt Kolwezi — $4.8M","il y a 2 h"],
+   ["a-in","🔵","APOLLO — Identités suspectes","247 NIN suspects — Province Équateur","il y a 3 h"],
+  ];
+  document.getElementById('dashAlerts').innerHTML=alerts.map(alertBlock).join('');
+
+  const projets=[
+   ["Corridor routier Kinshasa–Matadi","Infrastructures","68%","bg"],
+   ["Programme de couverture santé universelle","Santé","41%","ba"],
+   ["Numérisation de l'état civil national","Numérique","57%","bb"],
+   ["Électrification rurale Grand Inga","Énergie","23%","br"],
+   ["Modernisation du cadastre minier","Mines","74%","bg"],
+  ];
+  document.getElementById('dashProjets').innerHTML=projets.map(([n,s,p,c])=>`
+   <div class="prog"><div class="prog-hdr"><span>${n} <span style="color:var(--muted)">— ${s}</span></span><span style="font-weight:700">${p}</span></div>
+   <div class="prog-tr"><div class="prog-fl" style="width:${p};background:${c==='bg'?'var(--green)':c==='ba'?'var(--yellow3)':c==='bb'?'var(--blue)':'var(--red)'}"></div></div></div>`).join('');
+
+  // Aucune donnee reelle de population/budget/execution disponible par province :
+  // affiche "Non disponible" plutot que d'inventer des chiffres. Liste des provinces
+  // elle-meme reelle (REAL_GROUPS.PROVINCE) si le serveur a repondu.
+  const provReelles = REAL_GROUPS && REAL_GROUPS.PROVINCE ? REAL_GROUPS.PROVINCE : [];
+  document.getElementById('dashProvTbl').innerHTML = provReelles.length
+    ? provReelles.slice(0,10).map(p=>{
+        const nom=p.nom||'';
+        return `<tr><td><strong>${nom}</strong></td><td>${CHEFLIEUX[nom]||'—'}</td><td colspan="3" style="color:var(--muted)">Non disponible</td></tr>`;
+      }).join('')+`<tr><td colspan="5" style="text-align:center"><button class="btn sm" onclick="nav(null,'provinces')">Voir toutes les provinces →</button></td></tr>`
+    : `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px">Aucune province réelle chargée — serveur injoignable ou non connecté.</td></tr>`;
+}
+function alertBlock([cls,ic,t,d,tm]){
+  return `<div class="alert ${cls}"><div class="alert-icon">${ic}</div><div class="alert-body"><div class="alert-title">${t}</div><div class="alert-desc">${d}</div></div><div class="alert-time">${tm}</div></div>`;
+}
+function badge(txt,cls){return `<span class="badge ${cls}">${txt}</span>`;}
+
+function runIA(){
+  document.getElementById('iaResCard').style.display='block';
+  document.getElementById('iaRes').innerHTML='<div style="font-size:11.5px;color:var(--muted)">Analyse en cours — 12 agents IA en parallèle…</div>';
+  setTimeout(()=>{
+    document.getElementById('iaRes').innerHTML=`
+    <div class="sr"><span class="sr-n">HERMÈS — Paie</span><span class="sr-v tdn">1 doublon bloqué ($2 840)</span></div>
+    <div class="sr"><span class="sr-n">IRIS — Fiscalité</span><span class="sr-v twn">847 déclarations suspectes</span></div>
+    <div class="sr"><span class="sr-n">SIGMA — Marchés publics</span><span class="sr-v tdn">Surfacturation 340% confirmée (AO-0443)</span></div>
+    <div class="sr"><span class="sr-n">GAÏA — Ressources naturelles</span><span class="sr-v twn">$4.8M d'exports non déclarés</span></div>
+    <div class="sr"><span class="sr-n">APOLLO — Identité</span><span class="sr-v twn">247 identités suspectes — Équateur</span></div>
+    <div class="sr"><span class="sr-n">Total fraudes bloquées ce cycle</span><span class="sr-v tup">$7.2M</span></div>`;
+  },1600);
+}
+
+// ════════════════════════════════════════════════
+// INSTITUTIONS / MINISTÈRES / PROVINCES — grilles
+// ════════════════════════════════════════════════
+function entCard(name,icon,tag,type,id){
+  const idAttr=id?id:'';
+  return `<div class="ent-card" onclick="openEntity('${idAttr}','${type}','${name.replace(/'/g,"\\'")}')">
+    <div class="ent-ico"><i class="ti ${icon}"></i></div>
+    <div class="ent-name">${name}</div>
+    <div class="ent-tag">${tag}</div>
+  </div>`;
+}
+function realCard(item,icon,tag,type){
+  return entCard(item.nom,icon,tag,type,item.institution_id);
+}
+function emptyMsg(){
+  return `<div style="color:var(--muted);font-size:12px;padding:10px">Aucune donnée réelle pour cette catégorie, ou serveur injoignable.</div>`;
+}
+function renderInstitutions(){
+  const items=groupForOther(['MINISTERE','PROVINCE','ENTREPRISE_PUBLIQUE','ETD']);
+  document.getElementById('instGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-building-bank','Institution','institution')).join('')
+    : emptyMsg();
+}
+function renderMinisteres(){
+  const items=groupFor('MINISTERE');
+  document.getElementById('minGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-briefcase','Ministère','ministere')).join('')
+    : emptyMsg();
+}
+function renderProvinces(){
+  const items=groupFor('PROVINCE');
+  document.getElementById('provGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-map-pin','Chef-lieu : '+(CHEFLIEUX[i.nom]||''),'province')).join('')
+    : emptyMsg();
+}
+function renderEntreprises(){
+  const items=groupFor('ENTREPRISE_PUBLIQUE');
+  document.getElementById('entrGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-building-factory-2','Entreprise publique','entreprise')).join('')
+    : emptyMsg();
+}
+function renderEtablissements(){
+  const items=Object.keys(REAL_GROUPS).filter(t=>t.includes('ETABLISS')).flatMap(t=>REAL_GROUPS[t]||[]);
+  document.getElementById('etabGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-building-arch','Établissement public','etablissement')).join('')
+    : emptyMsg();
+}
+function renderETD(){
+  const items=groupFor('ETD');
+  document.getElementById('etdGrid').innerHTML = items.length
+    ? items.map(i=>realCard(i,'ti-map-2','ETD','etd')).join('')
+    : emptyMsg();
+}
+
+// ════════════════════════════════════════════════
+// PORTAIL DYNAMIQUE
+// ════════════════════════════════════════════════
+let curEntity=null,curEntityType=null;
+const TYPE_LABELS={province:'Gouvernorat provincial',institution:'Portail institutionnel',ministere:'Portail ministériel',entreprise:'Portail — Entreprise publique',etablissement:'Portail — Établissement public',etd:'Portail — Entité Territoriale Décentralisée'};
+let curEntityId=null;
+function openEntity(id,type,name){
+  curEntity=name;curEntityType=type;curEntityId=id||null;
+  document.getElementById('pInstTitle').textContent=name;
+  document.getElementById('pInstSub').textContent = type==='province' ? 'Gouvernorat provincial — Chef-lieu : '+ (CHEFLIEUX[name]||'') : (TYPE_LABELS[type]||'Portail institutionnel');
+  // Aucun referentiel RH/Finances/Projets n'est encore branche par institution :
+  // "Non disponible" plutot qu'invente. A cabler des que ces referentiels existeront.
+  document.getElementById('pInstKpi').innerHTML=`
+    <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Effectif</div><div class="kpi-val" style="font-size:15px;color:var(--muted)">Non disponible</div></div>
+    <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Budget alloué</div><div class="kpi-val" style="font-size:15px;color:var(--muted)">Non disponible</div></div>
+    <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Taux d'exécution</div><div class="kpi-val" style="font-size:15px;color:var(--muted)">Non disponible</div></div>
+    <div class="kpi" style="--kc:var(--muted)"><div class="kpi-lbl">Projets en cours</div><div class="kpi-val" style="font-size:15px;color:var(--muted)">Non disponible</div></div>`;
+  renderOrgChart(id,name);
+  renderArbo(name);
+  renderProjPortail(name);
+  renderBudPortail(name);
+  renderPersPortail(name);
+  renderDocPortail(name);
+  const tabTerr=document.getElementById('tabTerr');
+  if(type==='province'){
+    tabTerr.style.display='block';
+    document.getElementById('pTerrChart').innerHTML=renderTerritoiresTree(name);
+  }else{
+    tabTerr.style.display='none';
+  }
+  pTab(document.querySelector('#pg-portail .tab'),'org');
+  nav(null,'portail');
+}
+function backToList(){
+  const map={province:'provinces',ministere:'ministeres',institution:'institutions',entreprise:'entreprises',etablissement:'etablissements',etd:'etd'};
+  nav(null, map[curEntityType]||'institutions');
+}
+function pTab(el,id){
+  document.querySelectorAll('#pg-portail .tab').forEach(t=>t.classList.remove('act'));
+  document.querySelectorAll('#pg-portail .tabpage').forEach(t=>t.classList.remove('act'));
+  el.classList.add('act');
+  document.getElementById('pt-'+id).classList.add('act');
+}
+function renderOrgNode(u){
+  const postesHtml=(u.postes||[]).map(p=>
+    `<li><span class="leaf"><i class="ti ti-user"></i>${p.intitule||p.nom||''} <code style="font-size:9px;color:var(--muted)">${p.code||''}</code></span></li>`
+  ).join('');
+  const enfantsHtml=(u.enfants||[]).map(e=>renderOrgNode(e)).join('');
+  return `<li><span class="leaf"><i class="ti ti-building"></i>${u.nom} <code style="font-size:9px;color:var(--muted)">${u.code||''}</code></span>
+    ${(postesHtml||enfantsHtml) ? `<ul>${postesHtml}${enfantsHtml}</ul>` : ''}
+  </li>`;
+}
+async function renderOrgChart(id,name){
+  const el=document.getElementById('pOrgChart');
+  if(!id){
+    el.innerHTML=`<div style="color:var(--muted);font-size:12px;padding:10px">Aucun identifiant réel pour cette entité — organigramme indisponible.</div>`;
+    return;
+  }
+  el.innerHTML=`<div style="color:var(--muted);font-size:12px;padding:10px">Chargement de l'organigramme…</div>`;
+  try{
+    const fc=await apiGet(`/api/institutions/${id}/fiche-complete`);
+    const nodes=fc.organigramme||[];
+    el.innerHTML = nodes.length
+      ? `<ul class="tree"><li><div class="node">${name}</div><ul>${nodes.map(u=>renderOrgNode(u)).join('')}</ul></li></ul>`
+      : `<div style="color:var(--muted);font-size:12px;padding:10px">Aucun organigramme enregistré pour cette institution.</div>`;
+  }catch(e){
+    el.innerHTML=`<div style="color:#CE1126;font-size:12px;padding:10px">Erreur de chargement de l'organigramme réel (${e.status||''} ${e.message||''}).</div>`;
+  }
+}
+function renderArbo(name){
+  // Tableau detaille divisions/bureaux/effectifs/responsable : pas encore de source
+  // reelle distincte de l'organigramme (onglet "Organigramme"). Message honnete
+  // plutot que des chiffres generes aleatoirement.
+  document.getElementById('pArbTbl').innerHTML=`<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px">Vue détaillée non disponible — consultez l'onglet Organigramme pour la structure réelle.</td></tr>`;
+}
+function renderProjPortail(name){
+  // Demonstration : aucun referentiel "projets" par institution n'existe encore cote serveur.
+  const projs=[["Modernisation des infrastructures internes","62%","bg"],["Digitalisation des dossiers","38%","ba"],["Plan de formation du personnel","81%","bg"],["Rénovation des locaux régionaux","19%","br"]];
+  document.getElementById('pProjList').innerHTML=projs.map(([n,p,c])=>`
+   <div class="prog"><div class="prog-hdr"><span>${n}</span><span style="font-weight:700">${p}</span></div>
+   <div class="prog-tr"><div class="prog-fl" style="width:${p};background:${c==='bg'?'var(--green)':c==='ba'?'var(--yellow3)':'var(--red)'}"></div></div></div>`).join('');
+}
+function renderBudPortail(name){
+  // Aucun referentiel Finances n'est encore branche par institution : honnete plutot
+  // qu'invente. A remplacer par apiGet(`/api/institutions/${id}/budget`) des que ce
+  // referentiel existera cote serveur.
+  document.getElementById('pBudList').innerHTML=`
+   <div style="color:var(--muted);font-size:12px;padding:6px 0">Aucune donnée budgétaire réelle disponible pour cette institution — référentiel Finances non encore branché par institution.</div>`;
+}
+function renderPersPortail(name){
+  // Demonstration : aucun referentiel RH par institution n'est encore branche cote serveur.
+  const fn=["Directeur","Chef de Division","Chef de Bureau","Agent","Conseiller"];
+  document.getElementById('pPersTbl').innerHTML=Array.from({length:6}).map(()=>{
+    const n=NOMS[Math.floor(Math.random()*NOMS.length)],f=fn[Math.floor(Math.random()*fn.length)];
+    return `<tr><td><strong>${n}</strong></td><td>${f}</td><td>Direction ${["RH","Finances","Informatique","Juridique"][Math.floor(Math.random()*4)]}</td><td>Grade ${Math.floor(Math.random()*4+1)}</td><td>${badge('Actif','bg')}</td></tr>`;
+  }).join('');
+}
+function renderDocPortail(name){
+  const docs=[["Rapport annuel d'activités 2026","PDF","2.4 Mo"],["Organigramme officiel","PDF","480 Ko"],["Budget prévisionnel 2027","XLSX","1.1 Mo"],["Procès-verbal — Conseil de direction","DOCX","210 Ko"]];
+  document.getElementById('pDocList').innerHTML=docs.map(([n,t,s])=>`
+   <div class="sr"><span class="sr-n"><i class="ti ti-file-text" style="color:var(--blue2);margin-right:6px"></i>${n}</span><span class="sr-v" style="font-weight:400;color:var(--muted)">${t} · ${s}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// RESSOURCES HUMAINES
+// ════════════════════════════════════════════════
+async function creerMouvementRh(){
+  const agent_concerne=document.getElementById('mrAgent').value.trim();
+  const type_mouvement=document.getElementById('mrType').value;
+  const poste_vise=document.getElementById('mrPoste').value.trim();
+  if(!agent_concerne || !type_mouvement){
+    toast('Agent concerné et type de mouvement sont requis','er');
+    return;
+  }
+  try{
+    const resp=await fetch(`${API_BASE}/api/dossier_agent_rhs`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json',Authorization:`Bearer ${authToken}`},
+      body:JSON.stringify({agent_concerne,type_mouvement,poste_vise})
+    });
+    const data=await resp.json();
+    if(!resp.ok){ toast(data.error||'Erreur lors de la création','er'); return; }
+    toast('Mouvement RH créé','ok');
+    closeM('mMouvementRh');
+    document.getElementById('mrAgent').value='';
+    document.getElementById('mrPoste').value='';
+    renderRH();
+  }catch(e){
+    toast('Serveur injoignable','er');
+  }
+}
+
+async function renderRH(){
+  // Section reelle : mouvements de personnel via /api/dossier_agent_rhs
+  const msgEl=document.getElementById('rhMouvementsMsg');
+  const tblEl=document.getElementById('rhMouvementsTbl');
+  msgEl.textContent='Chargement...';
+  try{
+    const rows=await apiGet('/api/dossier_agent_rhs');
+    msgEl.textContent='';
+    tblEl.innerHTML = rows.length
+      ? rows.map(r=>`<tr>
+          <td><strong>${r.agent_concerne||''}</strong></td>
+          <td>${badge(r.type_mouvement||'','bn')}</td>
+          <td>${r.poste_vise||'—'}</td>
+          <td>${badge(r.statut||'','ba')}</td>
+          <td>${r.created_at ? new Date(r.created_at).toLocaleDateString('fr-FR') : '—'}</td>
+        </tr>`).join('')
+      : `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px">Aucun mouvement enregistré pour le moment.</td></tr>`;
+  }catch(e){
+    msgEl.textContent = 'Erreur de chargement (' + (e.status||'') + ' ' + (e.message||'') + ')';
+    tblEl.innerHTML='';
+  }
+
+  // Section demonstration : registre agents (aucun referentiel reel a ce stade)
+  const all=[...INSTITUTIONS.map(i=>i[0]),...MINISTERES.map(i=>i[0])];
+  const list=CUR.restricted? [ [CUR.inst, CUR.role, "Direction Générale", "Grade "+Math.floor(Math.random()*4+1)] ] :
+   Array.from({length:12}).map((_,i)=>[all[Math.floor(Math.random()*all.length)], ["Agent","Chef de Bureau","Chef de Division","Directeur","Conseiller"][Math.floor(Math.random()*5)], "Direction "+["RH","Finances","Informatique","Juridique"][Math.floor(Math.random()*4)], "Grade "+Math.floor(Math.random()*4+1)]);
+  document.getElementById('rhTbl').innerHTML=list.map(([inst,fn,dir,gr],i)=>{
+    const nom=CUR.restricted? CUR.role+' — '+CUR.inst : NOMS[i%NOMS.length];
+    const mat='MAT-'+(100000+i*137);
+    const bio=Math.random()>0.15;
+    return `<tr>
+      <td><code>${mat}</code></td><td><strong>${nom}</strong></td><td>${fn}</td><td>${inst}</td><td>${gr}</td>
+      <td>${badge(bio?'Complétée':'En attente',bio?'bg':'ba')}</td>
+      <td>${badge(bio?'Signée':'À signer',bio?'bg':'ba')}</td>
+      <td>${badge(fn,'bn')}</td>
+      <td><button class="btn sm" onclick="viewAgent('${nom.replace(/'/g,"\\'")}','${fn}','${inst.replace(/'/g,"\\'")}','${dir}','${gr}','${mat}')">Voir</button></td>
+    </tr>`;
+  }).join('');
+}
+function viewAgent(nom,fn,inst,dir,gr,mat){
+  document.getElementById('agentViewBody').innerHTML=`
+   <div style="display:flex;gap:14px;align-items:center;margin-bottom:16px">
+    <div class="avatar-lg">${nom.split(' ').map(s=>s[0]).slice(0,2).join('')}</div>
+    <div><div style="font-weight:700;font-size:14px;color:var(--blue)">${nom}</div><div style="font-size:11px;color:var(--muted)">${fn} — ${inst}</div></div>
+   </div>
+   <div class="sr"><span class="sr-n">Matricule</span><span class="sr-v">${mat}</span></div>
+   <div class="sr"><span class="sr-n">Direction</span><span class="sr-v">${dir}</span></div>
+   <div class="sr"><span class="sr-n">Grade</span><span class="sr-v">${gr}</span></div>
+   <div class="sr"><span class="sr-n">Identifiant système</span><span class="sr-v">${nom.split(' ')[0].toLowerCase()}.${(nom.split(' ')[1]||'agent').toLowerCase()}@pngie-rdc.gov.cd</span></div>
+   <div class="sr"><span class="sr-n">Mot de passe</span><span class="sr-v">•••••••• ${badge('Chiffré AES-256','bn')}</span></div>
+   <div class="sr"><span class="sr-n">Biométrie</span><span class="sr-v">${badge('Empreinte + Facial','bg')}</span></div>
+   <div class="sr"><span class="sr-n">Signature électronique</span><span class="sr-v">${badge('Certifiée','bg')}</span></div>
+   <div class="sr"><span class="sr-n">Carte professionnelle</span><span class="sr-v">${badge('Émise','bg')}</span></div>
+   <div class="sr"><span class="sr-n">Historique de carrière</span><span class="sr-v" style="font-weight:400;color:var(--muted);text-align:right">Entré en fonction 2019 · 2 affectations · 1 promotion</span></div>
+   <div class="sr"><span class="sr-n">Dernière évaluation</span><span class="sr-v">17.4/20 — 2026</span></div>
+   <div class="sr"><span class="sr-n">Droits d'accès (rôle RBAC)</span><span class="sr-v">${fn}</span></div>`;
+  openM('mAgentView');
+}
+
+// ════════════════════════════════════════════════
+// ESPACE PERSONNEL
+// ════════════════════════════════════════════════
+function renderEspace(){
+  document.getElementById('espaceSub').textContent='Connecté en tant que '+CUR.role+' — '+CUR.inst;
+  document.getElementById('agendaList').innerHTML=[
+   ["08:30","Réunion de coordination hebdomadaire"],["10:00","Revue budgétaire — Direction des Finances"],
+   ["13:30","Audience — Partenaires techniques et financiers"],["16:00","Point de sécurité — IGF / ANR"],
+  ].map(([h,t])=>`<div class="sr"><span class="sr-n"><strong>${h}</strong> — ${t}</span></div>`).join('');
+
+  document.getElementById('taskList').innerHTML=[
+   ["Valider le rapport d'exécution budgétaire Q1",false],["Signer les fiches de poste en attente",false],
+   ["Répondre à la note de l'IGF",true],["Préparer le point presse hebdomadaire",false],
+  ].map(([t,d],i)=>`<div class="task ${d?'done':''}"><input type="checkbox" ${d?'checked':''} onclick="this.parentElement.classList.toggle('done')">${t}</div>`).join('');
+
+  document.getElementById('notifList').innerHTML=[
+   ["🔔","Nouvelle validation requise — Marché AO-0443"],["📩","3 nouveaux messages en messagerie"],
+   ["⚠️","Alerte IA — anomalie détectée (IGF)"],["📄","Document partagé par la Primature"],
+  ].map(([ic,t])=>`<div class="sr"><span class="sr-n">${ic} ${t}</span></div>`).join('');
+
+  document.getElementById('docPersList').innerHTML=[
+   ["Note de service — janvier 2027","DOCX"],["Rapport mensuel d'activités","PDF"],["Dossier personnel RH","PDF"],
+  ].map(([n,t])=>`<div class="sr"><span class="sr-n"><i class="ti ti-file-text" style="color:var(--blue2);margin-right:6px"></i>${n}</span><span class="sr-v" style="font-weight:400;color:var(--muted)">${t}</span></div>`).join('');
+
+  document.getElementById('workflowList').innerHTML=[
+   ["Demande de dépense DEP-2027-0184","En attente de votre validation","ba"],
+   ["Congé — MUAMBA Jean-Baptiste","En attente de votre validation","ba"],
+   ["Note administrative — Direction Juridique","Validée","bg"],
+  ].map(([t,s,c])=>`<div class="sr"><span class="sr-n">${t}</span><span class="sr-v">${badge(s,c)}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// MESSAGERIE
+// ════════════════════════════════════════════════
+function renderMessagerie(){
+  const addr=(CUR.role.split(' ')[0]||'agent').toLowerCase()+'.'+(CUR.inst.split(' ')[0]||'inst').toLowerCase()+'@pngie-rdc.gov.cd';
+  document.getElementById('mailAddr').textContent=addr;
+  const mails=[
+   ["Cabinet du Premier Ministre","Convocation — Conseil des Ministres","Vous êtes convié(e) à la réunion du Conseil des Ministres prévue…","08:12",true],
+   ["IGF — Inspection Générale des Finances","Rapport d'audit — Marché AO-0443","Veuillez trouver ci-joint le rapport d'audit relatif au marché public…","Hier",true],
+   ["Direction des Ressources Humaines","Fiches de poste à valider","3 fiches de poste sont en attente de votre validation…","Hier",false],
+   ["Min. Finances","Point d'exécution budgétaire Q1","Le taux d'exécution du budget au 15 janvier s'établit à 52%…","Lun.",false],
+   ["Secrétariat Général","Compte-rendu de la réunion de coordination","Ci-joint le compte-rendu de la réunion hebdomadaire…","Lun.",false],
+   ["ANR — Agence Nationale de Renseignements","Note de sécurité — restreinte","Note classifiée relative à la sécurité intérieure…","Sam.",true],
+  ];
+  document.getElementById('mailList').innerHTML=mails.map(([f,s,p,t,u])=>`
+   <div class="mail-row ${u?'unread':''}" onclick="toast('Message ouvert : '+'${s.replace(/'/g,"")}','ok')">
+     <div class="mail-av">${f.split(' ').map(x=>x[0]).slice(0,2).join('')}</div>
+     <div class="mail-body"><div class="mail-from">${f}</div><div class="mail-subj">${s}</div><div class="mail-prev">${p}</div></div>
+     <div class="mail-time">${t}</div>
+   </div>`).join('');
+
+  document.getElementById('mailCal').innerHTML=[
+   ["Lun 27","Conseil des Ministres — 10h00"],["Mer 29","Revue budgétaire — 14h00"],["Ven 31","Point sécurité IGF/ANR — 09h00"],
+  ].map(([d,t])=>`<div class="sr"><span class="sr-n"><strong>${d}</strong></span><span class="sr-v" style="font-weight:400">${t}</span></div>`).join('');
+
+  document.getElementById('mailContacts').innerHTML=["Primature","Min. Finances","IGF","ANR","Secrétariat Général"].map(c=>
+   `<div class="sr"><span class="sr-n"><i class="ti ti-user" style="margin-right:6px;color:var(--blue2)"></i>${c}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// GESTION DES DROITS (RBAC)
+// ════════════════════════════════════════════════
+function renderRBAC(){
+  document.getElementById('rbacTbl').innerHTML=ROLES.map(([r,scope])=>{
+    const p=PERMS[r];
+    return `<tr><td><strong>${r}</strong></td>${p.map(v=>`<td>${v?'<span class="chk">✓</span>':'<span class="crx">—</span>'}</td>`).join('')}<td style="text-align:left;color:var(--muted)">${scope}</td></tr>`;
+  }).join('');
+  document.getElementById('journalList').innerHTML=[
+   "2027-01-15 08:41:02 — "+CUR.role+" ("+CUR.inst+") — connexion réussie — IP 41.243.x.x",
+   "2027-01-15 08:41:07 — Authentification à deux facteurs validée",
+   "2027-01-15 08:41:09 — Vérification biométrique validée",
+   "2027-01-15 08:42:15 — Consultation module Tableau de bord",
+  ].map(l=>`<div class="j-line" style="border-bottom:1px solid var(--border);padding:4px 0">${l}</div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// ARCHITECTURE TECHNIQUE & INTÉGRATION SERVEUR
+// ════════════════════════════════════════════════
+function renderArchi(){
+  const stack=[
+   ["Frontend","React / Angular","Interfaces utilisateurs institutionnelles","bb"],
+   ["Backend","Laravel / NestJS","Logique métier et orchestration des services","ba"],
+   ["Base de données","PostgreSQL","Référentiels nationaux et données transactionnelles","bb"],
+   ["Authentification","Keycloak (SSO)","Identité unique, MFA, biométrie, RBAC","bg"],
+   ["API","REST / GraphQL","Échanges entre modules et institutions","ba"],
+   ["Tableaux de bord","Power BI / Grafana","Indicateurs, KPI, supervision temps réel","ba"],
+   ["Messagerie","Microsoft Exchange / Outlook (ou équivalent)","Messagerie gouvernementale interne","ba"],
+   ["Gestion documentaire","SharePoint (ou équivalent)","Archives, documents, workflow de validation","ba"],
+   ["Déploiement","Cloud gouvernemental / centre de données national","Hébergement souverain et haute disponibilité","bn"],
+  ];
+  document.getElementById('stackTbl').innerHTML=stack.map(([c,t,r,cl])=>
+   `<tr><td><strong>${c}</strong></td><td>${t}</td><td style="color:var(--muted)">${r}</td><td>${badge(cl==='bg'?'Connecté':cl==='bb'?'En intégration':'Planifié',cl)}</td></tr>`).join('');
+
+  const apis=[
+   ["Auth / SSO","Identité & sécurité","OIDC / OAuth2","bg"],
+   ["Référentiel Institutions & Ministères","Architecture institutionnelle","REST","bb"],
+   ["Référentiel Administratif (provinces, ETD)","Données géo-administratives","REST","bb"],
+   ["Ressources Humaines / Paie","RH & Fonction publique","REST","ba"],
+   ["Finances Publiques / Budget","Trésor & Budget","REST/GraphQL","ba"],
+   ["Fiscalité (DGI)","Recettes","REST","ba"],
+   ["Douanes (DGDA)","Recettes","REST","ba"],
+   ["État civil & Population","Identité civile","REST","ba"],
+   ["Messagerie gouvernementale","Collaboration","SMTP/EWS","ba"],
+   ["Gestion documentaire","Documents","REST","ba"],
+   ["Journalisation & Audit (SIEM)","Cybersécurité","Syslog/API","bn"],
+  ];
+  document.getElementById('apiTbl').innerHTML=apis.map(([s,d,p,cl])=>
+   `<tr><td><strong>${s}</strong></td><td>${d}</td><td><code>${p}</code></td><td>${badge(cl==='bg'?'Actif':cl==='bb'?'En cours de liaison':'En attente du serveur',cl)}</td></tr>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// EXPLOITATION, MAINTENANCE & ÉVOLUTION (TOME 12)
+// ════════════════════════════════════════════════
+function renderExploitation(){
+  document.getElementById('exploEquipes').innerHTML=[
+   ["Centre d'exploitation (NOC)","Supervision des infrastructures et des applications"],
+   ["Centre de cybersécurité (SOC)","Détection et réponse aux incidents de sécurité"],
+   ["Équipe applicative","Maintenance des logiciels"],
+   ["Équipe infrastructure","Serveurs, réseaux, stockage"],
+   ["Support utilisateurs","Assistance aux agents"],
+   ["Gouvernance des données","Qualité et cohérence des données"],
+  ].map(([e,m])=>`<div class="sr"><span class="sr-n"><strong>${e}</strong></span><span class="sr-v" style="font-weight:400;color:var(--muted);text-align:right">${m}</span></div>`).join('');
+
+  document.getElementById('exploSupport').innerHTML=[
+   ["Niveau 1","Assistance de premier niveau, réinitialisation de mot de passe, résolution des incidents simples","bg"],
+   ["Niveau 2","Incidents applicatifs, problèmes techniques, configuration","ba"],
+   ["Niveau 3","Correction du code, optimisation des performances, évolution des applications","br"],
+  ].map(([n,d,c])=>`<div class="sr" style="align-items:flex-start"><span class="sr-n">${badge(n,c)}</span><span class="sr-v" style="font-weight:400;color:var(--muted);text-align:right;max-width:70%">${d}</span></div>`).join('');
+
+  document.getElementById('exploMaintenance').innerHTML=[
+   ["Corrective","Correction des anomalies"],
+   ["Préventive","Mises à jour de sécurité, surveillance de la capacité et optimisation"],
+   ["Évolutive","Ajout de nouveaux modules, amélioration des fonctionnalités, adaptation réglementaire"],
+  ].map(([t,d])=>`<div class="sr" style="align-items:flex-start"><span class="sr-n"><strong>${t}</strong></span><span class="sr-v" style="font-weight:400;color:var(--muted);text-align:right;max-width:65%">${d}</span></div>`).join('');
+
+  document.getElementById('exploVersions').innerHTML=`
+   <div class="sr"><span class="sr-n">Version actuelle</span><span class="sr-v">v1.0.0</span></div>
+   <div class="sr"><span class="sr-n">Date de publication</span><span class="sr-v">Janvier 2027</span></div>
+   <div class="sr"><span class="sr-n">Contenu</span><span class="sr-v" style="font-weight:400;color:var(--muted)">Fonctionnalités, corrections, sécurité</span></div>
+   <div class="sr"><span class="sr-n">Prochaine mise à jour planifiée</span><span class="sr-v">v1.1.0 — Février 2027</span></div>
+   <div class="sr"><span class="sr-n">Documentation associée</span><span class="sr-v">${badge('Disponible','bg')}</span></div>`;
+
+  document.getElementById('exploDispo').innerHTML=[
+   ["Authentification","Haute disponibilité"],["Portail national","Haute disponibilité"],
+   ["Gestion documentaire","Haute disponibilité"],["Messagerie","Haute disponibilité"],
+   ["Applications métiers","Selon les besoins opérationnels"],
+  ].map(([s,o])=>`<tr><td><strong>${s}</strong></td><td>${badge(o,o.startsWith('Haute')?'bg':'ba')}</td></tr>`).join('');
+
+  document.getElementById('exploAmelio').innerHTML=["Retours des utilisateurs","Audits","Évolutions réglementaires","Innovations technologiques","Nouveaux besoins des administrations"]
+   .map(t=>`<div class="sr"><span class="sr-n"><i class="ti ti-point" style="color:var(--blue2);margin-right:6px"></i>${t}</span></div>`).join('')+
+   `<div style="font-size:10.5px;color:var(--muted);margin-top:8px">Chaque évolution suit un processus de validation avant son déploiement.</div>`;
+
+  document.getElementById('exploGouv').innerHTML=["Évolutions fonctionnelles","Cybersécurité","Qualité des données","Performances","Budgets d'exploitation","Contrats de maintenance","Audits (sécurité, protection des données, processus, conformité)"]
+   .map(t=>`<div class="sr"><span class="sr-n"><i class="ti ti-point" style="color:var(--blue2);margin-right:6px"></i>${t}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// DOCUMENTATION DU PROGRAMME
+// ════════════════════════════════════════════════
+function renderDocProg(){
+  const tomes=["Vision stratégique","Architecture fonctionnelle","Architecture technique","Architecture institutionnelle","Architecture des données","Architecture applicative","Intelligence artificielle","Cybersécurité","Interopérabilité","Infrastructure et Cloud gouvernemental","Déploiement et conduite du changement","Exploitation et amélioration continue"];
+  document.getElementById('tomesList').innerHTML=tomes.map((t,i)=>
+   `<div class="sr"><span class="sr-n"><span class="pill" style="margin-right:8px">Tome ${i+1}</span>${t}</span><span class="sr-v">${badge('Disponible','bg')}</span></div>`).join('');
+
+  const vol10=["Charte du Programme","Architecture Institutionnelle","Référentiel Administratif","Référentiel des Ressources Humaines","Architecture des Données","Architecture Applicative","UX/UI","Architecture Technique","Cybersécurité","Interopérabilité"];
+  const vol1130=["Population","État civil","Fonction publique","Budget","Trésor","Fiscalité","Douanes","Santé","Éducation","Justice","Agriculture","Mines","Environnement","Commerce","Industrie","Énergie","Transport","Patrimoine","Gestion documentaire","Intelligence artificielle"];
+  let vh=vol10.map((t,i)=>`<div class="sr"><span class="sr-n"><span class="pill" style="margin-right:8px">Vol. ${i+1}</span>${t}</span><span class="sr-v">${badge('Disponible','bg')}</span></div>`).join('');
+  vh+=vol1130.map((t,i)=>`<div class="sr"><span class="sr-n"><span class="pill" style="margin-right:8px">Vol. ${i+11}</span>${t}</span><span class="sr-v">${badge('Planifié','ba')}</span></div>`).join('');
+  document.getElementById('volumesList').innerHTML=vh;
+
+  const livrables=["Modèle Conceptuel de Données (MCD)","Modèle Logique de Données (MLD)","Modèle Physique de Données (MPD)","Cartographie des processus métiers (BPMN)","Architecture logicielle (UML)","Catalogue des API","Plan de tests fonctionnels et techniques","Guide d'administration et d'exploitation"];
+  document.getElementById('livrablesList').innerHTML=livrables.map(t=>
+   `<div class="sr"><span class="sr-n"><i class="ti ti-file-text" style="color:var(--blue2);margin-right:6px"></i>${t}</span><span class="sr-v">${badge('En préparation','ba')}</span></div>`).join('');
+}
+
+// ════════════════════════════════════════════════
+// CHAÎNE DE COMMANDEMENT (RNI) — hiérarchie dynamique, instructions,
+// rapports d'exécution, vérification. Toutes les données sont réelles,
+// servies par /api/rni/* et /api/instructions* (voir rni-commandement-routes.js).
+// ════════════════════════════════════════════════
+let cmdInstitutionId=null;
+
+function cmdAllInstitutions(){
+  if(!REAL_GROUPS||!Object.keys(REAL_GROUPS).length) return [];
+  return Object.values(REAL_GROUPS).flat().filter(i=>i && i.institution_id);
+}
+
+function renderCommandement(){
+  const items=cmdAllInstitutions().sort((a,b)=>(a.nom||'').localeCompare(b.nom||''));
+  const opts=items.map(i=>`<option value="${i.institution_id}">${i.nom}</option>`).join('');
+  const sel=document.getElementById('cmdInstSelect');
+  const parentSel=document.getElementById('cmdParentSelect');
+  const destSel=document.getElementById('niDestinataire');
+  if(sel) sel.innerHTML = opts || '<option disabled selected>Aucune institution réelle chargée</option>';
+  if(parentSel) parentSel.innerHTML = opts || '<option disabled selected>Aucune institution réelle chargée</option>';
+  if(destSel) destSel.innerHTML = opts || '<option disabled selected>Aucune institution réelle chargée</option>';
+  if(items.length && !cmdInstitutionId){
+    cmdInstitutionId=items[0].institution_id;
+    if(sel) sel.value=cmdInstitutionId;
+  }
+  if(cmdInstitutionId) cmdSelectInstitution(cmdInstitutionId);
+}
+
+async function cmdSelectInstitution(id){
+  cmdInstitutionId=id;
+  const selEl=document.getElementById('cmdInstSelect');
+  if(selEl) selEl.value=id;
+  await cmdLoadHierarchie(id);
+  await cmdLoadInstructions(id);
+}
+
+async function cmdLoadHierarchie(id){
+  const pEl=document.getElementById('cmdParents'), eEl=document.getElementById('cmdEnfants');
+  pEl.textContent='Chargement…'; eEl.textContent='Chargement…';
+  try{
+    const h=await apiGet(`/api/rni/hierarchie/${id}`);
+    pEl.innerHTML = h.parents.length
+      ? h.parents.map(p=>`<div class="cmd-link-row"><span style="cursor:pointer;color:var(--blue2)" onclick="cmdSelectInstitution('${p.institution_id}');document.getElementById('cmdInstSelect').scrollIntoView({behavior:'smooth',block:'center'})" title="Voir la chaîne de commandement de cette institution"><strong>${p.nom}</strong></span>${badge(p.type_lien,'bb')}</div>`).join('')
+      : `<div style="color:var(--muted);font-size:11.5px">Aucun lien de tutelle enregistré pour cette institution.</div>`;
+    eEl.innerHTML = h.enfants.length
+      ? h.enfants.map(c=>`<div class="cmd-link-row"><span style="cursor:pointer;color:var(--blue2)" onclick="cmdSelectInstitution('${c.institution_id}');document.getElementById('cmdInstSelect').scrollIntoView({behavior:'smooth',block:'center'})" title="Voir la chaîne de commandement de cette institution"><strong>${c.nom}</strong></span>${badge(c.type_lien,'bb')}</div>`).join('')
+      : `<div style="color:var(--muted);font-size:11.5px">Aucune institution subordonnée enregistrée.</div>`;
+  }catch(e){
+    pEl.innerHTML=`<div style="color:var(--red)">Erreur de chargement.</div>`;
+    eEl.innerHTML='';
+  }
+}
+
+async function cmdCreerLien(){
+  const institution_parent_id=document.getElementById('cmdParentSelect').value;
+  const type_lien=document.getElementById('cmdTypeLien').value;
+  const reference_juridique=document.getElementById('cmdRefJuridique').value.trim();
+  if(!cmdInstitutionId || !institution_parent_id){ toast('Sélectionnez une institution supérieure','er'); return; }
+  if(cmdInstitutionId===institution_parent_id){ toast('Une institution ne peut pas être son propre parent','er'); return; }
+  try{
+    await apiPost('/api/rni/liens',{institution_id:cmdInstitutionId,institution_parent_id,type_lien,reference_juridique});
+    toast('Lien hiérarchique créé','ok');
+    document.getElementById('cmdRefJuridique').value='';
+    cmdLoadHierarchie(cmdInstitutionId);
+  }catch(e){ toast(e.message||'Erreur lors de la création du lien','er'); }
+}
+
+async function cmdLoadInstructions(id){
+  const emTbl=document.getElementById('cmdInstrEmisesTbl'), reTbl=document.getElementById('cmdInstrRecuesTbl');
+  emTbl.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted)">Chargement…</td></tr>`;
+  reTbl.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--muted)">Chargement…</td></tr>`;
+  const statutBadge=s=>badge(s, s==='EXECUTEE'?'bg': s==='ANNULEE'?'br': s==='EN_RETARD'?'br': s==='EN_COURS'?'bb':'ba');
+  try{
+    const emises=await apiGet(`/api/instructions?institution_id=${id}&sens=emises`);
+    emTbl.innerHTML = emises.length
+      ? emises.map(i=>`<tr>
+          <td><strong>${i.objet}</strong></td><td>${i.destinataire_nom}</td>
+          <td>${badge(i.priorite,i.priorite==='URGENTE'?'br':i.priorite==='HAUTE'?'ba':'bb')}</td>
+          <td>${statutBadge(i.statut)}</td>
+          <td>${i.date_echeance ? new Date(i.date_echeance).toLocaleDateString('fr-FR') : '—'}</td>
+          <td><button class="btn sm" onclick="cmdVoirInstruction('${i.instruction_id}')">Voir</button></td>
+        </tr>`).join('')
+      : `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:14px">Aucune instruction émise.</td></tr>`;
+
+    const recues=await apiGet(`/api/instructions?institution_id=${id}&sens=recues`);
+    reTbl.innerHTML = recues.length
+      ? recues.map(i=>`<tr>
+          <td><strong>${i.objet}</strong></td><td>${i.emetteur_nom}</td>
+          <td>${badge(i.priorite,i.priorite==='URGENTE'?'br':i.priorite==='HAUTE'?'ba':'bb')}</td>
+          <td>${statutBadge(i.statut)}</td>
+          <td>${i.date_echeance ? new Date(i.date_echeance).toLocaleDateString('fr-FR') : '—'}</td>
+          <td><button class="btn sm" onclick="cmdVoirInstruction('${i.instruction_id}')">Voir</button></td>
+        </tr>`).join('')
+      : `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:14px">Aucune instruction reçue.</td></tr>`;
+  }catch(e){
+    emTbl.innerHTML=`<tr><td colspan="6" style="text-align:center;color:var(--red)">Erreur de chargement.</td></tr>`;
+    reTbl.innerHTML='';
+  }
+}
+
+function cmdOuvrirNouvelleInstruction(){
+  if(!cmdInstitutionId){ toast('Sélectionnez d\'abord une institution émettrice','er'); return; }
+  document.getElementById('niObjet').value='';
+  document.getElementById('niDescription').value='';
+  document.getElementById('niEcheance').value='';
+  document.getElementById('niRefJuridique').value='';
+  openM('mNouvelleInstruction');
+}
+
+async function cmdCreerInstruction(){
+  const destinataire_institution_id=document.getElementById('niDestinataire').value;
+  const objet=document.getElementById('niObjet').value.trim();
+  const description=document.getElementById('niDescription').value.trim();
+  const priorite=document.getElementById('niPriorite').value;
+  const date_echeance=document.getElementById('niEcheance').value||null;
+  const reference_juridique=document.getElementById('niRefJuridique').value.trim();
+  if(!objet || !destinataire_institution_id){ toast('Objet et destinataire sont requis','er'); return; }
+  if(destinataire_institution_id===cmdInstitutionId){ toast('L\'émetteur et le destinataire doivent être différents','er'); return; }
+  try{
+    await apiPost('/api/instructions',{
+      emetteur_institution_id:cmdInstitutionId, destinataire_institution_id,
+      objet, description, priorite, date_echeance, reference_juridique
+    });
+    toast('Instruction émise','ok');
+    closeM('mNouvelleInstruction');
+    cmdLoadInstructions(cmdInstitutionId);
+  }catch(e){ toast(e.message||'Erreur lors de l\'émission','er'); }
+}
+
+async function cmdVoirInstruction(id){
+  const body=document.getElementById('idBody');
+  document.getElementById('idTitre').textContent='Instruction';
+  body.innerHTML='Chargement…';
+  openM('mInstrDetail');
+  try{
+    const d=await apiGet(`/api/instructions/${id}`);
+    const i=d.instruction;
+    document.getElementById('idTitre').textContent=i.objet;
+    const statutBadge=s=>badge(s, s==='EXECUTEE'?'bg': s==='ANNULEE'?'br': s==='EN_RETARD'?'br': s==='EN_COURS'?'bb':'ba');
+    let h=`
+      <div class="sr"><span class="sr-n">Émetteur</span><span class="sr-v">${i.emetteur_nom}</span></div>
+      <div class="sr"><span class="sr-n">Destinataire</span><span class="sr-v">${i.destinataire_nom}</span></div>
+      <div class="sr"><span class="sr-n">Statut</span><span class="sr-v">${statutBadge(i.statut)}</span></div>
+      <div class="sr"><span class="sr-n">Priorité</span><span class="sr-v">${i.priorite}</span></div>
+      ${i.description?`<div style="margin:10px 0;font-size:12px;color:var(--text)">${i.description}</div>`:''}
+      <hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
+      <div style="font-weight:600;font-size:12.5px;color:var(--blue);margin-bottom:8px">Rapports d'exécution</div>`;
+    h += d.rapports.length ? d.rapports.map(r=>{
+      const vs=d.verifications.filter(v=>v.rapport_id===r.rapport_id);
+      return `<div class="cmd-link-row" style="flex-direction:column;align-items:flex-start;gap:4px">
+        <div style="display:flex;justify-content:space-between;width:100%">
+          <span>${r.contenu}</span>${badge(r.statut, r.statut==='VALIDE'?'bg':r.statut==='REJETE'?'br':'ba')}
+        </div>
+        <div style="font-size:10.5px;color:var(--muted)">Avancement : ${r.taux_avancement}% — ${new Date(r.date_rapport).toLocaleDateString('fr-FR')}</div>
+        ${vs.map(v=>`<div style="font-size:10.5px;color:var(--muted)">↳ Vérification : ${badge(v.decision,v.decision==='CONFORME'?'bg':v.decision==='A_COMPLETER'?'ba':'br')} ${v.commentaire?'— '+v.commentaire:''}</div>`).join('')}
+        ${vs.length===0 ? `<button class="btn sm" style="margin-top:4px" onclick="cmdVerifierRapport('${r.rapport_id}','${id}')">Vérifier ce rapport</button>` : ''}
+      </div>`;
+    }).join('') : `<div style="color:var(--muted);font-size:11.5px;padding:6px 0">Aucun rapport soumis pour le moment.</div>`;
+
+    h += `<hr style="border:none;border-top:1px solid var(--border);margin:14px 0">
+      <div style="font-weight:600;font-size:12.5px;color:var(--blue);margin-bottom:8px">Soumettre un rapport d'exécution</div>
+      <div class="cmd-field"><label>Institution rédactrice</label>
+        <select id="rapInstitution">${cmdAllInstitutions().sort((a,b)=>(a.nom||'').localeCompare(b.nom||'')).map(x=>`<option value="${x.institution_id}" ${x.institution_id===i.destinataire_institution_id?'selected':''}>${x.nom}</option>`).join('')}</select>
+      </div>
+      <div class="cmd-field"><label>Contenu</label><textarea id="rapContenu" rows="3" placeholder="Description de l'exécution réalisée"></textarea></div>
+      <div class="cmd-field"><label>Taux d'avancement (%)</label><input id="rapAvancement" type="number" min="0" max="100" value="0"></div>
+      <button class="btn primary sm" onclick="cmdSoumettreRapport('${id}')"><i class="ti ti-send"></i> Soumettre le rapport</button>`;
+    body.innerHTML=h;
+  }catch(e){
+    body.innerHTML=`<div style="color:var(--red)">Erreur de chargement (${e.message||''}).</div>`;
+  }
+}
+
+async function cmdSoumettreRapport(instructionId){
+  const institution_id=document.getElementById('rapInstitution').value;
+  const contenu=document.getElementById('rapContenu').value.trim();
+  const taux_avancement=parseInt(document.getElementById('rapAvancement').value,10)||0;
+  if(!contenu){ toast('Le contenu du rapport est requis','er'); return; }
+  try{
+    await apiPost(`/api/instructions/${instructionId}/rapports`,{institution_id,contenu,taux_avancement});
+    toast('Rapport soumis','ok');
+    cmdVoirInstruction(instructionId);
+    cmdLoadInstructions(cmdInstitutionId);
+  }catch(e){ toast(e.message||'Erreur lors de la soumission','er'); }
+}
+
+async function cmdVerifierRapport(rapportId,instructionId){
+  const decision=prompt('Décision : CONFORME, NON_CONFORME ou A_COMPLETER ?','CONFORME');
+  if(!decision) return;
+  const d=decision.trim().toUpperCase();
+  if(!['CONFORME','NON_CONFORME','A_COMPLETER'].includes(d)){ toast('Décision invalide','er'); return; }
+  const commentaire=prompt('Commentaire (optionnel) :','')||'';
+  try{
+    await apiPost(`/api/rapports/${rapportId}/verification`,{decision:d,commentaire,verificateur_institution_id:cmdInstitutionId});
+    toast('Vérification enregistrée','ok');
+    cmdVoirInstruction(instructionId);
+    cmdLoadInstructions(cmdInstitutionId);
+  }catch(e){ toast(e.message||'Erreur lors de la vérification','er'); }
+}
+
+// ════════════════════════════════════════════════
+// IA CHAT (espace personnel)
+// ════════════════════════════════════════════════
+function addMsg(id,who,text){
+  const el=document.getElementById('chat-'+id);
+  const d=document.createElement('div');d.className='ia-msg '+who;d.textContent=text;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;
+}
+function initChat(id,greet){ document.getElementById('chat-'+id).innerHTML='';addMsg(id,'bot',greet); }
+function sendMsg(id){
+  const inp=document.getElementById('inp-'+id); const v=inp.value.trim(); if(!v)return;
+  addMsg(id,'user',v); inp.value='';
+  setTimeout(()=>addMsg(id,'bot','Analyse effectuée. Voici un résumé synthétique basé sur les données disponibles pour : « '+v+' ».'),700);
+}
+
+// ════════════════════════════════════════════════
+// MODALS / TOAST
+// ════════════════════════════════════════════════
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+function toast(msg,type){
+  const t=document.getElementById('toast');t.textContent=msg;t.className='toast show '+(type||'');
+  setTimeout(()=>t.classList.remove('show'),2600);
+}
+function fillAgentSelect(){
+  const all = REAL_GROUPS && Object.keys(REAL_GROUPS).length
+    ? Object.values(REAL_GROUPS).flat().map(i=>i.nom).filter(Boolean)
+    : [];
+  document.getElementById('agInst').innerHTML = all.length
+    ? [...new Set(all)].map(n=>`<option>${n}</option>`).join('')
+    : '<option disabled selected>Aucune institution réelle chargée</option>';
+}
+
+// ════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════
+function buildAll(){
+  renderDashboard();renderInstitutions();renderMinisteres();renderProvinces();
+  renderEntreprises();renderEtablissements();renderETD();
+  renderRH();renderEspace();renderMessagerie();renderRBAC();
+  renderArchi();renderExploitation();renderDocProg();
+  renderCommandement();
+  initChat('esp','Bonjour '+CUR.role+'. Je peux vous aider à résumer vos documents, préparer vos réunions ou rédiger des notes. Comment puis-je vous assister ?');
+  fillAgentSelect();
+}
+// ════════════════════════════════════════════════
+// BARRE D'ETAT — horloge et fuseau reels (navigateur), statut de connexion reel.
+// IP publique / latence / disponibilite serveur : necessitent une route backend
+// dediee qui n'existe pas encore -> affiches "non disponible", jamais invente.
+// ════════════════════════════════════════════════
+function updateStatusBar(){
+  const now=new Date();
+  const dateEl=document.getElementById('sbDate'), timeEl=document.getElementById('sbTime'), tzEl=document.getElementById('sbTimezone');
+  if(!dateEl) return; // barre pas encore dans le DOM (avant login)
+  dateEl.textContent=now.toLocaleDateString('fr-FR',{day:'2-digit',month:'2-digit',year:'numeric'});
+  timeEl.textContent=now.toLocaleTimeString('fr-FR');
+  const offsetH=-now.getTimezoneOffset()/60;
+  const tzName=Intl.DateTimeFormat().resolvedOptions().timeZone||'';
+  tzEl.textContent=`UTC${offsetH>=0?'+':''}${offsetH} (${tzName})`;
+}
+function updateOnlineStatus(){
+  const el=document.getElementById('sbOnline');
+  if(!el) return;
+  const online=navigator.onLine;
+  el.innerHTML = online
+    ? `<i class="ti ti-plug-connected"></i><span>Connecté</span>`
+    : `<i class="ti ti-plug-connected-x"></i><span>Hors ligne</span>`;
+  el.classList.toggle('sb-online',online);
+  el.classList.toggle('sb-offline',!online);
+}
+window.addEventListener('online',updateOnlineStatus);
+window.addEventListener('offline',updateOnlineStatus);
+setInterval(updateStatusBar,1000);
+updateStatusBar();
+updateOnlineStatus();
+
+fillLoginSelect();
+renderLoginLog();
+</script>
+</body>
+</html>

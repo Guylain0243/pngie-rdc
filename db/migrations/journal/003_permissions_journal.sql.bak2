@@ -1,0 +1,44 @@
+-- ============================================================
+-- 003_permissions_journal.sql
+-- Création des permissions du module Journal National
+--
+-- IMPORTANT : ce script crée UNIQUEMENT les permissions.
+-- L'affectation aux rôles institutionnels (MI, PM, PR, AN, GV, SN, ...)
+-- se fait dans un script séparé (ex. 003b_permissions_journal_affectation.sql),
+-- écrit une fois la cartographie des rôles confirmée.
+--
+-- À ADAPTER : le nom de la table ci-dessous (`permission`) et ses colonnes
+-- doivent être vérifiés contre le schéma RBAC existant avant exécution.
+-- Remplacer `permission(code, libelle, module)` par la structure réelle
+-- si elle diffère.
+-- ============================================================
+
+BEGIN;
+
+INSERT INTO permission (code, libelle, module) VALUES
+ ('journal.creer',                    'Créer un acte (brouillon)',              'journal'),
+ ('journal.modifier',                 'Modifier un acte non publié',            'journal'),
+ ('journal.valider',                  'Valider / rejeter un acte',              'journal'),
+ ('journal.signer',                   'Signer électroniquement un acte',        'journal'),
+ ('journal.publier',                  'Publier un acte',                        'journal'),
+ ('journal.consulter',                'Consulter les actes publics',            'journal'),
+ ('journal.consulter.restreint',      'Consulter les actes en diffusion restreinte',    'journal'),
+ ('journal.consulter.confidentiel',   'Consulter les actes en diffusion confidentielle','journal'),
+ ('journal.archiver',                 'Archiver un acte publié',                'journal'),
+ ('journal.gerer_diffusion',          'Modifier le niveau de diffusion d''un acte', 'journal')
+ON CONFLICT (code) DO NOTHING;
+
+COMMIT;
+
+-- ------------------------------------------------------------
+-- Script séparé à écrire ensuite (affectation) — squelette indicatif :
+--
+-- INSERT INTO role_permission (role_id, permission_id)
+-- SELECT r.id, p.id
+-- FROM role r, permission p
+-- WHERE r.code = 'SN' AND p.code LIKE 'journal.%';
+--
+-- (répéter par rôle avec le sous-ensemble de permissions adéquat,
+-- une fois la cartographie MI/PM/PR/AN/GV/SN confirmée pour le Journal
+-- National — cf. section 3 du document de conception)
+-- ------------------------------------------------------------

@@ -1,0 +1,1 @@
+UPDATE person SET password_hash = '$2b$10$SA6NYxsFUT8zOvdHoO9p9.AF2sQO2lgw9skWsu/cOM/CACLwd.WmS' WHERE email = 'mi@rdc.gouv.cd';

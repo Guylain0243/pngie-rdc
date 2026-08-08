@@ -1,0 +1,156 @@
+﻿=== 1. ARBORESCENCE COMPLÈTE DE src/ ===
+src\aiAgent.js  (4.7 KB)
+src\db.js  (4.5 KB)
+src\db.js.backup_20260803_111718  (2.9 KB)
+src\event-engine.js  (2.3 KB)
+src\notification-engine.js  (2.7 KB)
+src\rateLimiter.js  (1.6 KB)
+src\request-context.js  (0.3 KB)
+src\rni-commandement-routes.js  (18.1 KB)
+src\rule-engine.js  (2.5 KB)
+src\security-engine.js  (1.8 KB)
+src\server.js  (27.1 KB)
+src\server.js.backup_20260803_101223  (30.5 KB)
+src\server.js.backup_20260803_115511  (31 KB)
+src\server.js.backup_20260803_223442  (25.5 KB)
+src\server.js.backup_20260803_232832  (25.6 KB)
+src\server.js.backup_20260803_234316  (25.7 KB)
+src\workflow-engine.js  (1.4 KB)
+src\lib\audit.js  (1.6 KB)
+src\lib\errors.js  (3.1 KB)
+src\lib\errors.js.backup_20260803_112013  (2.7 KB)
+src\middleware\requireAuth.js  (2.5 KB)
+src\middleware\resoudreRoleDepuisJWT.js  (0.5 KB)
+src\middleware\validation.js  (6.7 KB)
+src\middleware\validerCorps.js  (2.9 KB)
+src\security\hierarchy-service.js  (1.4 KB)
+src\security\resource-resolver.js  (1.3 KB)
+src\security\scope-engine.js  (1.7 KB)
+src\security\scope-resolver.js  (1.1 KB)
+src\services\institution-authority.js  (3.8 KB)
+
+=== 2. TOUS LES app.METHOD(...) — ROUTES ===
+server.js:92: app.post('/api/auth/login', wrap(async (req, res) => {
+server.js:127: app.post('/api/auth/logout', wrap(async (req, res) => {
+server.js:163: app.get('/api/me', requireAuth, wrap(async (req, res) => {
+server.js:175: app.get('/api/ministeres', requireAuth, requirePermission('page:ministeres:read'), wrap(async (req, res) => {
+server.js:184: app.get('/api/provinces', requireAuth, requirePermission('page:provinces:read'), wrap(async (req, res) => {
+server.js:191: app.get('/api/organigramme', requireAuth, wrap(async (req, res) => {
+server.js:199: app.get('/api/audit', requireAuth, wrap(async (req, res) => {
+server.js:205: app.get('/api/gouvernance/cycle', requireAuth, requirePermission('page:institutions:read'), wrap(async (req, res) => {
+server.js:231: app.get('/api/integrations', requireAuth, wrap(async (req, res) => {
+server.js:242: app.get('/api/db-summary', requireAuth, wrap(async (req, res) => {
+server.js:277: app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'pngie-rdc-backend', db_driver: db.driver }));
+server.js:283: app.get('/api/agents', requireAuth, wrap(async (req, res) => {
+server.js:290: app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
+server.js:321: app.get('/api/nocode/apps', requireAuth, wrap(async (req, res) => {
+server.js:326: app.get('/api/nocode/apps/:id', requireAuth, wrap(async (req, res) => {
+server.js:334: app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
+
+=== 3. MIDDLEWARES ===
+rni-commandement-routes.js:17: const { validate } = require('./middleware/validation');
+rni-commandement-routes.js:22: const requireAuth = require('./middleware/requireAuth');
+security-engine.js:8: // verifie par votre middleware d'authentification existant
+security-engine.js:25: * Middleware Express : exige qu'une permission soit accordee pour continuer.
+server.js:146: // â”€â”€â”€ Middleware d'authentification â”€â”€â”€
+server.js:147: // --- Middleware d'authentification (implementation unique, partagee) ---
+server.js:148: const requireAuth = require('./middleware/requireAuth');
+server.js:149: const resoudreRoleDepuisJWT = require('./middleware/resoudreRoleDepuisJWT');
+server.js:151: // â”€â”€â”€ Middleware RBAC â”€â”€â”€
+requireAuth.js:2: // PNGIE-RDC � Middleware d'authentification unique
+requireAuth.js:27: async function requireAuth(req, res, next) {
+resoudreRoleDepuisJWT.js:6: function resoudreRoleDepuisJWT(req, res, next) {
+validation.js:2: // PNGIE-RDC — Middleware de validation API commun
+validation.js:6: //   const { validate, validatePagination, sendError } = require('./middleware/validation');
+validation.js:104: // Middleware principal : valide params / query / body selon un schéma déclaratif
+validerCorps.js:2: // PNGIE-RDC - Middleware de validation de corps de requete, nomme et reutilisable
+validerCorps.js:38: * Middleware Express de validation. schema = { nomChamp: { requis, type, regex, enum } }
+scope-engine.js:2: // Middleware generique : exigerPortee({type, source})
+
+=== 4. require('./...') INTERNES ===
+src\db.js -> const { getContext } = require("./request-context");
+src\event-engine.js -> const db = require('./db');
+src\notification-engine.js -> const db = require('./db');
+src\rni-commandement-routes.js -> const db = require('./db');
+src\rni-commandement-routes.js -> const { validate } = require('./middleware/validation');
+src\rni-commandement-routes.js -> const { sendError } = require('./lib/errors');
+src\rni-commandement-routes.js -> const { verifierPermission } = require('./security-engine');
+src\rni-commandement-routes.js -> const { estAutoriseSurInstitution } = require('./services/institution-authority');
+src\rni-commandement-routes.js -> const audit = require('./lib/audit');
+src\rni-commandement-routes.js -> const requireAuth = require('./middleware/requireAuth');
+src\rule-engine.js -> const db = require('./db');
+src\security-engine.js -> const db = require('./db');
+src\server.js -> const audit = require('./lib/audit');
+src\server.js -> const requestContext = require('./request-context');
+src\server.js -> const db = require('./db');
+src\server.js -> const { checkLimit } = require('./rateLimiter');
+src\server.js -> const { askAgent } = require('./aiAgent');
+src\server.js -> const requireAuth = require('./middleware/requireAuth');
+src\server.js -> const resoudreRoleDepuisJWT = require('./middleware/resoudreRoleDepuisJWT');
+src\server.js -> const rniCommandementRouter = require('./rni-commandement-routes');
+src\workflow-engine.js -> const db = require('./db');
+src\middleware\validation.js -> //   const { validate, validatePagination, sendError } = require('./middleware/validation');
+src\security\scope-engine.js -> const { resoudrePorteeInstitution } = require("./scope-resolver");
+src\security\scope-engine.js -> const { RESOLVERS } = require("./resource-resolver");
+src\security\scope-resolver.js -> const { getInstitutionsDescendantes } = require("./hierarchy-service");
+
+=== 5. package.json ===
+{
+    "name":  "pngie-rdc-backend",
+    "version":  "1.0.0",
+    "type":  "commonjs",
+    "main":  "src/server.js",
+    "scripts":  {
+                    "seed":  "node db/seed.js",
+                    "start":  "node src/server.js",
+                    "test":  "node --test tests/*.test.js",
+                    "loadtest":  "node scripts/loadtest.js",
+                    "reset-test-users":  "node scripts/reset-test-users.js",
+                    "verify-test-users":  "node scripts/verify-test-users.js",
+                    "assign-test-roles":  "node scripts/assign-test-roles.js"
+                },
+    "dependencies":  {
+                         "axios":  "^1.19.0",
+                         "bcrypt":  "^6.0.0",
+                         "better-sqlite3":  "^12.11.1",
+                         "cors":  "^2.8.5",
+                         "express":  "^4.19.2",
+                         "ioredis":  "^5.11.1",
+                         "jsonwebtoken":  "^9.0.2",
+                         "pg":  "^8.22.0"
+                     }
+}
+
+=== 6. scripts/ ===
+apply-patch-bug-g.js
+assign-test-roles.js
+backup-policy-personne-role.js
+check-owner.js
+decode-token.js
+diag-person-role-table.js
+diag-person-table.js
+diag-rls-personne-role.js
+diag-rls-visibility.js
+diag-roles.js
+diag-roles2.js
+inventaire-schema-db.js
+loadtest.js
+reset-postgres-password.js
+reset-test-users.js
+verify-test-users.js
+
+=== 7. tests/ ===
+tests\auth.test.js
+tests\extension.test.js
+tests\governance.test.js
+tests\helpers.js
+tests\nocode.test.js
+tests\rbac.test.js
+tests\e2e\.token-cache.json
+tests\e2e\001_login.test.js
+tests\e2e\002_rbac.test.js
+tests\e2e\003_scoperesolver.test.js
+tests\e2e\004_postes.test.js
+tests\e2e\005_affectations.test.js
+tests\e2e\006_agents.test.js
+tests\e2e\helpers.js

@@ -1,0 +1,133 @@
+﻿// ==============================================================
+// ROUTEUR GENERE AUTOMATIQUEMENT par government-builder.js
+// Entite : Ligne BudgÃ©taire  (table : ligne_budgetaire)
+// NE PAS MODIFIER A LA MAIN - regenerer via government-builder.js
+// si les metadonnees changent.
+// ==============================================================
+
+const express = require('express');
+const crypto = require('crypto');
+const db = require('../src/db');
+const { verifierRegles } = require('../src/rule-engine');
+const { enregistrerEvenement, historique } = require('../src/event-engine');
+const { exigerPermission } = require('../src/security-engine');
+const { verifierTransition } = require('../src/workflow-engine');
+const { declencherNotifications } = require('../src/notification-engine');
+const router = express.Router();
+
+const CHAMPS = ["institution","exercice","programme","montant_alloue","statut"];
+const CHAMPS_OBLIGATOIRES = ["institution","exercice"];
+
+function validerPayload(body) {
+    const manquants = CHAMPS_OBLIGATOIRES.filter(c => body[c] === undefined || body[c] === null || body[c] === '');
+    return manquants;
+}
+
+// LISTE
+router.get('/ligne_budgetaires', exigerPermission('ligne_budgetaire', 'READ'), async (req, res) => {
+    try {
+        const rows = await db.all(`SELECT * FROM ligne_budgetaire ORDER BY created_at DESC`);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DETAIL
+router.get('/ligne_budgetaires/:id', exigerPermission('ligne_budgetaire', 'READ'), async (req, res) => {
+    try {
+        const row = await db.get(`SELECT * FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [req.params.id]);
+        if (!row) return res.status(404).json({ error: 'Ligne BudgÃ©taire introuvable' });
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATION
+router.post('/ligne_budgetaires', exigerPermission('ligne_budgetaire', 'CREATE'), async (req, res) => {
+    const manquants = validerPayload(req.body);
+    if (manquants.length > 0) {
+        return res.status(400).json({ error: 'Champs obligatoires manquants', champs: manquants });
+    }
+    try {
+        const id = crypto.randomUUID();
+        const champsRenseignes = CHAMPS.filter(c => req.body[c] !== undefined);
+        const colonnes = ['ligne_budgetaire_id', ...champsRenseignes];
+        const valeurs = [id, ...champsRenseignes.map(c => req.body[c])];
+        const placeholders = colonnes.map(() => '?').join(', ');
+        await db.run(
+            `INSERT INTO ligne_budgetaire (${colonnes.join(', ')}) VALUES (${placeholders})`,
+            valeurs
+        );
+        const row = await db.get(`SELECT * FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [id]);
+        await enregistrerEvenement('ligne_budgetaire', id, 'CREATION', null, row);
+        res.status(201).json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// MODIFICATION
+router.put('/ligne_budgetaires/:id', exigerPermission('ligne_budgetaire', 'UPDATE'), async (req, res) => {
+    try {
+        const existant = await db.get(`SELECT * FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [req.params.id]);
+        if (!existant) return res.status(404).json({ error: 'Ligne BudgÃ©taire introuvable' });
+
+        // Verification des regles metier (meta_rule) avant toute modification
+        const violations = await verifierRegles('ligne_budgetaire', 'AVANT_MODIFICATION', existant, req.body);
+        if (violations.length > 0) {
+            return res.status(409).json({ error: 'Regle(s) metier violee(s)', violations });
+        }
+
+        // Verification du workflow si le statut change
+        if (req.body.statut !== undefined && req.body.statut !== existant.statut) {
+            const transitionCheck = await verifierTransition('ligne_budgetaire', existant.statut, req.body.statut, req.roleCode);
+            if (!transitionCheck.autorise) {
+                return res.status(409).json({ error: 'Transition de workflow refusee', message: transitionCheck.message });
+            }
+        }
+
+        const champsAModifier = CHAMPS.filter(c => req.body[c] !== undefined);
+        if (champsAModifier.length === 0) {
+            return res.status(400).json({ error: 'Aucun champ a modifier' });
+        }
+        const setClause = champsAModifier.map(c => `${c} = ?`).join(', ');
+        const valeurs = champsAModifier.map(c => req.body[c]);
+        await db.run(
+            `UPDATE ligne_budgetaire SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE ligne_budgetaire_id = ?`,
+            [...valeurs, req.params.id]
+        );
+        const row = await db.get(`SELECT * FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [req.params.id]);
+        await enregistrerEvenement('ligne_budgetaire', req.params.id, 'MODIFICATION', existant, row);
+        await declencherNotifications('ligne_budgetaire', req.params.id, 'MODIFICATION', row);
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// SUPPRESSION
+router.delete('/ligne_budgetaires/:id', exigerPermission('ligne_budgetaire', 'DELETE'), async (req, res) => {
+    try {
+        const existant = await db.get(`SELECT * FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [req.params.id]);
+        if (!existant) return res.status(404).json({ error: 'Ligne BudgÃ©taire introuvable' });
+        await db.run(`DELETE FROM ligne_budgetaire WHERE ligne_budgetaire_id = ?`, [req.params.id]);
+        await enregistrerEvenement('ligne_budgetaire', req.params.id, 'SUPPRESSION', existant, null);
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// HISTORIQUE (genere automatiquement par le moteur d'evenements)
+router.get('/ligne_budgetaires/:id/historique', exigerPermission('ligne_budgetaire', 'READ'), async (req, res) => {
+    try {
+        const evenements = await historique('ligne_budgetaire', req.params.id);
+        res.json(evenements);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;

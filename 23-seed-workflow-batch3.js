@@ -1,0 +1,88 @@
+﻿// ==============================================================
+// COUVERTURE COMPLETE DES 32 DOMAINES - Batch 3 : workflows
+// Usage : node 23-seed-workflow-batch3.js
+// A executer depuis C:\pngie-rdc\pngie-backend, APRES 22-seed-meta-batch3.js
+// ==============================================================
+
+const crypto = require('crypto');
+const db = require('./src/db');
+
+async function ajouterTransition(entite, from, to) {
+    const existante = await db.get(
+        'SELECT transition_id FROM meta_workflow_transition WHERE entite = ? AND from_statut = ? AND to_statut = ?',
+        [entite, from, to]
+    );
+    if (existante) { console.log(`(i) ${entite} ${from}->${to} existe deja`); return; }
+    await db.run(
+        `INSERT INTO meta_workflow_transition (transition_id, entite, from_statut, to_statut, role_code_requis)
+         VALUES (?, ?, ?, ?, NULL)`,
+        [crypto.randomUUID(), entite, from, to]
+    );
+    console.log(`+-- Transition : ${entite} ${from} -> ${to}`);
+}
+
+const TRANSITIONS = [
+  ['decision_institutionnelle', 'PROJET', 'ADOPTEE'],
+  ['decision_institutionnelle', 'PROJET', 'REJETEE'],
+  ['dossier_administratif', 'DEPOSE', 'EN_TRAITEMENT'],
+  ['dossier_administratif', 'EN_TRAITEMENT', 'CLOTURE'],
+  ['reclamation_citoyenne', 'RECUE', 'EN_COURS'],
+  ['reclamation_citoyenne', 'EN_COURS', 'RESOLUE'],
+  ['dossier_entreprise', 'EN_COURS', 'VALIDE'],
+  ['dossier_entreprise', 'EN_COURS', 'REJETE'],
+  ['dossier_agent_rh', 'SOUMIS', 'VALIDE'],
+  ['dossier_agent_rh', 'SOUMIS', 'REJETE'],
+  ['ligne_budgetaire', 'PROJET', 'VOTEE'],
+  ['ligne_budgetaire', 'VOTEE', 'EXECUTEE'],
+  ['ordre_paiement', 'EMIS', 'PAYE'],
+  ['ordre_paiement', 'EMIS', 'ANNULE'],
+  ['ecriture_comptable', 'BROUILLON', 'VALIDEE'],
+  ['declaration_fiscale', 'DEPOSEE', 'VALIDEE'],
+  ['declaration_fiscale', 'DEPOSEE', 'REJETEE'],
+  ['declaration_douaniere', 'DEPOSEE', 'DEDOUANEE'],
+  ['bien_patrimonial', 'ACTIF', 'CEDE'],
+  ['bien_patrimonial', 'ACTIF', 'HORS_SERVICE'],
+  ['appel_offres', 'PUBLIE', 'ATTRIBUE'],
+  ['appel_offres', 'PUBLIE', 'ANNULE'],
+  ['dossier_projet_investissement', 'ETUDE', 'EXECUTION'],
+  ['dossier_projet_investissement', 'EXECUTION', 'RECEPTION'],
+  ['incident_securitaire', 'SIGNALE', 'EN_COURS'],
+  ['incident_securitaire', 'EN_COURS', 'CLOTURE'],
+  ['dossier_logistique_defense', 'DEMANDE', 'APPROUVEE'],
+  ['dossier_logistique_defense', 'DEMANDE', 'REJETEE'],
+  ['dossier_scolaire', 'OUVERT', 'CLOTURE'],
+  ['exploitation_agricole', 'ACTIVE', 'SUSPENDUE'],
+  ['raccordement_energetique', 'DEMANDE', 'RACCORDE'],
+  ['raccordement_energetique', 'DEMANDE', 'REJETE'],
+  ['licence_commerciale', 'DEMANDE', 'DELIVREE'],
+  ['licence_commerciale', 'DEMANDE', 'REJETEE'],
+  ['autorisation_industrielle', 'DEMANDE', 'DELIVREE'],
+  ['autorisation_industrielle', 'DEMANDE', 'REJETEE'],
+  ['immatriculation_vehicule', 'EN_COURS', 'IMMATRICULE'],
+  ['licence_telecom', 'DEMANDE', 'DELIVREE'],
+  ['licence_telecom', 'DEMANDE', 'REJETEE'],
+  ['etude_impact_environnemental', 'DEPOSEE', 'APPROUVEE'],
+  ['etude_impact_environnemental', 'DEPOSEE', 'REJETEE'],
+  ['bien_culturel_protege', 'CLASSE', 'DECLASSE'],
+  ['federation_sportive', 'RECONNUE', 'SUSPENDUE'],
+  ['projet_recherche', 'EN_COURS', 'TERMINE'],
+  ['accord_cooperation', 'NEGOCIATION', 'SIGNE'],
+  ['plan_developpement', 'ELABORATION', 'ADOPTE'],
+  ['enquete_statistique', 'PLANIFIEE', 'EN_COURS'],
+  ['enquete_statistique', 'EN_COURS', 'PUBLIEE'],
+];
+
+async function main() {
+    for (const [entite, from, to] of TRANSITIONS) {
+        await ajouterTransition(entite, from, to);
+    }
+    console.log(`\nOK - ${TRANSITIONS.length} transitions de workflow enregistrees pour les 27 domaines.`);
+    console.log('Prochaine etape : node 24-seed-permissions-batch3.js');
+}
+
+main()
+    .then(() => { process.exitCode = 0; })
+    .catch(err => {
+        console.error('ERREUR :', err.message);
+        process.exitCode = 1;
+    });

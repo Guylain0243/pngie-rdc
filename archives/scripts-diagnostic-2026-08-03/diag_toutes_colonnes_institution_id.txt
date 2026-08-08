@@ -1,0 +1,37 @@
+﻿           table_name            |         column_name         
+---------------------------------+-----------------------------
+ agent_ia                        | institution_id
+ competence                      | institution_id
+ delegation_perimetre            | institution_id
+ document                        | institution_id
+ execution_rapport               | institution_id
+ fiche_tome                      | institution_id
+ index_recherche_global          | institution_id
+ indicateur                      | institution_id
+ institution                     | institution_id
+ instruction                     | emetteur_institution_id
+ instruction                     | destinataire_institution_id
+ nocode_workflow                 | institution_id
+ personne_role                   | scope_institution_id
+ processus                       | institution_id
+ ref_auditorat_militaire         | institution_id
+ ref_cour_appel                  | institution_id
+ ref_gouvernorat                 | institution_id
+ ref_greffe                      | institution_id
+ ref_juridiction_militaire       | institution_id
+ ref_parquet                     | institution_id
+ ref_tribunal_commerce           | institution_id
+ ref_tribunal_enfants            | institution_id
+ ref_tribunal_grande_instance    | institution_id
+ ref_tribunal_militaire_garnison | institution_id
+ ref_tribunal_paix               | institution_id
+ ref_tribunal_travail            | institution_id
+ referentiel_national            | institution_id
+ rni_lien_hierarchique           | institution_id
+ rnso_hierarchie                 | institution_id
+ rnso_structure                  | institution_id
+ service_public                  | institution_id
+ unite_organisationnelle         | institution_id
+ verification                    | verificateur_institution_id
+(33 lignes)
+

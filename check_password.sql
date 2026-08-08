@@ -1,0 +1,1 @@
+SELECT email, LEFT(password_hash, 10) AS debut_hash FROM person WHERE email = 'mi@rdc.gouv.cd';

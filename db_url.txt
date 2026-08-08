@@ -1,0 +1,1 @@
+﻿DATABASE_URL=postgresql://pngie_app:%3ANI%3DCcM%23D.jL(i%23ni1v%26%5B%5EqU@localhost:5432/pngie_rdc

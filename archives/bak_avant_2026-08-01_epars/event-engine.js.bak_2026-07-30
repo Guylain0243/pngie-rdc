@@ -1,0 +1,50 @@
+// ==============================================================
+// MOTEUR D'EVENEMENTS - module reutilisable, generique pour toutes les entites
+// Utilise par les routeurs generes (government-builder.js) apres
+// chaque creation/modification/suppression reussie.
+// ==============================================================
+
+const crypto = require('crypto');
+const db = require('./db');
+
+/**
+ * Enregistre un evenement d'audit.
+ * @param {string} entity - nom de la table (ex: 'facture')
+ * @param {string} entityId - id de l'enregistrement concerne
+ * @param {string} evenement - 'CREATION' | 'MODIFICATION' | 'SUPPRESSION'
+ * @param {object|null} avant - snapshot avant l'action (null pour une creation)
+ * @param {object|null} apres - snapshot apres l'action (null pour une suppression)
+ * @param {string|null} utilisateurId - reserve pour plus tard, NULL tant qu'il n'y a pas d'auth
+ */
+async function enregistrerEvenement(entity, entityId, evenement, avant, apres, utilisateurId = null) {
+    await db.run(
+        `INSERT INTO entity_event (event_id, entity, entity_id, evenement, donnees_avant, donnees_apres, utilisateur_id)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+            crypto.randomUUID(),
+            entity,
+            entityId,
+            evenement,
+            avant ? JSON.stringify(avant) : null,
+            apres ? JSON.stringify(apres) : null,
+            utilisateurId
+        ]
+    );
+}
+
+/**
+ * Recupere l'historique complet d'un enregistrement, du plus recent au plus ancien.
+ */
+async function historique(entity, entityId) {
+    const rows = await db.all(
+        `SELECT * FROM entity_event WHERE entity = ? AND entity_id = ? ORDER BY created_at DESC`,
+        [entity, entityId]
+    );
+    return rows.map(r => ({
+        ...r,
+        donnees_avant: r.donnees_avant ? JSON.parse(r.donnees_avant) : null,
+        donnees_apres: r.donnees_apres ? JSON.parse(r.donnees_apres) : null
+    }));
+}
+
+module.exports = { enregistrerEvenement, historique };

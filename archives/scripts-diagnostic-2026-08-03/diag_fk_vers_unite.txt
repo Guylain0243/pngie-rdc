@@ -1,0 +1,8 @@
+﻿       table_name        |   column_name   
+-------------------------+-----------------
+ unite_organisationnelle | unite_parent_id
+ poste                   | unite_id
+ ref_parquet             | unite_id
+ ref_greffe              | unite_id
+(4 lignes)
+

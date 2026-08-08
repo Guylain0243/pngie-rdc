@@ -1,0 +1,295 @@
+// ============================================================
+// PILOTE Government Meta Platform - Etape 3 : LE GENERATEUR
+//
+// Lit les tables meta_entity / meta_attribute et genere automatiquement :
+//   1) le SQL CREATE TABLE de l'objet metier (execute directement)
+//   2) un fichier de routeur Express avec CRUD complet (GET/POST/PUT/DELETE)
+//      pret a etre branche sur le serveur (require + app.use)
+//
+// C'est la preuve de concept : au lieu d'ecrire la table "facture" et
+// ses routes API a la main, on les a DECRITES en donnees (etape 2),
+// et ce script les GENERE.
+//
+// NOUVEAU (02/08/2026) : filtrage automatique par institution_id.
+// Toute entite dont le scope (table entity_scope) est 'INSTITUTION'
+// recoit desormais un filtrage systematique par institution_id sur
+// TOUTES ses routes (LISTE, DETAIL, CREATION, MODIFICATION, SUPPRESSION),
+// en s'appuyant sur le contexte pose par requireAuth (request-context.js).
+// Les entites GLOBAL, MULTI_INSTITUTION, PERSON ne sont pas filtrees ici
+// (logique differente, a traiter separement).
+//
+// Usage : node government-builder.js <nom_table>
+//   ex :  node government-builder.js facture
+//
+// A executer depuis C:\pngie-rdc\pngie-backend, APRES 09 et 10
+// ============================================================
+
+const fs = require('fs');
+const path = require('path');
+const db = require('./src/db');
+
+const TYPE_SQL = {
+    TEXT: 'TEXT',
+    DECIMAL: 'REAL',
+    INTEGER: 'INTEGER',
+    DATE: 'TEXT',
+    BOOLEAN: 'INTEGER'
+};
+
+function sqlColonne(attr) {
+    const type = TYPE_SQL[attr.type] || 'TEXT';
+    let ligne = `    ${attr.nom_colonne} ${type}`;
+    if (attr.obligatoire) ligne += ' NOT NULL';
+    if (attr.unique_flag) ligne += ' UNIQUE';
+    if (attr.valeur_defaut !== null && attr.valeur_defaut !== undefined) {
+        const val = isNaN(attr.valeur_defaut) ? `'${attr.valeur_defaut}'` : attr.valeur_defaut;
+        ligne += ` DEFAULT ${val}`;
+    }
+    return ligne;
+}
+
+async function genererTable(entity, attributs) {
+    const colonnes = [
+        `    ${entity.nom_table}_id TEXT PRIMARY KEY`,
+        ...attributs.map(sqlColonne),
+        `    created_at TEXT DEFAULT CURRENT_TIMESTAMP`,
+        `    updated_at TEXT DEFAULT CURRENT_TIMESTAMP`
+    ];
+    const sql = `CREATE TABLE IF NOT EXISTS ${entity.nom_table} (\n${colonnes.join(',\n')}\n)`;
+
+    console.log('--- SQL genere ---\n');
+    console.log(sql + ';\n');
+
+    await db.run(sql);
+    console.log(`OK - Table "${entity.nom_table}" creee (ou deja existante) a partir des metadonnees.\n`);
+    return sql;
+}
+
+function genererRouteurExpress(entity, attributs, scope) {
+    const table = entity.nom_table;
+    const pk = entity.pk_column || `${table}_id`;
+    const champsObligatoires = attributs
+        .filter(a => a.obligatoire && (a.valeur_defaut === null || a.valeur_defaut === undefined))
+        .map(a => a.nom_colonne);
+    const tousChamps = attributs.map(a => a.nom_colonne);
+    const estInstitution = scope === 'INSTITUTION';
+
+    const code = `// =====================================================================
+// ROUTEUR GENERE AUTOMATIQUEMENT par government-builder.js
+// Entite : ${entity.nom_table}  (table : ${table})
+// Scope  : ${scope || 'NON_DEFINI'}
+// NE PAS MODIFIER A LA MAIN - regenerer via government-builder.js
+// si les metadonnees changent.
+// =====================================================================
+
+const express = require('express');
+const crypto = require('crypto');
+const db = require('../src/db');
+const { verifierRegles } = require('../src/rule-engine');
+const { enregistrerEvenement, historique } = require('../src/event-engine');
+const { exigerPermission } = require('../src/security-engine');
+${estInstitution ? `const requestContext = require('../src/request-context');\n` : ''}
+const router = express.Router();
+
+const CHAMPS = ${JSON.stringify(tousChamps)};
+const CHAMPS_OBLIGATOIRES = ${JSON.stringify(champsObligatoires)};
+
+function validerPayload(body) {
+    const manquants = CHAMPS_OBLIGATOIRES.filter(c => body[c] === undefined || body[c] === null || body[c] === '');
+    return manquants;
+}
+${estInstitution ? `
+function institutionCourante() {
+    const ctx = requestContext.getContext();
+    return ctx ? ctx.institutionId : null;
+}
+` : ''}
+// LISTE
+router.get('/${table}s', exigerPermission('${table}', 'READ'), async (req, res) => {
+    try {
+        ${estInstitution ? `const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const rows = await db.all(\`SELECT * FROM ${table} WHERE institution_id = ? ORDER BY created_at DESC\`, [instId]);` : `const rows = await db.all(\`SELECT * FROM ${table} ORDER BY created_at DESC\`);`}
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DETAIL
+router.get('/${table}s/:id', exigerPermission('${table}', 'READ'), async (req, res) => {
+    try {
+        ${estInstitution ? `const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ? AND institution_id = ?\`, [req.params.id, instId]);` : `const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);`}
+        if (!row) return res.status(404).json({ error: '${entity.nom} introuvable' });
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATION
+router.post('/${table}s', exigerPermission('${table}', 'CREATE'), async (req, res) => {
+    const manquants = validerPayload(req.body);
+    if (manquants.length > 0) {
+        return res.status(400).json({ error: 'Champs obligatoires manquants', champs: manquants });
+    }
+    try {
+        ${estInstitution ? `const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });` : ''}
+        const id = crypto.randomUUID();
+        const champsRenseignes = CHAMPS.filter(c => req.body[c] !== undefined);
+        const colonnes = ['${pk}', ...champsRenseignes${estInstitution ? `, 'institution_id'` : ''}];
+        const valeurs = [id, ...champsRenseignes.map(c => req.body[c])${estInstitution ? `, instId` : ''}];
+        const placeholders = colonnes.map(() => '?').join(', ');
+        await db.run(
+            \`INSERT INTO ${table} (\${colonnes.join(', ')}) VALUES (\${placeholders})\`,
+            valeurs
+        );
+        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [id]);
+        await enregistrerEvenement('${table}', id, 'CREATION', null, row);
+        res.status(201).json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// MODIFICATION
+router.put('/${table}s/:id', exigerPermission('${table}', 'UPDATE'), async (req, res) => {
+    try {
+        ${estInstitution ? `const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ? AND institution_id = ?\`, [req.params.id, instId]);` : `const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);`}
+        if (!existant) return res.status(404).json({ error: '${entity.nom} introuvable' });
+
+        // Verification des regles metier (meta_rule) avant toute modification
+        const violations = await verifierRegles('${table}', 'AVANT_MODIFICATION', existant, req.body);
+        if (violations.length > 0) {
+            return res.status(409).json({ error: 'Regle(s) metier violee(s)', violations });
+        }
+
+        const champsAModifier = CHAMPS.filter(c => req.body[c] !== undefined);
+        if (champsAModifier.length === 0) {
+            return res.status(400).json({ error: 'Aucun champ a modifier' });
+        }
+        const setClause = champsAModifier.map(c => \`\${c} = ?\`).join(', ');
+        const valeurs = champsAModifier.map(c => req.body[c]);
+        ${estInstitution ? `await db.run(
+            \`UPDATE ${table} SET \${setClause}, updated_at = CURRENT_TIMESTAMP WHERE ${pk} = ? AND institution_id = ?\`,
+            [...valeurs, req.params.id, instId]
+        );` : `await db.run(
+            \`UPDATE ${table} SET \${setClause}, updated_at = CURRENT_TIMESTAMP WHERE ${pk} = ?\`,
+            [...valeurs, req.params.id]
+        );`}
+        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+        await enregistrerEvenement('${table}', req.params.id, 'MODIFICATION', existant, row);
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// SUPPRESSION
+router.delete('/${table}s/:id', exigerPermission('${table}', 'DELETE'), async (req, res) => {
+    try {
+        ${estInstitution ? `const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ? AND institution_id = ?\`, [req.params.id, instId]);` : `const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);`}
+        if (!existant) return res.status(404).json({ error: '${entity.nom} introuvable' });
+        ${estInstitution ? `await db.run(\`DELETE FROM ${table} WHERE ${pk} = ? AND institution_id = ?\`, [req.params.id, instId]);` : `await db.run(\`DELETE FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);`}
+        await enregistrerEvenement('${table}', req.params.id, 'SUPPRESSION', existant, null);
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// HISTORIQUE (genere automatiquement par le moteur d'evenements)
+router.get('/${table}s/:id/historique', exigerPermission('${table}', 'READ'), async (req, res) => {
+    try {
+        const evenements = await historique('${table}', req.params.id);
+        res.json(evenements);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;
+`;
+
+    return code;
+}
+
+async function main() {
+    const nomTable = process.argv[2];
+    if (!nomTable) {
+        console.error('Usage : node government-builder.js <nom_table>');
+        console.error('Exemple : node government-builder.js facture');
+        process.exitCode = 1;
+        return;
+    }
+
+    const entity = await db.get('SELECT * FROM meta_entity WHERE nom_table = ?', [nomTable]);
+    if (!entity) {
+        console.error(`ERREUR : aucune entite meta_entity trouvee pour la table "${nomTable}".`);
+        console.error('Avez-vous execute le script de seed meta correspondant (ex: 10-seed-meta-facture.js) ?');
+        process.exitCode = 1;
+        return;
+    }
+
+    // Resolution du scope de gouvernance (entity_scope), pour savoir s'il faut
+    // filtrer automatiquement par institution_id.
+    let scope = null;
+    try {
+        const scopeRow = await db.get('SELECT scope_type FROM entity_scope WHERE entity = ?', [nomTable]);
+        scope = scopeRow ? scopeRow.scope_type : null;
+        if (!scope) {
+            console.warn(`ATTENTION : aucun scope defini dans entity_scope pour "${nomTable}". Genere SANS filtrage institution_id.`);
+        }
+    } catch (e) {
+        console.warn(`ATTENTION : impossible de lire entity_scope (${e.message}). Genere SANS filtrage institution_id.`);
+    }
+
+    const attributs = await db.all(
+        'SELECT * FROM meta_attribute WHERE entity_id = ? ORDER BY ordre',
+        [entity.entity_id]
+    );
+
+    if (attributs.length === 0) {
+        console.error(`ERREUR : aucun attribut defini pour l'entite "${entity.nom}".`);
+        process.exitCode = 1;
+        return;
+    }
+
+    console.log(`=== Generation pour l'entite "${entity.nom}" (${attributs.length} attribut(s)) — scope: ${scope || 'NON_DEFINI'} ===\n`);
+
+    // 1) Generer et executer le SQL
+    await genererTable(entity, attributs);
+
+    // 2) Generer le routeur Express
+    const codeRouteur = genererRouteurExpress(entity, attributs, scope);
+    const dossierGenere = path.join(__dirname, 'routes-generated');
+    if (!fs.existsSync(dossierGenere)) fs.mkdirSync(dossierGenere);
+    const fichierRouteur = path.join(dossierGenere, `${nomTable}.routes.js`);
+    fs.writeFileSync(fichierRouteur, codeRouteur, 'utf8');
+
+    console.log(`OK - Routeur API genere : routes-generated/${nomTable}.routes.js`);
+    console.log(`\nPour l'activer, ajoutez dans votre fichier serveur principal (ex: src/server.js) :`);
+    console.log(`  const ${nomTable}Router = require('./routes-generated/${nomTable}.routes');`);
+    console.log(`  app.use('/api', ${nomTable}Router);`);
+    console.log(`\nEndpoints generes :`);
+    console.log(`  GET    /api/${nomTable}s`);
+    console.log(`  GET    /api/${nomTable}s/:id`);
+    console.log(`  POST   /api/${nomTable}s`);
+    console.log(`  PUT    /api/${nomTable}s/:id`);
+    console.log(`  DELETE /api/${nomTable}s/:id`);
+    console.log(`  GET    /api/${nomTable}s/:id/historique`);
+}
+
+main()
+    .then(() => { process.exitCode = process.exitCode ?? 0; })
+    .catch(err => {
+        console.error('ERREUR :', err.message);
+        process.exitCode = 1;
+    });

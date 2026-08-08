@@ -1,0 +1,45 @@
+﻿                                                                                                               Table � public.poste �
+         Colonne         |           Type           | Collationnement | NULL-able |                                                                               Par d�faut                                                                                
+-------------------------+--------------------------+-----------------+-----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ poste_id                | uuid                     |                 | not null  | uuid_generate_v4()
+ unite_id                | uuid                     |                 | not null  | 
+ code                    | character varying(30)    |                 | not null  | 
+ intitule                | character varying(255)   |                 | not null  | 
+ poste_hierarchique_id   | uuid                     |                 |           | 
+ niveau_hierarchique     | integer                  |                 | not null  | 0
+ categorie               | character varying(50)    |                 |           | 
+ missions                | text                     |                 |           | 
+ attributions            | text                     |                 |           | 
+ responsabilites         | text                     |                 |           | 
+ competences_requises    | text                     |                 |           | 
+ nombre_postes_autorises | integer                  |                 | not null  | 1
+ statut                  | character varying(20)    |                 | not null  | 'ACTIF'::character varying
+ created_at              | timestamp with time zone |                 | not null  | now()
+ updated_at              | timestamp with time zone |                 | not null  | now()
+ niveau_confiance        | character varying(20)    |                 | not null  | 'A_VALIDER'::character varying
+ pourcentage_confiance   | integer                  |                 |           | generated always as (                                                                                                                                                 +
+                         |                          |                 |           | CASE niveau_confiance                                                                                                                                                 +
+                         |                          |                 |           |     WHEN 'OFFICIEL'::text THEN 100                                                                                                                                    +
+                         |                          |                 |           |     WHEN 'CONFIRME'::text THEN 90                                                                                                                                     +
+                         |                          |                 |           |     WHEN 'PROBABLE'::text THEN 70                                                                                                                                     +
+                         |                          |                 |           |     WHEN 'A_VALIDER'::text THEN 40                                                                                                                                    +
+                         |                          |                 |           |     WHEN 'INCONNU'::text THEN 0                                                                                                                                       +
+                         |                          |                 |           |     ELSE NULL::integer                                                                                                                                                +
+                         |                          |                 |           | END) stored
+ participe_calculs       | boolean                  |                 |           | generated always as (niveau_confiance::text = ANY (ARRAY['OFFICIEL'::character varying, 'CONFIRME'::character varying, 'PROBABLE'::character varying]::text[])) stored
+Index :
+    "poste_pkey" PRIMARY KEY, btree (poste_id)
+    "idx_poste_hierarchique" btree (poste_hierarchique_id)
+    "idx_poste_unite" btree (unite_id)
+    "poste_unite_id_code_key" UNIQUE CONSTRAINT, btree (unite_id, code)
+Contraintes de v�rification :
+    "poste_niveau_confiance_check" CHECK (niveau_confiance::text = ANY (ARRAY['OFFICIEL'::character varying, 'CONFIRME'::character varying, 'PROBABLE'::character varying, 'A_VALIDER'::character varying, 'INCONNU'::character varying]::text[]))
+    "poste_statut_check" CHECK (statut::text = ANY (ARRAY['ACTIF'::character varying, 'INACTIF'::character varying, 'SUSPENDU'::character varying, 'VACANT'::character varying]::text[]))
+Contraintes de cl�s �trang�res :
+    "poste_poste_hierarchique_id_fkey" FOREIGN KEY (poste_hierarchique_id) REFERENCES poste(poste_id)
+    "poste_unite_id_fkey" FOREIGN KEY (unite_id) REFERENCES unite_organisationnelle(unite_id)
+R�f�renc� par :
+    TABLE "affectation" CONSTRAINT "affectation_poste_id_fkey" FOREIGN KEY (poste_id) REFERENCES poste(poste_id)
+    TABLE "poste" CONSTRAINT "poste_poste_hierarchique_id_fkey" FOREIGN KEY (poste_hierarchique_id) REFERENCES poste(poste_id)
+    TABLE "poste_role_metier" CONSTRAINT "poste_role_metier_poste_id_fkey" FOREIGN KEY (poste_id) REFERENCES poste(poste_id)
+

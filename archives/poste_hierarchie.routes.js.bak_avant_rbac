@@ -1,0 +1,118 @@
+const express = require("express");
+const db = require("../src/db");
+const router = express.Router();
+
+// ARBORESCENCE : institution -> unite -> postes (avec fonctions liées)
+router.get("/postes/arborescence", async (req, res) => {
+  try {
+    const rows = await db.all(`
+      SELECT i.institution_id, i.nom AS institution_nom,
+             u.unite_id, u.nom AS unite_nom, u.unite_parent_id, u.type_unite, u.niveau_hierarchique AS unite_niveau,
+             p.poste_id, p.intitule AS poste_intitule, p.categorie, p.niveau_hierarchique AS poste_niveau, p.statut AS poste_statut,
+             p.missions, p.attributions, p.responsabilites, p.competences_requises
+      FROM institution i
+      JOIN unite_organisationnelle u ON u.institution_id = i.institution_id
+      JOIN poste p ON p.unite_id = u.unite_id
+      WHERE u.statut = ? AND p.statut = ?
+      ORDER BY i.nom, u.niveau_hierarchique, p.niveau_hierarchique, p.intitule
+    `, ["ACTIF", "ACTIF"]);
+
+    const institutions = {};
+    for (const r of rows) {
+      if (!institutions[r.institution_id]) {
+        institutions[r.institution_id] = { institution_id: r.institution_id, nom: r.institution_nom, unites: {} };
+      }
+      const inst = institutions[r.institution_id];
+      if (!inst.unites[r.unite_id]) {
+        inst.unites[r.unite_id] = {
+          unite_id: r.unite_id, nom: r.unite_nom, unite_parent_id: r.unite_parent_id,
+          type_unite: r.type_unite, niveau_hierarchique: r.unite_niveau, postes: []
+        };
+      }
+      inst.unites[r.unite_id].postes.push({
+        poste_id: r.poste_id, intitule: r.poste_intitule, categorie: r.categorie,
+        niveau_hierarchique: r.poste_niveau, statut: r.poste_statut,
+        missions: r.missions, attributions: r.attributions,
+        responsabilites: r.responsabilites, competences_requises: r.competences_requises
+      });
+    }
+
+    const result = Object.values(institutions).map(inst => ({
+      institution_id: inst.institution_id, nom: inst.nom, unites: Object.values(inst.unites)
+    }));
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ENVIRONNEMENT D'UN POSTE : responsabilites, titulaire, roles/permissions, documents institution
+router.get("/postes/:id/environnement", async (req, res) => {
+  try {
+    const poste = await db.get(`
+      SELECT p.*, u.nom AS unite_nom, u.institution_id, i.nom AS institution_nom
+      FROM poste p
+      JOIN unite_organisationnelle u ON u.unite_id = p.unite_id
+      JOIN institution i ON i.institution_id = u.institution_id
+      WHERE p.poste_id = ?
+    `, [req.params.id]);
+
+    if (!poste) return res.status(404).json({ error: "Poste introuvable" });
+
+    const titulaire = await db.get(`
+      SELECT a.affectation_id, a.type_affectation, a.date_debut, pe.personne_id, pe.nom, pe.prenom, pe.email
+      FROM affectation a
+      JOIN personne pe ON pe.personne_id = a.personne_id
+      WHERE a.poste_id = ? AND a.statut = ? AND a.date_fin IS NULL
+      ORDER BY a.date_debut DESC
+      LIMIT 1
+    `, [req.params.id, "ACTIF"]);
+
+    let roles = [];
+    let permissions = [];
+    if (titulaire) {
+      roles = await db.all(`
+        SELECT r.role_id, r.code, r.nom
+        FROM personne_role pr JOIN role r ON r.role_id = pr.role_id
+        WHERE pr.personne_id = ?
+      `, [titulaire.personne_id]);
+
+      if (roles.length > 0) {
+        const roleIds = roles.map(r => r.role_id);
+        const placeholders = roleIds.map(() => "?").join(",");
+        permissions = await db.all(`
+          SELECT DISTINCT entite, action FROM permission
+          WHERE role_id IN (${placeholders}) AND statut = ?
+          ORDER BY entite, action
+        `, [...roleIds, "ACTIF"]);
+      }
+    }
+
+    const documents = await db.all(`
+      SELECT document_id, titre, reference, statut, confidentialite, created_at
+      FROM document WHERE institution_id = ?
+      ORDER BY created_at DESC LIMIT 20
+    `, [poste.institution_id]);
+
+    res.json({
+      poste: {
+        poste_id: poste.poste_id, intitule: poste.intitule, categorie: poste.categorie,
+        missions: poste.missions, attributions: poste.attributions,
+        responsabilites: poste.responsabilites, competences_requises: poste.competences_requises,
+        unite: poste.unite_nom, institution: poste.institution_nom
+      },
+      titulaire: titulaire ? {
+        personne_id: titulaire.personne_id, nom: titulaire.nom, prenom: titulaire.prenom,
+        email: titulaire.email, depuis: titulaire.date_debut
+      } : null,
+      roles: roles.map(r => ({ code: r.code, nom: r.nom })),
+      permissions,
+      documents_institution: documents
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;

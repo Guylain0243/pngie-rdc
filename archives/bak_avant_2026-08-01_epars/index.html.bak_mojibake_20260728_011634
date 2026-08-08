@@ -1,0 +1,2078 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PNGIE-RDC â€” Plateforme Nationale de Gouvernance IntÃ©grÃ©e</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#052C5C;--navy2:#073B78;--navy3:#0E4E96;
+  --gold:#F7D618;--gold2:#FCE873;--gold3:#C7A800;
+  --cream:#F5F0E8;--red:#CE1021;--green:#1A6B3C;
+  --blue:#007FFF;--amber:#B45309;--purple:#6B21A8;
+  --w:#fff;--text:#1A1A2E;--muted:#4A5568;--light:#F2F2F0;--border:rgba(0,0,0,0.09);
+  --flag-stripe:linear-gradient(90deg,var(--blue) 0%,var(--blue) 30%,var(--red) 30%,var(--red) 33%,var(--gold) 33%,var(--gold) 100%);
+}
+body{font-family:'Source Sans 3',sans-serif;background:var(--cream);color:var(--text)}
+.app{display:grid;grid-template-rows:52px 4px 1fr;height:100vh;overflow:hidden}
+.topbar{background:var(--navy);display:flex;align-items:center;padding:0 14px;border-bottom:2px solid var(--gold3)}
+.tb-logo{display:flex;align-items:center;gap:9px;padding-right:16px;border-right:1px solid rgba(255,255,255,0.1)}
+.tb-emblem{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--gold);background:var(--navy2);display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;color:var(--gold);font-size:10px;font-weight:700}
+.tb-name{font-family:'Cinzel',serif;color:var(--gold);font-size:13px;font-weight:600}
+.tb-sub{color:rgba(255,255,255,0.35);font-size:9px}
+.tb-nav{display:flex;gap:1px;padding:0 10px;flex:1;overflow-x:auto}
+.tb-btn{background:none;border:none;color:rgba(255,255,255,0.55);font-size:11px;font-family:'Source Sans 3',sans-serif;padding:5px 9px;border-radius:5px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tb-btn:hover,.tb-btn.act{background:rgba(201,168,76,0.15);color:var(--gold)}
+.tb-right{display:flex;align-items:center;gap:8px;padding-left:10px;border-left:1px solid rgba(255,255,255,0.1)}
+.tb-avatar{width:26px;height:26px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--navy)}
+.tb-uname{color:rgba(255,255,255,0.65);font-size:11px}
+.tb-badge{background:var(--red);color:#fff;font-size:9px;padding:1px 6px;border-radius:20px;font-weight:700}
+.tb-logout{background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-size:11px;padding:4px 8px;border-radius:5px;cursor:pointer}
+.body{display:grid;grid-template-columns:210px 1fr;height:calc(100vh - 56px);overflow:hidden}
+.sidebar{background:var(--navy2);overflow-y:auto;border-right:1px solid rgba(255,255,255,0.05);display:flex;flex-direction:column}
+.sb-section{padding:10px 8px 3px}
+.sb-label{font-size:9px;letter-spacing:.12em;color:rgba(255,255,255,0.28);padding:0 8px;text-transform:uppercase;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;transition:all .2s;color:rgba(255,255,255,0.55);font-size:11.5px;margin:1px 0}
+.sb-item:hover{background:rgba(255,255,255,0.06);color:#fff}
+.sb-item.act{background:rgba(201,168,76,0.15);color:var(--gold)}
+.sb-item i{font-size:15px;width:17px;text-align:center}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:8px;padding:1px 5px;border-radius:20px;font-weight:700}
+.sb-divider{height:1px;background:rgba(255,255,255,0.05);margin:6px 10px}
+.sb-bottom{margin-top:auto;padding:10px;border-top:1px solid rgba(255,255,255,0.05)}
+.sb-info{font-size:9.5px;color:rgba(255,255,255,0.22);padding:4px 8px;line-height:1.6}
+.main{overflow-y:auto;background:var(--cream)}
+.page{display:none;padding:20px 24px;animation:fadeIn .22s ease}
+.page.act{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+.ph-title{font-family:'Cinzel',serif;font-size:18px;font-weight:600;color:var(--navy)}
+.ph-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ph-actions{display:flex;gap:7px;flex-wrap:wrap}
+.btn{padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:#fff;color:var(--text);font-size:11.5px;font-family:'Source Sans 3',sans-serif;cursor:pointer;font-weight:500;transition:all .17s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{border-color:var(--gold3);color:var(--gold3)}
+.btn.primary{background:var(--navy);color:var(--gold);border-color:var(--navy)}
+.btn.success{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.danger{background:var(--red);color:#fff;border-color:var(--red)}
+.btn.sm{padding:4px 9px;font-size:10.5px}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.kpi{background:#fff;border:0.5px solid var(--border);border-radius:11px;padding:14px;position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc,var(--gold))}
+.kpi-lbl{font-size:10.5px;color:var(--muted);margin-bottom:5px}
+.kpi-val{font-size:24px;font-weight:700;color:var(--navy);font-family:'Cinzel',serif;line-height:1}
+.kpi-tr{font-size:10.5px;margin-top:4px;font-weight:500}
+.tup{color:var(--green)}.tdn{color:var(--red)}.twn{color:var(--amber)}
+.card{background:#fff;border:0.5px solid var(--border);border-radius:11px;padding:18px;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.card-title i{font-size:15px;color:var(--gold3)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:11.5px}
+thead th{background:var(--navy);color:rgba(255,255,255,0.8);padding:9px 11px;text-align:left;font-weight:500;font-size:10.5px}
+tbody tr{border-bottom:.5px solid var(--border);transition:background .12s}
+tbody tr:hover{background:var(--cream)}
+tbody td{padding:8px 11px;vertical-align:middle}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:9.5px;font-weight:700}
+.bg{background:#DCFCE7;color:#166534}.br{background:#FEE2E2;color:#991B1B}
+.ba{background:#FEF3C7;color:#92400E}.bb{background:#DBEAFE;color:#1E40AF}
+.bn{background:#E6F1FB;color:#0C447C}.bp{background:#F3E8FF;color:#6B21A8}
+.sr{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--border)}
+.sr:last-child{border:none}
+.sr-n{font-size:11.5px;color:var(--text)}.sr-v{font-size:12px;font-weight:600;color:var(--navy)}
+.prog{margin-bottom:10px}
+.prog-hdr{display:flex;justify-content:space-between;margin-bottom:4px;font-size:11px}
+.prog-tr{height:6px;background:var(--light);border-radius:10px;overflow:hidden}
+.prog-fl{height:100%;border-radius:10px}
+.alert{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;margin-bottom:8px;border:.5px solid transparent}
+.a-cr{background:#FEE2E2;border-color:#FCA5A5}.a-wn{background:#FEF3C7;border-color:#FCD34D}
+.a-in{background:#DBEAFE;border-color:#93C5FD}.a-ok{background:#DCFCE7;border-color:#86EFAC}
+.alert-icon{font-size:16px;flex-shrink:0}
+.alert-body{flex:1}
+.alert-title{font-size:11.5px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.alert-desc{font-size:10.5px;color:var(--muted)}
+.alert-time{font-size:9.5px;color:var(--muted);flex-shrink:0}
+.ia-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px}
+.ia-msgs{height:200px;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--light)}
+.ia-msg{max-width:85%;padding:8px 12px;border-radius:10px;font-size:11.5px;line-height:1.5}
+.ia-msg.bot{background:var(--navy);color:rgba(255,255,255,0.85);align-self:flex-start}
+.ia-msg.user{background:var(--gold);color:var(--navy);align-self:flex-end;font-weight:500}
+.ia-msg.typing{background:var(--navy2);color:rgba(255,255,255,0.4);align-self:flex-start}
+.ia-input-row{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid var(--border)}
+.ia-input-row input{flex:1;border:.5px solid var(--border);border-radius:6px;padding:7px 11px;font-size:11.5px;font-family:'Source Sans 3',sans-serif;outline:none}
+.ia-input-row input:focus{border-color:var(--gold3)}
+.mb{display:none;position:fixed;inset:0;background:rgba(10,22,40,0.65);align-items:center;justify-content:center;z-index:1000;padding:20px}
+.mb.open{display:flex}
+.modal{background:#fff;border-radius:13px;width:100%;max-width:500px;overflow:hidden;max-height:90vh;overflow-y:auto}
+.modal-hdr{background:var(--navy);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.modal-hdr-title{font-family:'Cinzel',serif;color:var(--gold);font-size:14px;font-weight:600}
+.modal-close{background:none;border:none;color:rgba(255,255,255,0.45);font-size:18px;cursor:pointer}
+.modal-body{padding:18px}
+.modal-footer{padding:12px 18px;border-top:.5px solid var(--border);display:flex;justify-content:flex-end;gap:8px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ff{display:flex;flex-direction:column;gap:3px}
+.ff label{font-size:10.5px;color:var(--muted);font-weight:500}
+.ff input,.ff select,.ff textarea{border:.5px solid var(--border);border-radius:6px;padding:8px 11px;font-size:11.5px;font-family:'Source Sans 3',sans-serif;background:#fff;color:var(--text);outline:none}
+.ff input:focus,.ff select:focus{border-color:var(--gold3)}
+.ff.full{grid-column:1/-1}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 20px;border-radius:8px;font-size:12px;z-index:2000;display:none;border-left:4px solid var(--gold);min-width:260px}
+.toast.show{display:block}
+.toast.ok{border-color:var(--green)}.toast.err{border-color:var(--red)}
+/* LOGIN */
+#loginScreen{display:flex;min-height:100vh;background:var(--navy);align-items:center;justify-content:center;position:relative}
+.login-box{background:rgba(255,255,255,0.05);border:1px solid rgba(201,168,76,0.25);border-radius:15px;padding:36px;width:100%;max-width:340px}
+.login-emblem{width:56px;height:56px;border-radius:50%;border:2px solid var(--gold);background:rgba(201,168,76,0.1);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-family:'Cinzel',serif;color:var(--gold);font-size:18px;font-weight:700}
+.login-title{font-family:'Cinzel',serif;color:var(--gold);font-size:20px;font-weight:600;text-align:center}
+.login-sub{color:rgba(255,255,255,0.35);font-size:10px;text-align:center;margin-top:3px;margin-bottom:20px}
+.role-chips{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:16px}
+.rc{padding:7px 6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;text-align:center;cursor:pointer;transition:all .18s}
+.rc:hover,.rc.sel{background:rgba(201,168,76,0.15);border-color:var(--gold3)}
+.rc-name{font-size:10px;color:#fff;font-weight:500}
+.rc-sub{font-size:8.5px;color:rgba(255,255,255,0.35);margin-top:1px}
+.login-field{margin-bottom:12px}
+.login-field label{display:block;font-size:10.5px;color:rgba(255,255,255,0.45);margin-bottom:4px}
+.login-field input{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:9px 13px;color:#fff;font-size:13px;font-family:'Source Sans 3',sans-serif;outline:none}
+#loginInstSelect option,#loginInstSelect optgroup,#tbInstSwitch option,#tbInstSwitch optgroup{color:#0F2040;background:#fff}
+.login-btn{width:100%;background:var(--gold);color:var(--navy);border:none;border-radius:7px;padding:11px;font-size:13px;font-weight:700;font-family:'Cinzel',serif;cursor:pointer;margin-top:4px;letter-spacing:.04em}
+.login-btn:hover{background:var(--gold2)}
+.wf{display:flex;flex-direction:column}
+.wf-step{display:flex;gap:12px;padding-bottom:14px;position:relative}
+.wf-step:not(:last-child)::before{content:'';position:absolute;left:10px;top:26px;bottom:0;width:1.5px;background:var(--border)}
+.wf-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;border:2px solid var(--border);background:#fff;margin-top:3px}
+.wf-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.wf-dot.active{background:var(--gold);border-color:var(--gold3);color:var(--navy)}
+.wf-dot.pending{background:var(--light);color:var(--muted)}
+.wf-info{flex:1}
+.wf-t{font-size:12px;font-weight:600;color:var(--navy)}
+.wf-d{font-size:10.5px;color:var(--muted)}
+.j-line{padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-family:monospace;font-size:10px;color:rgba(255,255,255,0.65);line-height:1.7}
+.flag-bar{height:4px;width:100%;background:var(--flag-stripe)}
+.login-emblem{position:relative;overflow:hidden}
+.login-emblem .star{position:relative;z-index:1}
+
+/* ACCESSIBILITY */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.001s!important}}
+
+/* RESPONSIVE */
+.menu-toggle{display:none;background:none;border:none;color:var(--gold);font-size:20px;cursor:pointer;padding:4px 8px;margin-right:6px}
+.sidebar-scrim{display:none}
+@media (max-width:980px){
+  .body{grid-template-columns:1fr}
+  .menu-toggle{display:inline-flex}
+  .sidebar{position:fixed;top:56px;left:0;bottom:0;width:230px;z-index:900;transform:translateX(-100%);transition:transform .22s ease;box-shadow:2px 0 18px rgba(0,0,0,.35)}
+  .sidebar.open{transform:translateX(0)}
+  .sidebar-scrim.show{display:block;position:fixed;inset:56px 0 0 0;background:rgba(10,22,40,.55);z-index:850}
+  .g2,.g3{grid-template-columns:1fr}
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .tb-uname{display:none}
+}
+@media (max-width:600px){
+  .tb-logo .tb-sub{display:none}
+  .kpi-grid{grid-template-columns:1fr}
+  .ph{flex-direction:column;align-items:flex-start}
+  .modal{max-width:94vw}
+  .fg{grid-template-columns:1fr}
+  .page{padding:14px 12px}
+  .kpi-val{font-size:20px}
+}
+</style>
+</head>
+<body>
+
+<!-- Ã‰CRAN DE CONNEXION -->
+<div id="loginScreen">
+  <div style="position:absolute;top:0;left:0;right:0"><div class="flag-bar"></div></div>
+  <div class="login-box">
+    <div class="login-emblem">â˜…</div>
+    <div class="login-title">PNGIE-RDC</div>
+    <div class="login-sub">Plateforme Nationale de Gouvernance IntÃ©grÃ©e<br>RÃ©publique DÃ©mocratique du Congo â€” 2027</div>
+
+    <!-- Ã‰TAPE 1 : Authentification institutionnelle -->
+    <div id="loginStep1">
+      <div style="font-size:10px;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:8px">Ã‰tape 1/3 â€” Authentification institutionnelle</div>
+      <div class="login-field">
+        <label>Choisir votre institution</label>
+        <select id="loginInstSelect" onchange="onLoginInstChange()" style="width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:9px 13px;color:#fff;font-size:13px;font-family:'Source Sans 3',sans-serif;outline:none">
+          <option value="">Chargement des institutionsâ€¦</option>
+        </select>
+      </div>
+      <div style="font-size:8.5px;color:rgba(255,255,255,0.22);text-align:center;margin:-4px 0 14px" id="loginInstSrcBadge">Connexion au serveur pour charger la liste rÃ©elleâ€¦</div>
+      <div class="login-field"><label>Email institutionnel</label><input id="lu" value="admin.presidence@rdc.gouv.cd" placeholder="prenom.nom@institution.gouv.cd"></div>
+      <div class="login-field"><label>Mot de passe</label><input type="password" id="lp" value="Pngie#2027" onkeydown="if(event.key==='Enter')goToMFA()"></div>
+      <div id="loginError" style="display:none;color:#F87171;font-size:10.5px;text-align:center;margin:-4px 0 10px;background:rgba(248,113,113,0.1);border-radius:6px;padding:6px"></div>
+      <button class="login-btn" onclick="goToMFA()">CONTINUER â†’</button>
+    </div>
+
+    <!-- Ã‰TAPE 2 : MFA -->
+    <div id="loginStep2" style="display:none">
+      <div style="font-size:10px;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:8px">Ã‰tape 2/3 â€” VÃ©rification MFA</div>
+      <div style="text-align:center;margin-bottom:14px"><i class="ti ti-shield-lock" style="font-size:32px;color:var(--gold3)"></i></div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:14px">Code de vÃ©rification envoyÃ© Ã  votre application d'authentification<br><span style="font-size:9px;color:rgba(255,255,255,0.25)">(dÃ©monstration â€” entrez n'importe quel code Ã  6 chiffres)</span></div>
+      <div class="login-field"><input id="mfaCode" maxlength="6" placeholder="000000" style="text-align:center;letter-spacing:6px;font-size:18px" onkeydown="if(event.key==='Enter')login()"></div>
+      <div id="mfaError" style="display:none;color:#F87171;font-size:10.5px;text-align:center;margin:-4px 0 10px;background:rgba(248,113,113,0.1);border-radius:6px;padding:6px"></div>
+      <button class="login-btn" onclick="login()">VALIDER & SE CONNECTER â†’</button>
+      <div style="text-align:center;margin-top:10px"><a onclick="backToStep1()" style="font-size:10px;color:rgba(255,255,255,0.4);cursor:pointer">â† Retour</a></div>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:6px;margin:14px 0 0;justify-content:center">
+      <div style="width:7px;height:7px;border-radius:50%;background:var(--gold)"></div>
+      <span style="font-size:9px;color:rgba(255,255,255,0.3)">SSO + MFA + RBAC â€” chargement automatique du poste, aucun second mot de passe requis</span>
+    </div>
+    <div style="font-size:8px;color:rgba(255,255,255,0.12);text-align:center;margin-top:14px">CONFIDENTIEL â€” PrÃ©sidence de la RÃ©publique DÃ©mocratique du Congo<br>PNGIE-RDC v1.0 â€” Programme 750M USD â€” 2027-2032</div>
+  </div>
+</div>
+
+<!-- APPLICATION PRINCIPALE -->
+<div class="app" id="mainApp" style="display:none">
+  <div class="topbar">
+    <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Ouvrir le menu"><i class="ti ti-menu-2"></i></button>
+    <div class="tb-logo">
+      <div class="tb-emblem">â˜…</div>
+      <div><div class="tb-name">PNGIE-RDC</div><div class="tb-sub">Gouvernance NumÃ©rique Nationale</div></div>
+    </div>
+    <div class="tb-nav">
+      <button class="tb-btn act" data-page="dashboard" onclick="pg('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Tableau de bord</button>
+      <button class="tb-btn" data-page="population" onclick="pg('population',this)"><i class="ti ti-users"></i> Population & CNI</button>
+      <button class="tb-btn" data-page="agents" onclick="pg('agents',this)"><i class="ti ti-user-check"></i> Agents & Paie</button>
+      <button class="tb-btn" data-page="budget" onclick="pg('budget',this)"><i class="ti ti-chart-pie"></i> Budget</button>
+      <button class="tb-btn" data-page="depenses" onclick="pg('depenses',this)"><i class="ti ti-receipt"></i> DÃ©penses</button>
+      <button class="tb-btn" data-page="fiscalite" onclick="pg('fiscalite',this)"><i class="ti ti-file-invoice"></i> FiscalitÃ© DGI</button>
+      <button class="tb-btn" data-page="marches" onclick="pg('marches',this)"><i class="ti ti-contract"></i> MarchÃ©s</button>
+      <button class="tb-btn" data-page="sante" onclick="pg('sante',this)"><i class="ti ti-heart-rate-monitor"></i> SantÃ©</button>
+      <button class="tb-btn" data-page="ministeres" onclick="pg('ministeres',this)"><i class="ti ti-briefcase"></i> MinistÃ¨res</button>
+      <button class="tb-btn" data-page="mines" onclick="pg('mines',this)"><i class="ti ti-pickaxe"></i> Mines</button>
+      <button class="tb-btn" data-page="ia" onclick="pg('ia',this)"><i class="ti ti-brain"></i> IA Anti-fraude</button>
+    </div>
+    <div class="tb-right">
+      <select id="tbInstSwitch" onchange="if(this.value){nav(null,'institution-dashboard');openInstitutionDashboard(this.value);}" style="background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.75);border:1px solid rgba(255,255,255,0.15);border-radius:6px;font-size:10.5px;padding:5px 6px;max-width:170px" title="Changer d'espace de travail institutionnel">
+        <option value="">Changer d'institutionâ€¦</option>
+      </select>
+      <span class="tb-badge" id="tbAlertCount">7</span>
+      <div class="tb-avatar" id="tbAv">PR</div>
+      <div><span class="tb-uname" id="tbNm">PrÃ©sidence</span><div id="tbCat" style="font-size:8.5px;color:rgba(255,255,255,0.3)"></div></div>
+      <button class="tb-logout" onclick="logout()">â»</button>
+    </div>
+  </div>
+  <div class="flag-bar"></div>
+
+  <div class="body">
+    <div class="sidebar-scrim" id="scrim" onclick="toggleSidebar()"></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <div class="sb-section">
+        <div class="sb-label">Cockpit National</div>
+        <div class="sb-item act" data-page="dashboard" onclick="nav(this,'dashboard')"><i class="ti ti-layout-dashboard"></i>Vue prÃ©sidentielle</div>
+        <div class="sb-item" data-page="alertes" onclick="nav(this,'alertes')"><i class="ti ti-bell"></i>Alertes IA <span class="sb-badge">7</span></div>
+        <div class="sb-item" data-page="provinces" onclick="nav(this,'provinces')"><i class="ti ti-map-2"></i>26 Provinces</div>
+        <div class="sb-item" data-page="institutions" onclick="nav(this,'institutions')"><i class="ti ti-building"></i>Institutions</div>
+        <div class="sb-item" data-page="postes" onclick="nav(this,'postes')"><i class="ti ti-hierarchy-2"></i>Postes & Organigramme</div>
+        <div class="sb-item" data-page="toutes-institutions" onclick="nav(this,'toutes-institutions')"><i class="ti ti-list-details"></i>Toutes les Institutions <span class="sb-badge" id="sbInstCount" style="background:rgba(201,168,76,0.25);color:var(--gold3)">127</span></div>
+        <div class="sb-item" data-page="ministeres" onclick="nav(this,'ministeres')"><i class="ti ti-briefcase"></i>Tous les MinistÃ¨res</div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-section">
+        <div class="sb-label">Population & IdentitÃ©</div>
+        <div class="sb-item" data-page="population" onclick="nav(this,'population')"><i class="ti ti-users"></i>Registre national</div>
+        <div class="sb-item" data-page="cni" onclick="nav(this,'cni')"><i class="ti ti-id"></i>CNI BiomÃ©trique</div>
+        <div class="sb-item" data-page="etatcivil" onclick="nav(this,'etatcivil')"><i class="ti ti-file-certificate"></i>Ã‰tat Civil</div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-section">
+        <div class="sb-label">Ressources Humaines</div>
+        <div class="sb-item" data-page="agents" onclick="nav(this,'agents')"><i class="ti ti-user-check"></i>Agents de l'Ã‰tat</div>
+        <div class="sb-item" data-page="paie" onclick="nav(this,'paie')"><i class="ti ti-cash"></i>Paie mensuelle</div>
+        <div class="sb-item" data-page="biometrie" onclick="nav(this,'biometrie')"><i class="ti ti-fingerprint"></i>BiomÃ©trie</div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-section">
+        <div class="sb-label">Finances Publiques</div>
+        <div class="sb-item" data-page="budget" onclick="nav(this,'budget')"><i class="ti ti-chart-pie"></i>Budget national</div>
+        <div class="sb-item" data-page="tresorerie" onclick="nav(this,'tresorerie')"><i class="ti ti-building-bank"></i>TrÃ©sor public</div>
+        <div class="sb-item" data-page="depenses" onclick="nav(this,'depenses')"><i class="ti ti-receipt"></i>DÃ©penses</div>
+        <div class="sb-item" data-page="fiscalite" onclick="nav(this,'fiscalite')"><i class="ti ti-file-invoice"></i>FiscalitÃ© DGI</div>
+        <div class="sb-item" data-page="douanes" onclick="nav(this,'douanes')"><i class="ti ti-ship"></i>Douanes DGDA</div>
+        <div class="sb-item" data-page="marches" onclick="nav(this,'marches')"><i class="ti ti-contract"></i>MarchÃ©s publics</div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-section">
+        <div class="sb-label">Services Publics</div>
+        <div class="sb-item" data-page="sante" onclick="nav(this,'sante')"><i class="ti ti-heart-rate-monitor"></i>SantÃ©</div>
+        <div class="sb-item" data-page="education" onclick="nav(this,'education')"><i class="ti ti-school"></i>Ã‰ducation</div>
+        <div class="sb-item" data-page="mines" onclick="nav(this,'mines')"><i class="ti ti-pickaxe"></i>Mines & Ressources</div>
+        <div class="sb-item" data-page="portail" onclick="nav(this,'portail')"><i class="ti ti-device-desktop"></i>Portail Citoyen</div>
+      </div>
+      <div class="sb-divider"></div>
+      <div class="sb-section">
+        <div class="sb-label">ContrÃ´le & IA</div>
+        <div class="sb-item" data-page="ia" onclick="nav(this,'ia')"><i class="ti ti-brain"></i>IA Anti-fraude <span class="sb-badge">3</span></div>
+        <div class="sb-item" data-page="audit" onclick="nav(this,'audit')"><i class="ti ti-shield-check"></i>Audit IGF</div>
+        <div class="sb-item" data-page="journal" onclick="nav(this,'journal')"><i class="ti ti-list-search"></i>Journal SHA-256</div>
+      </div>
+      <div class="sb-bottom">
+        <div class="sb-info" id="sbInfo">â— ConnectÃ© â€” PrÃ©sidence<br>Session MFA active<br>Kinshasa â€” 2027</div>
+      </div>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="main" id="mainContent">
+
+      <!-- â•â•â• DASHBOARD â•â•â• -->
+      <div class="page act" id="pg-dashboard">
+        <div id="bureauNumeriqueBanner" style="display:none;align-items:center;justify-content:space-between;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.25);border-radius:10px;padding:12px 16px;margin-bottom:14px"></div>
+        <div class="ph">
+          <div><div class="ph-title" id="dashTitle">Tableau de Bord National</div><div class="ph-sub" id="dashSub">Vision prÃ©sidentielle â€” RDC â€” 2027</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="toast('âœ“ DonnÃ©es actualisÃ©es','ok')"><i class="ti ti-refresh"></i> Actualiser</button></div>
+        </div>
+        <div class="kpi-grid" id="kpiGrid">
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Budget National 2027</div><div class="kpi-val">5.2B$</div><div class="kpi-tr tup">â†‘ 24% vs 2025</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Citoyens EnregistrÃ©s</div><div class="kpi-val">97.4M</div><div class="kpi-tr tup">â†‘ Recensement actif</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Agents ValidÃ©s Bio.</div><div class="kpi-val">847 432</div><div class="kpi-tr tup">âœ“ 98.3% validÃ©s</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Alertes IA Actives</div><div class="kpi-val">7</div><div class="kpi-tr twn">âš  En investigation</div></div>
+        </div>
+        <div class="g2">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-chart-bar"></i>ExÃ©cution budgÃ©taire par MinistÃ¨re</div>
+            <div id="budChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-bell"></i>Alertes IA â€” Temps rÃ©el</div>
+            <div id="alertesD"></div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-building-bank"></i>TrÃ©sorerie nationale</div>
+            <div class="sr"><span class="sr-n">Solde BCC principal</span><span class="sr-v">$1.24B</span></div>
+            <div class="sr"><span class="sr-n">Recettes DGI (jour)</span><span class="sr-v" style="color:var(--green)">+$6.8M</span></div>
+            <div class="sr"><span class="sr-n">DÃ©penses (jour)</span><span class="sr-v" style="color:var(--red)">âˆ’$9.2M</span></div>
+            <div class="sr"><span class="sr-n">Engagements cours</span><span class="sr-v">$284M</span></div>
+            <div class="sr"><span class="sr-n">Dette publique</span><span class="sr-v">$8.4B</span></div>
+            <div class="sr"><span class="sr-n">Service dette/mois</span><span class="sr-v" style="color:var(--amber)">$42M</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-users"></i>Population nationale</div>
+            <div class="sr"><span class="sr-n">Population totale</span><span class="sr-v">97.4M hab.</span></div>
+            <div class="sr"><span class="sr-n">CNI dÃ©livrÃ©es</span><span class="sr-v">61.2M</span></div>
+            <div class="sr"><span class="sr-n">Naissances 2027</span><span class="sr-v" style="color:var(--green)">+1.84M</span></div>
+            <div class="sr"><span class="sr-n">26 Provinces</span><span class="sr-v">145 Territoires</span></div>
+            <div class="sr"><span class="sr-n">Actes Ã©tat civil</span><span class="sr-v">3.2M/an</span></div>
+            <div class="sr"><span class="sr-n">Passeports actifs</span><span class="sr-v">1.8M</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-brain"></i>Score risque IA global</div>
+            <div id="riskChart"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>ARIA â€” Agent IA PrÃ©sidentiel</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-dash"></div>
+            <div class="ia-input-row">
+              <input id="inp-dash" placeholder="Questions sur le budget, la population, les KPIsâ€¦" onkeydown="if(event.key==='Enter')sendMsg('dash')">
+              <button class="btn primary sm" onclick="sendMsg('dash')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• POPULATION â•â•â• -->
+      <div class="page" id="pg-population">
+        <div class="ph">
+          <div><div class="ph-title">Registre National de la Population</div><div class="ph-sub">97.4 millions de citoyens â€” NIN biomÃ©trique â€” 26 Provinces</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mCit')"><i class="ti ti-plus"></i> Nouveau citoyen</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Citoyens enregistrÃ©s</div><div class="kpi-val">97.4M</div><div class="kpi-tr tup">â†‘ Recensement continu</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">CNI biomÃ©triques</div><div class="kpi-val">61.2M</div><div class="kpi-tr tup">62.8% couverture</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Actes naissance 2027</div><div class="kpi-val">1.84M</div><div class="kpi-tr">EnregistrÃ©s</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Doublons dÃ©tectÃ©s IA</div><div class="kpi-val">2 847</div><div class="kpi-tr tdn">â†“ SupprimÃ©s auto</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i>Citoyens enregistrÃ©s</div>
+          <div class="tw"><table>
+            <thead><tr><th>NIN</th><th>Nom complet</th><th>Date naiss.</th><th>Province</th><th>CNI</th><th>Statut</th></tr></thead>
+            <tbody id="tbCit"></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>APOLLO â€” Agent IA Population</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-pop"></div>
+            <div class="ia-input-row">
+              <input id="inp-pop" placeholder="Analyses dÃ©mographiques, recensement, migrationâ€¦" onkeydown="if(event.key==='Enter')sendMsg('pop')">
+              <button class="btn primary sm" onclick="sendMsg('pop')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• AGENTS â•â•â• -->
+      <div class="page" id="pg-agents">
+        <div class="ph">
+          <div><div class="ph-title">Agents de l'Ã‰tat</div><div class="ph-sub">847 432 agents actifs â€” Registre biomÃ©trique national</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mAgent')"><i class="ti ti-plus"></i> Nouvel agent</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Agents actifs</div><div class="kpi-val">847 432</div><div class="kpi-tr tup">âœ“ BiomÃ©trie OK</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Fictifs dÃ©tectÃ©s IA</div><div class="kpi-val">1 247</div><div class="kpi-tr tdn">â†“ HERMÃˆS supprimÃ©s</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Masse salariale/mois</div><div class="kpi-val">$185M</div><div class="kpi-tr">Paie automatisÃ©e</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Validation bio.</div><div class="kpi-val">98.3%</div><div class="kpi-tr tup">â†‘ +1.2%</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-users"></i>Registre des agents</div>
+          <div class="tw"><table>
+            <thead><tr><th>Matricule</th><th>Nom complet</th><th>Institution</th><th>Grade</th><th>Cat.</th><th>BiomÃ©trie</th><th>Salaire net</th><th>Banque</th></tr></thead>
+            <tbody id="tbAg"></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>HERMÃˆS â€” Agent IA RH & Paie</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-ag"></div>
+            <div class="ia-input-row">
+              <input id="inp-ag" placeholder="Agents fictifs, masse salariale, INSS, IPRâ€¦" onkeydown="if(event.key==='Enter')sendMsg('ag')">
+              <button class="btn primary sm" onclick="sendMsg('ag')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• BUDGET â•â•â• -->
+      <div class="page" id="pg-budget">
+        <div class="ph">
+          <div><div class="ph-title">Budget National 2027</div><div class="ph-sub">5.2 Milliards USD â€” Loi de Finances 2027</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mBudget')"><i class="ti ti-plus"></i> Nouvelle ligne</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Budget votÃ©</div><div class="kpi-val">$5.2B</div><div class="kpi-tr">Loi Finances 2027</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">CrÃ©dits engagÃ©s</div><div class="kpi-val">$3.12B</div><div class="kpi-tr tup">60%</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">CrÃ©dits payÃ©s</div><div class="kpi-val">$2.34B</div><div class="kpi-tr">45%</div></div>
+          <div class="kpi" style="--kc:#B45309"><div class="kpi-lbl">Disponible</div><div class="kpi-val">$2.08B</div><div class="kpi-tr twn">40% restant</div></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="ti ti-chart-bar"></i>ExÃ©cution par ministÃ¨re</div><div id="budgetBody"></div></div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>HELIOS â€” Agent IA Budget</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-bud"></div>
+            <div class="ia-input-row">
+              <input id="inp-bud" placeholder="Analysez le budget, OHADA, taux d'exÃ©cutionâ€¦" onkeydown="if(event.key==='Enter')sendMsg('bud')">
+              <button class="btn primary sm" onclick="sendMsg('bud')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• DÃ‰PENSES â•â•â• -->
+      <div class="page" id="pg-depenses">
+        <div class="ph">
+          <div><div class="ph-title">Gestion des DÃ©penses</div><div class="ph-sub">Circuit ENGAGER â†’ LIQUIDER â†’ ORDONNER â†’ PAYER</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mDep')"><i class="ti ti-plus"></i> Nouvelle demande</button></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="ti ti-receipt"></i>DÃ©penses en validation â€” Score risque IA</div>
+          <div class="tw"><table>
+            <thead><tr><th>RÃ©fÃ©rence</th><th>Institution</th><th>Description</th><th>Montant</th><th>Ã‰tape</th><th>Risque IA</th><th>Actions</th></tr></thead>
+            <tbody id="tbDep"></tbody>
+          </table></div>
+        </div>
+      </div>
+
+      <!-- â•â•â• FISCALITÃ‰ â•â•â• -->
+      <div class="page" id="pg-fiscalite">
+        <div class="ph">
+          <div><div class="ph-title">FiscalitÃ© â€” DGI</div><div class="ph-sub">IBP â€¢ IERE â€¢ TVA 16% â€¢ IPR â€” 1.4M contribuables</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mContrib')"><i class="ti ti-plus"></i> Nouveau contribuable</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Contribuables</div><div class="kpi-val">1.4M</div><div class="kpi-tr tup">â†‘ +18K ce mois</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Recettes DGI 2027</div><div class="kpi-val">$1.12B</div><div class="kpi-tr tup">78% objectif</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">DÃ©clarations retard</div><div class="kpi-val">12 471</div><div class="kpi-tr tdn">â†‘ Relances IA</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Paiements en ligne</div><div class="kpi-val">72%</div><div class="kpi-tr tup">â†‘ DÃ©mat.</div></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-file-invoice"></i>Recettes par type d'impÃ´t</div><div id="fiscChart"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-map-pin"></i>Recettes par Province (Top 8)</div><div id="fiscProv"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>IRIS â€” Agent IA FiscalitÃ© & Recouvrement</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-fisc"></div>
+            <div class="ia-input-row">
+              <input id="inp-fisc" placeholder="Recouvrement, fraude fiscale, DGI, TVAâ€¦" onkeydown="if(event.key==='Enter')sendMsg('fisc')">
+              <button class="btn primary sm" onclick="sendMsg('fisc')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• MARCHÃ‰S â•â•â• -->
+      <div class="page" id="pg-marches">
+        <div class="ph">
+          <div><div class="ph-title">MarchÃ©s Publics â€” ARMP</div><div class="ph-sub">124 AO actifs â€” $1.24B en contrats â€” Transparence totale</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mAO')"><i class="ti ti-plus"></i> Nouvel AO</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Appels d'offres actifs</div><div class="kpi-val">124</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Contrats signÃ©s</div><div class="kpi-val">347</div><div class="kpi-tr tup">$1.24B</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Suspicions SIGMA</div><div class="kpi-val">18</div><div class="kpi-tr twn">Conflits d'intÃ©rÃªts</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Fournisseurs validÃ©s</div><div class="kpi-val">2 847</div></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="ti ti-contract"></i>Appels d'offres en cours</div>
+          <div class="tw"><table>
+            <thead><tr><th>RÃ©fÃ©rence</th><th>Institution</th><th>Objet</th><th>Montant estimÃ©</th><th>Date limite</th><th>Statut</th><th>Risque IA</th></tr></thead>
+            <tbody id="tbAO"></tbody>
+          </table></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>SIGMA â€” Agent IA MarchÃ©s Publics</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-march"></div>
+            <div class="ia-input-row">
+              <input id="inp-march" placeholder="Surfacturations, conflits d'intÃ©rÃªts, code marchÃ©sâ€¦" onkeydown="if(event.key==='Enter')sendMsg('march')">
+              <button class="btn primary sm" onclick="sendMsg('march')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• SANTÃ‰ â•â•â• -->
+      <div class="page" id="pg-sante">
+        <div class="ph">
+          <div><div class="ph-title">SantÃ© Nationale</div><div class="ph-sub">2 847 formations sanitaires â€” 48.4M patients â€” 26 Provinces</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="openM('mFS')"><i class="ti ti-plus"></i> Nouvelle FS</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Formations sanitaires</div><div class="kpi-val">2 847</div><div class="kpi-tr tup">â†‘ +520 en constr.</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Patients enregistrÃ©s</div><div class="kpi-val">48.4M</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Alertes Ã©pidÃ©mio.</div><div class="kpi-val">3</div><div class="kpi-tr twn">Ã‰quateur actif</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Vaccinations 2027</div><div class="kpi-val">12.4M</div><div class="kpi-tr tup">â†‘ Campagnes</div></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-alert-triangle"></i>Alertes Ã©pidÃ©miologiques actives</div><div id="epiAlerts"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-map-pin"></i>HÃ´pitaux par Province</div><div id="santeProvs"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>ASCLEPIOS â€” Agent IA SantÃ©</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-sant"></div>
+            <div class="ia-input-row">
+              <input id="inp-sant" placeholder="Ã‰pidÃ©mies, vaccinations, indicateurs santÃ©â€¦" onkeydown="if(event.key==='Enter')sendMsg('sant')">
+              <button class="btn primary sm" onclick="sendMsg('sant')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• MINES â•â•â• -->
+      <div class="page" id="pg-mines">
+        <div class="ph"><div><div class="ph-title">Mines & Ressources Naturelles</div><div class="ph-sub">Cobalt 70% mondial â€” Cuivre â€” Or â€” Coltan â€” $2.84B redevances</div></div></div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Permis actifs</div><div class="kpi-val">2 847</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Redevances 2027</div><div class="kpi-val">$2.84B</div><div class="kpi-tr tup">â†‘ +24%</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Fraudes dÃ©tectÃ©es</div><div class="kpi-val">127</div><div class="kpi-tr tdn">$340M saisis</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Sites tracÃ©s GPS</div><div class="kpi-val">84.7%</div></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="ti ti-pickaxe"></i>Production par substance â€” 2027</div><div id="minesChart"></div></div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>GAÃA â€” Agent IA Mines & Ressources</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-mine"></div>
+            <div class="ia-input-row">
+              <input id="inp-mine" placeholder="Cobalt, redevances, fraudes, permis miniersâ€¦" onkeydown="if(event.key==='Enter')sendMsg('mine')">
+              <button class="btn primary sm" onclick="sendMsg('mine')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• IA ANTI-FRAUDE â•â•â• -->
+      <div class="page" id="pg-ia">
+        <div class="ph">
+          <div><div class="ph-title">IA Anti-fraude â€” Centre de DÃ©tection</div><div class="ph-sub">12 agents IA actifs â€” PrÃ©cision 94.7% â€” $24M fraudes bloquÃ©es/mois</div></div>
+          <div class="ph-actions"><button class="btn primary sm" onclick="runIA()"><i class="ti ti-brain"></i> Lancer analyse globale</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#6B21A8"><div class="kpi-lbl">Agents IA actifs</div><div class="kpi-val">12</div><div class="kpi-tr tup">PrÃ©cision 94.7%</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Anomalies (7 jours)</div><div class="kpi-val">47</div><div class="kpi-tr twn">7 nouvelles auj.</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Fraudes bloquÃ©es/mois</div><div class="kpi-val">$24M</div><div class="kpi-tr tup">â†‘ vs $12M 2025</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Faux positifs</div><div class="kpi-val">4.8%</div><div class="kpi-tr tup">â†“ En amÃ©lioration</div></div>
+        </div>
+        <div class="g2">
+          <div class="card"><div class="card-title"><i class="ti ti-robot"></i>Les 12 Agents IA PNGIE-RDC</div><div id="iaAgents"></div></div>
+          <div class="card"><div class="card-title"><i class="ti ti-alert-triangle"></i>Alertes fraude actives</div><div id="iaAlertes"></div></div>
+        </div>
+        <div class="card" id="iaResCard" style="display:none">
+          <div class="card-title"><i class="ti ti-search"></i>RÃ©sultats analyse IA</div>
+          <div id="iaRes"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-robot"></i>Console IA Centrale â€” Multi-Agents PNGIE-RDC</div>
+          <div class="ia-wrap">
+            <div class="ia-msgs" id="chat-ia"></div>
+            <div class="ia-input-row">
+              <input id="inp-ia" placeholder="Interrogez les 12 agents IA PNGIE-RDCâ€¦" onkeydown="if(event.key==='Enter')sendMsg('ia')">
+              <button class="btn primary sm" onclick="sendMsg('ia')">Envoyer</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• AUDIT / JOURNAL â•â•â• -->
+      <div class="page" id="pg-audit">
+        <div class="ph"><div><div class="ph-title">Audit IGF â€” Alertes Fraude</div><div class="ph-sub">Inspection GÃ©nÃ©rale des Finances â€” Temps rÃ©el</div></div></div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Alertes actives</div><div class="kpi-val">7</div><div class="kpi-tr twn">4 critiques</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Dossiers ouverts</div><div class="kpi-val">34</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Fraudes rÃ©solues</div><div class="kpi-val">287</div><div class="kpi-tr tup">$84M rÃ©cupÃ©rÃ©s</div></div>
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Actions/jour</div><div class="kpi-val">124K</div><div class="kpi-tr">Journal SHA-256</div></div>
+        </div>
+        <div class="card"><div class="card-title"><i class="ti ti-alert-triangle"></i>Toutes les alertes actives</div><div id="allAlertes"></div></div>
+      </div>
+
+      <div class="page" id="pg-journal">
+        <div class="ph"><div><div class="ph-title">Journal d'Audit â€” SHA-256 Inviolable</div><div class="ph-sub">APPEND ONLY â€” 10 ans â€” TraÃ§abilitÃ© nationale</div><div id="journalSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div></div>
+        <div class="card" style="background:#0A1628;border-color:rgba(201,168,76,0.2)">
+          <div class="card-title" style="color:var(--gold)"><i class="ti ti-shield-lock" style="color:var(--gold)"></i>Journal cryptographique</div>
+          <div id="journalLog" style="max-height:420px;overflow-y:auto"></div>
+        </div>
+      </div>
+
+      <!-- â•â•â• PROVINCES â•â•â• -->
+      <div class="page" id="pg-provinces">
+        <div class="ph"><div><div class="ph-title">Les 26 Provinces de la RDC</div><div class="ph-sub">Ressources â€” Indicateurs â€” Budget provincial</div><div id="provSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-map-2"></i>Tableau des 26 Provinces</div><div id="provsTable"></div></div>
+      </div>
+
+      <!-- â•â•â• INSTITUTIONS â•â•â• -->
+      <div class="page" id="pg-institutions">
+        <div class="ph"><div><div class="ph-title">ChaÃ®ne de Gouvernance Nationale</div><div class="ph-sub">Qui dÃ©pend de qui â€” qui est responsable de quoi â€” organigramme fonctionnel de l'Ã‰tat</div></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-building"></i>Organes, responsabilitÃ©s et liens institutionnels</div><div id="instTree"></div></div>
+      </div>
+
+      <!-- â•â•â• POSTES & ORGANIGRAMME â•â•â• -->
+      <div class="page" id="pg-postes">
+        <div class="ph"><div><div class="ph-title">Postes & Organigramme</div><div class="ph-sub">Arborescence Institution â†’ UnitÃ© â†’ Poste, avec environnement de travail rÃ©el</div><div id="posteSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div>
+          <div class="ph-actions"><input id="posteSearch" oninput="renderPostesArbo()" placeholder="Rechercher une institution, unitÃ© ou poste..." style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;width:260px"></div>
+        </div>
+        <div class="g2" style="align-items:start">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-sitemap"></i>Arborescence organisationnelle</div>
+            <div id="posteArboTree" style="max-height:640px;overflow-y:auto"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-user-square-rounded"></i>Environnement du poste</div>
+            <div id="posteEnvPanel" style="font-size:12.5px;color:var(--muted)">SÃ©lectionnez un poste dans l'arborescence pour voir son titulaire, ses rÃ´les, ses permissions et les documents de son institution.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• TOUTES LES INSTITUTIONS (127) â•â•â• -->
+      <div class="page" id="pg-toutes-institutions">
+        <div class="ph"><div><div class="ph-title">Toutes les Institutions de l'Ã‰tat</div><div class="ph-sub">127 institutions â€” cliquez pour ouvrir l'espace de travail dÃ©diÃ©</div><div id="instListeSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div>
+          <div class="ph-actions"><input id="instListeSearch" oninput="renderInstitutionsListe()" placeholder="Rechercher une institution..." style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;width:240px"></div>
+        </div>
+        <div id="instListeGroups"></div>
+      </div>
+
+      <!-- â•â•â• TABLEAU DE BORD GENERIQUE D'UNE INSTITUTION â•â•â• -->
+      <div class="page" id="pg-institution-dashboard">
+        <div class="ph"><div><div class="ph-title" id="instDashTitle">Espace institutionnel</div><div class="ph-sub" id="instDashSub"></div><div id="instDashSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div>
+          <div class="ph-actions"><button class="btn sm" onclick="nav(document.querySelector('.sb-item[data-page=\'toutes-institutions\']'),'toutes-institutions')"><i class="ti ti-arrow-left"></i> Retour Ã  la liste</button></div>
+        </div>
+        <div class="kpi-grid" id="instDashKpis"></div>
+        <div class="g2" style="align-items:start">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-sitemap"></i>Organigramme de l'institution</div>
+            <div id="instDashOrg" style="max-height:480px;overflow-y:auto"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-files"></i>Documents rÃ©cents</div>
+            <div id="instDashDocs" style="max-height:480px;overflow-y:auto"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- â•â•â• TOUS LES MINISTÃˆRES â•â•â• -->
+      <div class="page" id="pg-ministeres">
+        <div class="ph">
+          <div><div class="ph-title">MinistÃ¨res de la RÃ©publique DÃ©mocratique du Congo</div><div class="ph-sub">Portefeuilles ministÃ©riels et attributions â€” Gouvernement Suminwa II</div><div id="minSrcBadge" style="font-size:9.5px;font-weight:600;margin-top:2px"></div></div>
+          <div class="ph-actions"><input id="minSearch" oninput="renderMinisteres()" placeholder="Rechercher un ministÃ¨re..." style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);font-size:12px;width:220px"></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">MinistÃ¨res rÃ©galiens</div><div class="kpi-val" id="minCountReg">6</div></div>
+          <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">MinistÃ¨res sectoriels</div><div class="kpi-val" id="minCountSect">33</div></div>
+          <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Total portefeuilles</div><div class="kpi-val" id="minCountAll">39</div></div>
+          <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">RattachÃ©s Ã  la Primature</div><div class="kpi-val">100%</div></div>
+        </div>
+        <div id="minGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+      </div>
+
+      <!-- â•â•â• ALERTES â•â•â• -->
+      <div class="page" id="pg-alertes">
+        <div class="ph"><div><div class="ph-title">Centre d'Alertes National</div><div class="ph-sub">Toutes les alertes IA actives â€” Temps rÃ©el</div></div></div>
+        <div class="card"><div class="card-title"><i class="ti ti-bell"></i>Alertes PNGIE-RDC</div><div id="alertesAll"></div></div>
+      </div>
+
+      <!-- Autres pages simplifiÃ©es -->
+      <div class="page" id="pg-cni"><div class="ph"><div><div class="ph-title">CNI BiomÃ©trique</div><div class="ph-sub">61.2M cartes dÃ©livrÃ©es</div></div><div class="ph-actions"><button class="btn primary sm" onclick="toast('âœ“ Demande CNI enregistrÃ©e','ok')"><i class="ti ti-plus"></i> Nouvelle demande</button></div></div><div class="card"><div class="card-title"><i class="ti ti-id"></i>Demandes CNI en cours</div><div id="tbCNI"></div></div></div>
+      <div class="page" id="pg-etatcivil"><div class="ph"><div><div class="ph-title">Ã‰tat Civil National</div><div class="ph-sub">Naissances â€” Mariages â€” DÃ©cÃ¨s</div></div></div><div class="card"><div class="card-title"><i class="ti ti-file-certificate"></i>Derniers actes enregistrÃ©s</div><div id="tbEC"></div></div></div>
+      <div class="page" id="pg-paie"><div class="ph"><div><div class="ph-title">Paie Mensuelle â€” Jan. 2027</div><div class="ph-sub">847 432 fonctionnaires â€” INSS 3.5% â€” IPR barÃ¨me</div></div><div class="ph-actions"><button class="btn success sm" onclick="runPaie()"><i class="ti ti-player-play"></i> Calculer</button><button class="btn primary sm" onclick="toast('âœ“ Virement BCC lancÃ© â€” $185M','ok')"><i class="ti ti-check"></i> Valider & Virer</button></div></div><div class="g2"><div class="card"><div class="card-title"><i class="ti ti-list"></i>Circuit de validation</div><div id="paieWF"></div></div><div class="card"><div class="card-title"><i class="ti ti-chart-bar"></i>Masse salariale par institution</div><div id="paieChart"></div></div></div></div>
+      <div class="page" id="pg-biometrie"><div class="ph"><div><div class="ph-title">Validation BiomÃ©trique</div><div class="ph-sub">Empreintes + Iris</div></div></div><div class="g2"><div class="card" style="text-align:center"><div class="card-title" style="justify-content:center"><i class="ti ti-fingerprint"></i>Scanner biomÃ©trique</div><div style="padding:20px 0"><div onclick="doBio()" id="bioS" style="width:90px;height:90px;border-radius:50%;border:3px solid var(--gold3);display:flex;align-items:center;justify-content:center;cursor:pointer;margin:0 auto"><i class="ti ti-fingerprint" style="font-size:36px;color:var(--gold3)"></i></div><div style="margin-top:14px;font-size:12px;color:var(--muted)" id="bioSt">Cliquez pour scanner</div><button class="btn primary sm" style="margin-top:14px" onclick="doBio()">DÃ©marrer</button></div><div class="sr"><span class="sr-n">ScannÃ©s aujourd'hui</span><span class="sr-v">14 247</span></div><div class="sr"><span class="sr-n">ValidÃ©s</span><span class="sr-v" style="color:var(--green)">14 189</span></div><div class="sr"><span class="sr-n">Suspects</span><span class="sr-v" style="color:var(--red)">58</span></div></div><div class="card"><div class="card-title"><i class="ti ti-list-check"></i>DerniÃ¨res validations</div><div id="bioLog"></div></div></div></div>
+      <div class="page" id="pg-tresorerie"><div class="ph"><div><div class="ph-title">TrÃ©sor Public National</div><div class="ph-sub">BCC â€” Comptes de l'Ã‰tat</div></div></div><div class="kpi-grid"><div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Solde BCC</div><div class="kpi-val">$1.24B</div></div><div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Ordres en attente</div><div class="kpi-val">84</div></div><div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Virements/jour</div><div class="kpi-val">$9.2M</div></div><div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Service dette/mois</div><div class="kpi-val">$42M</div></div></div><div class="card"><div class="card-title"><i class="ti ti-building-bank"></i>Derniers mouvements</div><div id="tbTresor"></div></div></div>
+      <div class="page" id="pg-douanes"><div class="ph"><div><div class="ph-title">Douanes â€” DGDA</div><div class="ph-sub">52 postes frontaliers â€” $487M recettes 2027</div></div></div><div class="kpi-grid"><div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Recettes DGDA</div><div class="kpi-val">$487M</div><div class="kpi-tr tup">69% objectif</div></div><div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">DÃ©clarations</div><div class="kpi-val">68 421</div></div><div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Fraudes IA</div><div class="kpi-val">487</div><div class="kpi-tr tdn">$7.2M saisis</div></div><div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Postes connectÃ©s</div><div class="kpi-val">48/52</div></div></div><div class="card"><div class="card-title"><i class="ti ti-ship"></i>DÃ©clarations en douane</div><div id="tbDouanes"></div></div></div>
+      <div class="page" id="pg-education"><div class="ph"><div><div class="ph-title">Ã‰ducation Nationale</div><div class="ph-sub">18.4M Ã©lÃ¨ves â€” 1 430 Ã©tablissements â€” 26 Provinces</div></div></div><div class="kpi-grid"><div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Ã‰tablissements</div><div class="kpi-val">1 430</div></div><div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Ã‰lÃ¨ves inscrits</div><div class="kpi-val">18.4M</div></div><div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Enseignants</div><div class="kpi-val">284K</div></div><div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Taux scolarisation</div><div class="kpi-val">84.2%</div></div></div><div class="card"><div class="card-title"><i class="ti ti-school"></i>Ã‰tablissements par province</div><div id="eduTable"></div></div></div>
+      <div class="page" id="pg-portail"><div class="ph"><div><div class="ph-title">Portail Citoyen National</div><div class="ph-sub">24.8M comptes â€” 24 services â€” DÃ©lai moyen 4 jours</div></div></div><div class="kpi-grid"><div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">Comptes citoyens</div><div class="kpi-val">24.8M</div></div><div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Demandes/jour</div><div class="kpi-val">184K</div></div><div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Services</div><div class="kpi-val">24</div></div><div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">En attente</div><div class="kpi-val">12 847</div></div></div></div>
+
+    </div><!-- /main -->
+  </div><!-- /body -->
+</div><!-- /app -->
+
+<!-- MODALS -->
+<div class="mb" id="mCit"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouveau Citoyen</div><button class="modal-close" onclick="closeM('mCit')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Nom *</label><input id="cNom" placeholder="Nom de famille"></div>
+    <div class="ff"><label>Post-nom *</label><input id="cPNom" placeholder="Post-nom"></div>
+    <div class="ff"><label>PrÃ©nom</label><input id="cPrenom"></div>
+    <div class="ff"><label>Sexe *</label><select id="cSexe"><option>Masculin</option><option>FÃ©minin</option></select></div>
+    <div class="ff"><label>Date naissance *</label><input type="date" id="cDdn"></div>
+    <div class="ff"><label>Province *</label><select id="cProv"></select></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mCit')">Annuler</button><button class="btn primary sm" onclick="saveCit()">Enregistrer</button></div>
+</div></div>
+
+<div class="mb" id="mAgent"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvel Agent de l'Ã‰tat</div><button class="modal-close" onclick="closeM('mAgent')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Nom *</label><input id="aNom"></div>
+    <div class="ff"><label>Post-nom *</label><input id="aPNom"></div>
+    <div class="ff"><label>CatÃ©gorie *</label><select id="aCat"><option>A1</option><option>A2</option><option>B1</option><option>B2</option><option>C</option><option>D</option><option>Contractuel</option></select></div>
+    <div class="ff"><label>Institution *</label><select id="aInst"></select></div>
+    <div class="ff"><label>Salaire base (USD)</label><input type="number" id="aSal" placeholder="0.00"></div>
+    <div class="ff"><label>Banque</label><input id="aBanque" placeholder="Ex: RAWBANK"></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mAgent')">Annuler</button><button class="btn primary sm" onclick="saveAgent()">Enregistrer</button></div>
+</div></div>
+
+<div class="mb" id="mDep"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvelle demande de dÃ©pense</div><button class="modal-close" onclick="closeM('mDep')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Institution</label><select id="dInst"></select></div>
+    <div class="ff"><label>Montant (USD) *</label><input type="number" id="dMont" oninput="calcNiv()"></div>
+    <div class="ff"><label>Type</label><select><option>Fonctionnement</option><option>Personnel</option><option>Investissement</option></select></div>
+    <div class="ff"><label>BÃ©nÃ©ficiaire</label><input id="dBenef"></div>
+    <div class="ff full"><label>Description</label><textarea id="dDesc" rows="2"></textarea></div>
+    <div class="ff full"><label>Niveau validation (IA)</label><div id="depNiv" style="padding:8px;background:var(--light);border-radius:6px;font-size:11px;color:var(--muted)">Entrez un montantâ€¦</div></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mDep')">Annuler</button><button class="btn primary sm" onclick="saveDep()">Soumettre</button></div>
+</div></div>
+
+<div class="mb" id="mBudget"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvelle ligne budgÃ©taire</div><button class="modal-close" onclick="closeM('mBudget')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Institution</label><select id="bInst"></select></div>
+    <div class="ff"><label>Montant votÃ© (USD) *</label><input type="number" id="bMont"></div>
+    <div class="ff full"><label>Nature Ã©conomique</label><input id="bNat" placeholder="Description"></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mBudget')">Annuler</button><button class="btn primary sm" onclick="closeM('mBudget');toast('âœ“ Ligne budgÃ©taire crÃ©Ã©e','ok')">CrÃ©er</button></div>
+</div></div>
+
+<div class="mb" id="mContrib"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouveau contribuable â€” DGI</div><button class="modal-close" onclick="closeM('mContrib')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Type</label><select><option>Personne physique</option><option>Personne morale</option><option>ONG</option></select></div>
+    <div class="ff"><label>Province</label><select id="ctProv"></select></div>
+    <div class="ff full"><label>Raison sociale / Nom *</label><input id="ctNom"></div>
+    <div class="ff"><label>Secteur</label><input id="ctSect"></div>
+    <div class="ff"><label>RÃ©gime fiscal</label><select><option>RÃ©gime rÃ©el</option><option>Forfait</option></select></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mContrib')">Annuler</button><button class="btn primary sm" onclick="closeM('mContrib');toast('âœ“ Contribuable enregistrÃ© â€” NIF gÃ©nÃ©rÃ©','ok')">Enregistrer</button></div>
+</div></div>
+
+<div class="mb" id="mAO"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvel Appel d'Offres â€” ARMP</div><button class="modal-close" onclick="closeM('mAO')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff"><label>Institution</label><select id="aoInst"></select></div>
+    <div class="ff"><label>Type de marchÃ©</label><select><option>Travaux</option><option>Fournitures</option><option>Services</option></select></div>
+    <div class="ff full"><label>Objet du marchÃ© *</label><input id="aoObjet"></div>
+    <div class="ff"><label>Montant estimÃ© (USD)</label><input type="number" id="aoMont"></div>
+    <div class="ff"><label>Date limite soumission</label><input type="date" id="aoDate"></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mAO')">Annuler</button><button class="btn primary sm" onclick="saveAO()">Publier</button></div>
+</div></div>
+
+<div class="mb" id="mFS"><div class="modal">
+  <div class="modal-hdr"><div class="modal-hdr-title">Nouvelle Formation Sanitaire</div><button class="modal-close" onclick="closeM('mFS')">âœ•</button></div>
+  <div class="modal-body"><div class="fg">
+    <div class="ff full"><label>Nom de l'Ã©tablissement *</label><input id="fsNom"></div>
+    <div class="ff"><label>Type</label><select><option>HÃ´pital GÃ©nÃ©ral</option><option>HÃ´pital Provincial</option><option>Dispensaire</option><option>Centre de SantÃ©</option></select></div>
+    <div class="ff"><label>Province</label><select id="fsProv"></select></div>
+    <div class="ff"><label>Nombre de lits</label><input type="number" id="fsLits" value="0"></div>
+  </div></div>
+  <div class="modal-footer"><button class="btn sm" onclick="closeM('mFS')">Annuler</button><button class="btn primary sm" onclick="closeM('mFS');toast('âœ“ Formation sanitaire enregistrÃ©e','ok')">Enregistrer</button></div>
+</div></div>
+
+<!-- TOAST -->
+<div id="toastEl" class="toast"></div>
+
+<script>
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// DONNÃ‰ES INTÃ‰GRÃ‰ES â€” PNGIE-RDC
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const PROVINCES=[
+  {code:'KIN',nom:'Kinshasa',chef:'Kinshasa',pop:16748000,surf:9965,res:'Commerce, finance nationale',reg:'Ouest'},
+  {code:'KOC',nom:'Kongo Central',chef:'Matadi',pop:6097000,surf:53920,res:'Grand Inga, port Matadi',reg:'Ouest'},
+  {code:'KWI',nom:'Kwilu',chef:'Kikwit',pop:6321000,surf:78374,res:'Manioc, palmier Ã  huile',reg:'Ouest'},
+  {code:'NOK',nom:'Nord-Kivu',chef:'Goma',pop:7337000,surf:59483,res:'Coltan, or, cafÃ© premium',reg:'Est'},
+  {code:'HKA',nom:'Haut-Katanga',chef:'Lubumbashi',pop:4640000,surf:122600,res:'Cuivre, cobalt, uranium',reg:'Sud'},
+  {code:'LUA',nom:'Lualaba',chef:'Kolwezi',pop:2222000,surf:103894,res:'Cobalt 70% mondial',reg:'Sud'},
+  {code:'KAO',nom:'KasaÃ¯ Oriental',chef:'Mbuji-Mayi',pop:3928000,surf:9267,res:'Diamants, manioc',reg:'Centre'},
+  {code:'ITU',nom:'Ituri',chef:'Bunia',pop:3524000,surf:65658,res:'Or, cacao, Lac Albert',reg:'Nord-Est'},
+  {code:'EQU',nom:'Ã‰quateur',chef:'Mbandaka',pop:2680000,surf:103902,res:'Cacao, cafÃ©, caoutchouc',reg:'Nord'},
+  {code:'TSO',nom:'Tshopo',chef:'Kisangani',pop:2712000,surf:199567,res:'Commerce, or, pÃªche',reg:'Nord-Est'},
+  {code:'SUK',nom:'Sud-Kivu',chef:'Bukavu',pop:5679000,surf:69130,res:'Or, cassitÃ©rite, cafÃ© Kivu',reg:'Est'},
+  {code:'KAC',nom:'KasaÃ¯ Central',chef:'Kananga',pop:3827000,surf:59322,res:'Manioc, maÃ¯s, pÃªche',reg:'Centre'},
+  {code:'TAN',nom:'Tanganyika',chef:'Kalemie',pop:2444000,surf:134940,res:'PÃªche, Lac Tanganyika',reg:'Sud-Est'},
+  {code:'MAN',nom:'Maniema',chef:'Kindu',pop:1755000,surf:132250,res:'Or, cassitÃ©rite, bois',reg:'Centre-Est'},
+  {code:'MAI',nom:'MaÃ¯-Ndombe',chef:'Inongo',pop:2074000,surf:127250,res:'ForÃªt, Lac MaÃ¯-Ndombe',reg:'Ouest'},
+  {code:'HLO',nom:'Haut-Lomami',chef:'Kamina',pop:2206000,surf:108204,res:'Minerais, maÃ¯s, Ã©levage',reg:'Sud'},
+  {code:'LOM',nom:'Lomami',chef:'Kabinda',pop:2162000,surf:56426,res:'Manioc, diamants',reg:'Centre'},
+  {code:'SAN',nom:'Sankuru',chef:'Lusambo',pop:1535000,surf:104331,res:'Diamants, caoutchouc',reg:'Centre'},
+  {code:'KAS',nom:'KasaÃ¯',chef:'Tshikapa',pop:2667000,surf:109060,res:'Diamants, manioc',reg:'Centre'},
+  {code:'BAU',nom:'Bas-Uele',chef:'Buta',pop:1168000,surf:148331,res:'Or, diamants, cacao',reg:'Nord-Est'},
+  {code:'HAU',nom:'Haut-Uele',chef:'Isiro',pop:1358000,surf:89683,res:'Or, diamants, cafÃ©',reg:'Nord-Est'},
+  {code:'NOU',nom:'Nord-Ubangi',chef:'Gbadolite',pop:1469000,surf:56644,res:'Cacao, agriculture',reg:'Nord'},
+  {code:'SOU',nom:'Sud-Ubangi',chef:'Zongo',pop:1912000,surf:51648,res:'Agriculture, pÃªche',reg:'Nord'},
+  {code:'MON',nom:'Mongala',chef:'Lisala',pop:1913000,surf:58141,res:'Cacao, pÃªche fleuve',reg:'Nord'},
+  {code:'TSH',nom:'Tshuapa',chef:'Boende',pop:1476000,surf:132957,res:'ForÃªt tropicale, cacao',reg:'Centre'},
+  {code:'KWA',nom:'Kwango',chef:'Kenge',pop:3069000,surf:89974,res:'Manioc, maÃ¯s, diamants',reg:'Ouest'},
+];
+
+const INST=[
+  'PrÃ©sidence de la RÃ©publique','Primature','AssemblÃ©e Nationale','SÃ©nat',
+  'Min. des Finances','Min. de la Fonction Publique','Min. de la SantÃ©',
+  'Min. de l\'Ã‰ducation','Min. des Mines','Min. de la Justice',
+  'DGI','DGDA','ARMP','IGF','BCC',
+];
+
+const AGENTS_DATA=[
+  {mat:'AG-001247',nom:'Jean-Baptiste MUAMBA',inst:'Min. Finances',grade:'Directeur',cat:'A1',bio:true,sal:'$2 840',pay:'RAWBANK'},
+  {mat:'AG-002891',nom:'Marie-Claire NSIMBA',inst:'Min. SantÃ©',grade:'MÃ©decin chef',cat:'A1',bio:true,sal:'$3 120',pay:'M-PESA'},
+  {mat:'AG-003445',nom:'Pierre KABONGO',inst:'Min. Ã‰ducation',grade:'Inspecteur',cat:'A2',bio:true,sal:'$1 920',pay:'Banque BIC'},
+  {mat:'AG-004782',nom:'CÃ©cile TSHIAMALA',inst:'Gouv. Kinshasa',grade:'Chef bureau',cat:'B1',bio:true,sal:'$1 540',pay:'M-PESA'},
+  {mat:'AG-005123',nom:'Augustin LUFWA',inst:'Min. Infrastructures',grade:'IngÃ©nieur A',cat:'A1',bio:true,sal:'$2 280',pay:'TMB'},
+  {mat:'AG-006890',nom:'FranÃ§oise MBOMBO',inst:'Min. Budget',grade:'Ã‰conomiste',cat:'A2',bio:false,sal:'$2 100',pay:'âš  Bio manquante'},
+  {mat:'AG-007234',nom:'Emmanuel BANZA',inst:'IGF',grade:'Auditeur senior',cat:'A1',bio:true,sal:'$2 650',pay:'ECOBANK'},
+  {mat:'AG-008456',nom:'Sylvie KASONGO',inst:'BCC',grade:'Analyste fin.',cat:'A1',bio:true,sal:'$3 400',pay:'RAWBANK'},
+  {mat:'AG-009012',nom:'ThÃ©odore NKUNDA',inst:'DGI',grade:'ContrÃ´leur fiscal',cat:'A2',bio:true,sal:'$1 980',pay:'RAWBANK'},
+  {mat:'AG-010284',nom:'Brigitte MUYAYA',inst:'DGDA',grade:'Inspecteur douanes',cat:'B1',bio:true,sal:'$1 740',pay:'TMB'},
+];
+
+const CITOYENS_DATA=[
+  {nin:'KIN198503151M0000001',nom:'MASSA LEMBA Guylain',ddn:'15/03/1985',prov:'Kinshasa',cni:'CNI-2027-084721',st:'bg','stl':'Actif'},
+  {nin:'NOK197104072M0000002',nom:'KABILA CÃ©lestine',ddn:'07/04/1971',prov:'Nord-Kivu',cni:'CNI-2025-012847',st:'bg',stl:'Actif'},
+  {nin:'HKA196406283M0000003',nom:'KATUMBI MoÃ¯se',ddn:'28/06/1964',prov:'Haut-Katanga',cni:'CNI-2024-008421',st:'bg',stl:'Actif'},
+  {nin:'TSO199011304F0000004',nom:'NGALULA Marie-JosÃ©e',ddn:'30/11/1990',prov:'Tshopo',cni:'CNI-2026-047821',st:'bg',stl:'Actif'},
+  {nin:'SUK199507225F0000005',nom:'MUKWEGE Claire',ddn:'22/07/1995',prov:'Sud-Kivu',cni:'CNI-2027-001284',st:'bg',stl:'Actif'},
+  {nin:'EQU198209086M0000006',nom:'LUFWA CÃ©lestin',ddn:'08/09/1982',prov:'Ã‰quateur',cni:'ExpirÃ©e',st:'br',stl:'âš  Alerte'},
+];
+
+const DEPENSES_DATA=[
+  {ref:'DEP-2027-0891',inst:'Min. SantÃ©',desc:'MÃ©dicaments ARV â€” 26 provinces',mont:'$840 000',etape:'Primature',risk:12},
+  {ref:'DEP-2027-0892',inst:'Min. Infrastructures',desc:'Route nationale N1',mont:'$8 200 000',etape:'PrÃ©sidence',risk:9},
+  {ref:'DEP-2027-0893',inst:'Min. Ã‰ducation',desc:'Fournitures 650 Ã©coles',mont:'$124 000',etape:'MinistÃ¨re',risk:3},
+  {ref:'DEP-2027-0894',inst:'Gouv. Katanga',desc:'Ã‰quipement bureaux',mont:'$12 500',etape:'Budget',risk:4},
+  {ref:'DEP-2027-0895',inst:'Min. DÃ©fense',desc:'Maintenance vÃ©hicules FARDC',mont:'$245 000',etape:'Finances',risk:72},
+  {ref:'DEP-2027-0896',inst:'Min. Justice',desc:'RÃ©novation tribunal Kisangani',mont:'$480 000',etape:'Finances',risk:14},
+];
+
+const AO_DATA=[
+  {ref:'AO-2027-0441',inst:'Min. SantÃ©',obj:'RÃ©actifs 260 hÃ´pitaux',mont:'$4.2M',date:'30 Jan 27',st:'Ouvert',risk:14},
+  {ref:'AO-2027-0442',inst:'Min. Infrastructures',obj:'Ã‰cole modÃ¨le Goma',mont:'$1.8M',date:'15 FÃ©v 27',st:'Ouvert',risk:7},
+  {ref:'AO-2027-0443',inst:'Min. Ã‰nergie',obj:'Panneaux solaires Nord',mont:'$6.8M',date:'05 FÃ©v 27',st:'âš  Suspendu',risk:48},
+  {ref:'AO-2027-0444',inst:'BCC',obj:'Serveurs Data Center',mont:'$3.4M',date:'20 FÃ©v 27',st:'Ouvert',risk:6},
+  {ref:'AO-2027-0445',inst:'ARMP',obj:'VÃ©hicules 26 provinces',mont:'$2.1M',date:'25 Jan 27',st:'ClÃ´turÃ©',risk:24},
+];
+
+const ALERTES=[
+  {cl:'cr',ic:'ðŸš¨',t:'Doublon paiement â€” Agent fictif',d:'AG-047821 payÃ© 2Ã— â€” $2 840 â€” HERMÃˆS-IA a bloquÃ© le 2e virement',ti:'8 min'},
+  {cl:'cr',ic:'ðŸš¨',t:'Fraude fiscale â€” KITAMBALA SARL',d:'TVA sous-dÃ©clarÃ©e 340% â€” $1.24M non dÃ©clarÃ© â€” IRIS-IA alerte DGI',ti:'45 min'},
+  {cl:'cr',ic:'ðŸš¨',t:'Surfacturation AO-2027-0443',d:'Prix 340% marchÃ© â€” SOLPRO SARL â€” Conflit d\'intÃ©rÃªt â€” SIGMA',ti:'2h'},
+  {cl:'cr',ic:'ðŸš¨',t:'Export cobalt illÃ©gal â€” Kolwezi',d:'$4.8M non dÃ©clarÃ© â€” Permis expirÃ© 45 jours â€” GAÃA alerte douanes',ti:'3h'},
+  {cl:'wn',ic:'âš ï¸',t:'Fractionnement marchÃ© â€” Goma',d:'3 marchÃ©s $42K mÃªme jour, mÃªme fournisseur â€” seuil $50K â€” SIGMA',ti:'5h'},
+  {cl:'wn',ic:'âš ï¸',t:'Transaction inhabituelle â€” Min. DÃ©fense',d:'Virement $245K compte non enregistrÃ© â€” Score risque 72% â€” ARGUS',ti:'7h'},
+  {cl:'in',ic:'â„¹ï¸',t:'BiomÃ©trie en retard â€” Ã‰quateur',d:'1 847 agents non validÃ©s â€” 7 jours de retard â€” Relances HERMÃˆS',ti:'1 jour'},
+];
+
+let AGENTS_IA=[];
+let selectedAgentId=null;
+let selectedAgentNom=null;
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// CLAUDE API â€” AGENTS IA
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const SYS={
+  dash:`Tu es ARIA, agent IA prÃ©sidentiel du PNGIE-RDC (Plateforme Nationale de Gouvernance IntÃ©grÃ©e de la RÃ©publique DÃ©mocratique du Congo). Budget 2027: $5.2B, 97.4M citoyens, 847 432 agents, 12 agents IA, 26 provinces. RÃ©ponds en franÃ§ais, sois prÃ©cis et professionnel.`,
+  pop:`Tu es APOLLO, agent IA dÃ©mographie PNGIE-RDC. 97.4M citoyens, 61.2M CNI biomÃ©triques, 26 provinces, 145 territoires. RÃ©ponds en franÃ§ais.`,
+  ag:`Tu es HERMÃˆS, agent IA RH du PNGIE-RDC. 847 432 agents, 1 247 fictifs supprimÃ©s, masse salariale $185M/mois, INSS 3.5%, IPR barÃ¨me progressif. RÃ©ponds en franÃ§ais.`,
+  bud:`Tu es HELIOS, agent IA budget PNGIE-RDC. Budget 2027 $5.2B, circuit ENGAGER/LIQUIDER/ORDONNER/PAYER, SYSCOHADA. RÃ©ponds en franÃ§ais.`,
+  fisc:`Tu es IRIS, agent IA fiscalitÃ© DGI du PNGIE-RDC. 1.4M contribuables, $1.12B recettes, IBP/IERE/TVA 16%/IPR. RÃ©ponds en franÃ§ais.`,
+  march:`Tu es SIGMA, agent IA marchÃ©s publics ARMP PNGIE-RDC. 124 AO actifs, $1.24B contrats, Code des MarchÃ©s Publics RDC. RÃ©ponds en franÃ§ais.`,
+  sant:`Tu es ASCLEPIOS, agent IA santÃ© nationale PNGIE-RDC. 2 847 formations sanitaires, 48.4M patients, alertes Ã©pidÃ©mio. RÃ©ponds en franÃ§ais.`,
+  mine:`Tu es GAÃA, agent IA mines PNGIE-RDC. Cobalt 70% mondial, $2.84B redevances, 2 847 permis. RÃ©ponds en franÃ§ais.`,
+  ia:`Tu coordonnes les 12 agents IA PNGIE-RDC: ARIA, APOLLO, HERMÃˆS, HELIOS, IRIS, SIGMA, ASCLEPIOS, ATHENA, GAÃA, ARGUS, THÃ‰MIS, ARÃˆS. Analyses transversales. RÃ©ponds en franÃ§ais.`,
+};
+const chatH={};
+
+async function callClaude(dept,msg){
+  if(dept==='ia'){
+    if(!selectedAgentId){ return 'Veuillez d\'abord selectionner un agent IA dans la liste ci-dessus.'; }
+    try{
+      const resp=await fetch(`/api/agents/${selectedAgentId}/chat`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':`Bearer ${authToken}`},
+        body:JSON.stringify({message:msg})
+      });
+      const data=await resp.json();
+      if(!resp.ok||data.ok===false) return data.error||'Erreur agent IA.';
+      return data.reply||'Pas de reponse.';
+    }catch(e){ return 'Erreur de connexion au serveur PNGIE-RDC.'; }
+  }
+  if(!chatH[dept])chatH[dept]=[];
+  chatH[dept].push({role:'user',content:msg});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS[dept]||SYS.ia,messages:chatH[dept]})
+    });
+    const d=await r.json();
+    const rep=d.content?.[0]?.text||'Erreur API.';
+    chatH[dept].push({role:'assistant',content:rep});
+    return rep;
+  }catch(e){return 'Erreur de connexion a l API Claude.';}
+}
+function addMsg(id,role,txt){
+  const el=document.getElementById('chat-'+id);
+  if(!el)return null;
+  const d=document.createElement('div');
+  d.className='ia-msg '+role;d.textContent=txt;
+  el.appendChild(d);el.scrollTop=el.scrollHeight;return d;
+}
+
+async function sendMsg(dept){
+  const inp=document.getElementById('inp-'+dept);
+  if(!inp||!inp.value.trim())return;
+  const msg=inp.value.trim();inp.value='';
+  addMsg(dept,'user',msg);
+  const t=addMsg(dept,'typing','âŸ³ Analyse en coursâ€¦');
+  const r=await callClaude(dept,msg);
+  t&&t.remove();addMsg(dept,'bot',r);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// HELPERS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function badge(txt,cl){return `<span class="badge ${cl}">${txt}</span>`;}
+function prog(nom,pct,col='#F7D618'){
+  return `<div class="prog"><div class="prog-hdr"><span style="font-weight:500;color:var(--navy);font-size:11px">${nom}</span><span style="color:var(--muted);font-size:11px">${pct}%</span></div><div class="prog-tr"><div class="prog-fl" style="width:${pct}%;background:${col}"></div></div></div>`;
+}
+function alertBlock(a){
+  return `<div class="alert a-${a.cl}"><div class="alert-icon">${a.ic}</div><div class="alert-body"><div class="alert-title">${a.t}</div><div class="alert-desc">${a.d}</div></div><div class="alert-time">${a.ti}</div></div>`;
+}
+function fmtNum(n){return Number(n).toLocaleString('fr-FR');}
+function toast(msg,type='ok'){
+  const el=document.getElementById('toastEl');
+  el.textContent=msg;el.className=`toast ${type} show`;
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// RÃ”LES & DIFFÃ‰RENCIATION DES INTERFACES
+// Architecture extensible : chaque institution (PrÃ©sidence, Primature,
+// ministÃ¨re, province, agence, citoyen...) dÃ©clare ici son pÃ©rimÃ¨tre.
+// Pour ajouter un nouveau ministÃ¨re ou une nouvelle province, il suffit
+// d'ajouter une entrÃ©e Ã  ROLES â€” le reste (nav, sidebar, dashboard) suit.
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const ROLES = {
+  PR:{name:'PrÃ©sidence de la RÃ©publique',cat:'Institution suprÃªme',ini:'PR',col:'#F7D618',
+    pages:['dashboard','alertes','provinces','institutions','ministeres','population','cni','etatcivil','agents','paie','biometrie','budget','tresorerie','depenses','fiscalite','douanes','marches','sante','education','mines','portail','ia','audit','journal'],
+    kpis:[['Budget National 2027','5.2B$','â†‘ 24% vs 2025','tup','#F7D618'],['Citoyens EnregistrÃ©s','97.4M','â†‘ Recensement actif','tup','#1A6B3C'],['Agents ValidÃ©s Bio.','847 432','âœ“ 98.3% validÃ©s','tup','#1E5FAD'],['Alertes IA Actives','7','âš  En investigation','twn','#CE1021']],
+    dash:{title:'Tableau de Bord PrÃ©sidentiel',sub:'Vision nationale â€” accÃ¨s total Ã  toutes les institutions'}},
+  MI:{name:'MinistÃ¨res (ex. Finances)',cat:'Pouvoir exÃ©cutif â€” mise en Å“uvre sectorielle',ini:'MI',col:'#1A6B3C',
+    pages:['dashboard','budget','tresorerie','depenses','fiscalite','douanes','marches','journal','institutions','ministeres'],
+    kpis:[['Recettes DGI (mois)','$1.12B','78% de l\'objectif','tup','#1A6B3C'],['Solde TrÃ©sor (BCC)','$1.24B','stable','tup','#1E5FAD'],['DÃ©penses engagÃ©es','$284M','en cours','twn','#B45309'],['Dette publique','$8.4B','service: $42M/mois','twn','#CE1021']],
+    dash:{title:'Tableau de Bord MinistÃ©riel',sub:'Ã‰laboration et mise en Å“uvre des politiques publiques â€” rattachÃ© Ã  la Primature'}},
+  SN:{name:'SÃ©nat',cat:'Pouvoir lÃ©gislatif',ini:'SN',col:'#6B21A8',
+    pages:['dashboard','budget','institutions','ministeres','journal'],
+    kpis:[['SÃ©nateurs',   '108','en fonction','tup','#6B21A8'],['Lois examinÃ©es (session)','24','en cours','twn','#B45309'],['Budget â€” lecture','2áµ‰ chambre','vote en cours','twn','#1E5FAD'],['ContrÃ´les gouvernementaux','9','auditions menÃ©es','tup','#1A6B3C']],
+    dash:{title:'Tableau de Bord â€” SÃ©nat',sub:'Ã‰laboration des lois, vote du budget, contrÃ´le de l\'action gouvernementale'}},
+  AN:{name:'AssemblÃ©e Nationale',cat:'Pouvoir lÃ©gislatif',ini:'AN',col:'#6B21A8',
+    pages:['dashboard','budget','institutions','ministeres','journal'],
+    kpis:[['DÃ©putÃ©s','500','en fonction','tup','#6B21A8'],['Lois votÃ©es (session)','17','adoptÃ©es','tup','#1A6B3C'],['Budget national','1Ê³áµ‰ lecture','en examen','twn','#1E5FAD'],['Questions au Gouvernement','31','posÃ©es ce mois','twn','#B45309']],
+    dash:{title:'Tableau de Bord â€” AssemblÃ©e Nationale',sub:'Ã‰laboration des lois, vote du budget, contrÃ´le de l\'action gouvernementale'}},
+  PM:{name:'Primature',cat:'Coordination gouvernementale',ini:'PM',col:'#1E5FAD',
+    pages:['dashboard','alertes','provinces','institutions','ministeres','budget','depenses','marches','sante','education','mines','journal'],
+    kpis:[['MinistÃ¨res coordonnÃ©s','24','â— Conseil hebdo.','tup','#1E5FAD'],['Programmes en cours','142','â†‘ 8 lancÃ©s ce mois','tup','#1A6B3C'],['ExÃ©cution budgÃ©taire','45%','vs objectif 60%','twn','#B45309'],['DÃ©cisions en attente','11','Ã  arbitrer','twn','#CE1021']],
+    dash:{title:'Tableau de Bord â€” Primature',sub:'Coordination interministÃ©rielle et suivi de l\'action gouvernementale'}},
+  SA:{name:'MinistÃ¨re de la SantÃ©',cat:'MinistÃ¨re sectoriel',ini:'SA',col:'#CE1021',
+    pages:['dashboard','sante','budget','journal'],
+    kpis:[['Formations sanitaires','2 847','suivies','tup','#CE1021'],['Alertes Ã©pidÃ©miques','3','actives','twn','#B45309'],['Couverture provinces â‰¥70%','20/26','provinces','tup','#1A6B3C'],['Budget santÃ© exÃ©cutÃ©','45%','$533M/$740M','twn','#B45309']],
+    dash:{title:'Tableau de Bord â€” MinistÃ¨re de la SantÃ©',sub:'Surveillance Ã©pidÃ©miologique et rÃ©seau sanitaire national'}},
+  IG:{name:'Inspection GÃ©nÃ©rale des Finances',cat:'Institution de contrÃ´le',ini:'IG',col:'#6B21A8',
+    pages:['dashboard','ia','audit','journal','depenses','marches','fiscalite'],
+    kpis:[['Alertes IA actives','7','Ã  traiter','twn','#CE1021'],['Fraudes bloquÃ©es (mois)','$24M','12 agents IA','tup','#6B21A8'],['MarchÃ©s suspendus','1','AO-2027-0443','twn','#B45309'],['Agents fictifs radiÃ©s','1 247','$2.1M/mois Ã©conomisÃ©s','tup','#1A6B3C']],
+    dash:{title:'Tableau de Bord â€” Audit & ContrÃ´le',sub:'IGF â€” Inspection GÃ©nÃ©rale des Finances'}},
+  GV:{name:'Gouvernorat de Province',cat:'AutoritÃ© provinciale',ini:'GV',col:'#B45309',
+    pages:['dashboard','population','agents','budget','depenses','sante','education','mines','journal','institutions','provinces','ministeres'],
+    kpis:[['Population provinciale','13.2M','recensement actif','tup','#B45309'],['Agents provinciaux','54 210','98% biomÃ©trie','tup','#1E5FAD'],['Budget provincial exÃ©cutÃ©','62%','$504M/$840M','tup','#1A6B3C'],['Projets locaux en cours','38','voirie, santÃ©, Ã©coles','twn','#6B21A8']],
+    dash:{title:'Tableau de Bord Provincial',sub:'Gouvernorat â€” vue territoriale et services dÃ©concentrÃ©s'}},
+  AG:{name:'Agent DGI',cat:'Agence / rÃ©gie financiÃ¨re',ini:'AG',col:'#475569',
+    pages:['dashboard','fiscalite','journal'],
+    kpis:[['Contribuables suivis','1.4M','portefeuille DGI','tup','#475569'],['Recettes TVA (mois)','38%','1Ã¨re source fiscale','tup','#1A6B3C'],['DÃ©clarations en retard','12 471','Ã  relancer','twn','#B45309'],['Dossiers traitÃ©s (jour)','284','moyenne Ã©quipe','tup','#1E5FAD']],
+    dash:{title:'Poste de Travail â€” Agent DGI',sub:'Direction GÃ©nÃ©rale des ImpÃ´ts â€” gestion de portefeuille'}},
+  CI:{name:'Citoyen',cat:'Portail public',ini:'CI',col:'#0F2040',
+    pages:['dashboard','portail','cni','etatcivil'],
+    kpis:[['Mes documents','4','Ã  jour','tup','#0F2040'],['CNI','Valide','exp. 2032','tup','#1A6B3C'],['DÃ©marches en cours','1','Ã©tat civil','twn','#B45309'],['Notifications','2','non lues','twn','#CE1021']],
+    dash:{title:'Mon Espace Citoyen',sub:'Portail Citoyen PNGIE-RDC'}}
+};
+
+let role=ROLES.PR;
+const TYPE_TO_ROLEKEY = {
+  PRESIDENCE:'PR', PRIMATURE:'PM', PARLEMENT:'SN', MINISTERE:'MI', PROVINCE:'GV',
+  INSTITUTION_CONTROLE:'IG', AGENCE:'AG', CONSEIL_ETAT:'SN', COUR_CASSATION:'SN',
+  COUR_CONSTITUTIONNELLE:'SN', ENTREPRISE_PUBLIQUE:'AG', ETD:'GV'
+};
+let selectedInstitution = null;
+let bureauNumerique = null; // { nom, prenom, institution, unite, poste_intitule } â€” chargÃ© automatiquement aprÃ¨s connexion
+
+async function loadPublicInstitutions(){
+  const sel = document.getElementById('loginInstSelect');
+  const badge = document.getElementById('loginInstSrcBadge');
+  try {
+    const resp = await fetch(`${API_BASE}/api/public/institutions`);
+    if(!resp.ok) throw new Error('http '+resp.status);
+    const groupes = await resp.json();
+    const types = TYPE_ORDER.filter(t=>groupes[t]);
+    Object.keys(groupes).forEach(t=>{ if(!types.includes(t)) types.push(t); });
+    let html = `<option value="">â€” SÃ©lectionner â€”</option>`;
+    types.forEach(t=>{
+      html += `<optgroup label="${TYPE_LABELS[t]||t}">`;
+      (groupes[t]||[]).forEach(i=>{ html += `<option value="${i.institution_id}" data-type="${t}" data-nom="${i.nom.replace(/"/g,'&quot;')}">${i.nom}</option>`; });
+      html += `</optgroup>`;
+    });
+    sel.innerHTML = html;
+    if(badge){ badge.textContent = 'âœ“ Liste rÃ©elle chargÃ©e depuis le serveur (127 institutions)'; badge.style.color='rgba(26,107,60,0.6)'; }
+  } catch(e){
+    sel.innerHTML = `<option value="">Serveur injoignable â€” connectez-vous quand mÃªme ci-dessous</option>`;
+    if(badge){ badge.textContent = 'Serveur injoignable â€” la liste des institutions n\'a pas pu Ãªtre chargÃ©e'; badge.style.color='rgba(248,113,113,0.6)'; }
+  }
+}
+function onLoginInstChange(){
+  const sel = document.getElementById('loginInstSelect');
+  const opt = sel.selectedOptions[0];
+  if(!opt || !opt.value){ selectedInstitution = null; return; }
+  selectedInstitution = { institution_id: opt.value, nom: opt.dataset.nom, type: opt.dataset.type };
+  const rk = TYPE_TO_ROLEKEY[opt.dataset.type];
+  if(rk && ROLES[rk]){ role = ROLES[rk]; document.getElementById('lu').value = role.ini.toLowerCase()+'@rdc.gouv.cd'; }
+}
+function goToMFA(){
+  const email = document.getElementById('lu').value.trim();
+  const password = document.getElementById('lp').value;
+  const err = document.getElementById('loginError');
+  err.style.display='none';
+  if(!email || !password){ err.style.display='block'; err.textContent='Veuillez renseigner votre email et votre mot de passe.'; return; }
+  document.getElementById('loginStep1').style.display='none';
+  document.getElementById('loginStep2').style.display='block';
+  document.getElementById('mfaCode').value='';
+  document.getElementById('mfaCode').focus();
+}
+function backToStep1(){
+  document.getElementById('loginStep2').style.display='none';
+  document.getElementById('loginStep1').style.display='block';
+}
+function applyRoleUI(){
+  const pages = realPages || role.pages; // prioritÃ© au RBAC rÃ©el calculÃ© par le serveur
+  // Nav du haut : ne garder que les pages du pÃ©rimÃ¨tre du rÃ´le
+  document.querySelectorAll('.tb-btn[data-page]').forEach(b=>{
+    b.style.display = pages.includes(b.dataset.page) ? '' : 'none';
+  });
+  // Sidebar : idem au niveau des items, puis on masque les sections vides
+  document.querySelectorAll('.sb-item[data-page]').forEach(it=>{
+    it.style.display = pages.includes(it.dataset.page) ? '' : 'none';
+  });
+  document.querySelectorAll('.sb-section').forEach(sec=>{
+    const items=[...sec.querySelectorAll('.sb-item')];
+    const anyVisible = items.some(it=>it.style.display!=='none');
+    sec.style.display = items.length && !anyVisible ? 'none' : '';
+    const divider = sec.nextElementSibling;
+    if(divider && divider.classList.contains('sb-divider')) divider.style.display = sec.style.display;
+  });
+  // Si la page actuellement affichÃ©e n'est plus accessible, revenir au dashboard
+  const activePage=document.querySelector('.page.act');
+  if(activePage && !pages.includes(activePage.id.replace('pg-',''))){
+    pg('dashboard', document.querySelector('.tb-btn[data-page="dashboard"]'));
+    document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('act'));
+    document.querySelector('.sb-item[data-page="dashboard"]')?.classList.add('act');
+  }
+  // En-tÃªte et KPI du tableau de bord, personnalisÃ©s par institution
+  const dt=document.getElementById('dashTitle'), ds=document.getElementById('dashSub'), kg=document.getElementById('kpiGrid');
+  if(dt && role.dash){dt.textContent=role.dash.title; ds.textContent=role.dash.sub;}
+  if(kg && role.kpis){
+    kg.innerHTML=role.kpis.map(([lbl,val,tr,trc,c])=>
+      `<div class="kpi" style="--kc:${c}"><div class="kpi-lbl">${lbl}</div><div class="kpi-val">${val}</div><div class="kpi-tr ${trc}">${tr}</div></div>`
+    ).join('');
+  }
+  // Bureau numÃ©rique â€” bandeau "Bonjour" avec poste chargÃ© automatiquement, si disponible
+  const bn = document.getElementById('bureauNumeriqueBanner');
+  if(bn){
+    if(bureauNumerique){
+      bn.style.display='flex';
+      bn.innerHTML = `<div><div style="font-size:15px;font-weight:700;color:var(--gold3)">Bonjour ${escH(bureauNumerique.prenom||'')} ${escH(bureauNumerique.nom||'')}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${escH(bureauNumerique.poste_intitule||role.name)} â€” ${escH(bureauNumerique.unite||'')} ${bureauNumerique.unite?'â€”':''} ${escH(bureauNumerique.institution||role.name)}</div></div>
+        <div style="font-size:9.5px;color:#1A6B3C"><i class="ti ti-circle-check-filled"></i> Poste et permissions chargÃ©s automatiquement</div>`;
+    } else {
+      bn.style.display='none';
+    }
+  }
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// LOGIN â€” connectÃ© au vrai serveur PNGIE-RDC (localhost:4000)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const API_BASE = 'http://localhost:4000';
+let authToken = null;
+let realPages = null; // pÃ©rimÃ¨tre rÃ©el calculÃ© cÃ´tÃ© serveur (RBAC), remplace role.pages quand disponible
+
+async function login(){
+  const mfaErr = document.getElementById('mfaError');
+  mfaErr.style.display = 'none';
+  const mfaCode = document.getElementById('mfaCode').value.trim();
+  if(!/^\d{6}$/.test(mfaCode)){
+    mfaErr.style.display='block';
+    mfaErr.textContent='Entrez un code Ã  6 chiffres (dÃ©monstration : n\'importe lequel).';
+    return;
+  }
+  const email = document.getElementById('lu').value.trim();
+  const password = document.getElementById('lp').value;
+  const btn = document.querySelector('#loginStep2 .login-btn');
+  const origLabel = btn.textContent;
+  btn.textContent = 'Validationâ€¦';
+  btn.disabled = true;
+
+  let resp, data;
+  try {
+    resp = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({email, password})
+    });
+    data = await resp.json();
+  } catch(e) {
+    btn.textContent = origLabel; btn.disabled = false;
+    mfaErr.style.display = 'block';
+    mfaErr.innerHTML = `Serveur injoignable sur <code>${API_BASE}</code>.<br>VÃ©rifie que le service tourne, puis rÃ©essaie.`;
+    return;
+  }
+  btn.textContent = origLabel; btn.disabled = false;
+
+  if (!resp.ok) {
+    mfaErr.style.display = 'block';
+    mfaErr.textContent = data.error || 'Connexion refusÃ©e.';
+    return;
+  }
+
+  authToken = data.token;
+
+  // RÃ©cupÃ¨re le pÃ©rimÃ¨tre RÃ‰EL de pages autorisÃ©es (RBAC calculÃ© cÃ´tÃ© serveur, pas la config locale)
+  try {
+    const meResp = await fetch(`${API_BASE}/api/me`, {headers:{Authorization:`Bearer ${authToken}`}});
+    const me = await meResp.json();
+    realPages = me.pages || null;
+  } catch(e) { realPages = null; }
+
+  // Chargement automatique du poste rÃ©el (institution > unitÃ© > fonction > permissions) â€” pas de second mot de passe
+  bureauNumerique = null;
+  try {
+    const posteResp = await fetch(`${API_BASE}/api/me/poste`, {headers:{Authorization:`Bearer ${authToken}`}});
+    if(posteResp.ok) bureauNumerique = await posteResp.json();
+  } catch(e) { bureauNumerique = null; }
+
+  // Le rÃ´le/tableau de bord visuel se dÃ©duit du VRAI poste chargÃ© automatiquement, prioritaire sur le choix fait Ã  l'Ã©tape 1
+  if(bureauNumerique && bureauNumerique.type_institution){
+    const rk = TYPE_TO_ROLEKEY[bureauNumerique.type_institution];
+    if(rk && ROLES[rk]) role = ROLES[rk];
+  }
+
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='grid';
+  document.getElementById('tbAv').textContent=role.ini;
+  document.getElementById('tbAv').style.background=role.col;
+  document.getElementById('tbNm').textContent = bureauNumerique ? `${bureauNumerique.prenom||''} ${bureauNumerique.nom||''}`.trim() : (data.person ? `${data.person.prenom||''} ${data.person.nom}`.trim() || role.name : role.name);
+  document.getElementById('tbCat').textContent = bureauNumerique ? (bureauNumerique.poste_intitule || role.cat) : role.cat;
+  document.getElementById('sbInfo').innerHTML=`â— ConnectÃ© â€” ${API_BASE}<br>${data.person ? data.person.email : role.name}<br>Session rÃ©elle â€” token JWT actif`;
+  initAll();
+  applyRoleUI();
+  populateInstSwitch();
+}
+function logout(){
+  authToken = null;
+  realPages = null;
+  bureauNumerique = null;
+  selectedInstitution = null;
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  backToStep1();
+}
+
+// Aide pour tous les appels authentifiÃ©s vers le vrai serveur
+async function apiGet(path){
+  const resp = await fetch(`${API_BASE}${path}`, {headers:{Authorization:`Bearer ${authToken}`}});
+  const data = await resp.json().catch(()=>({}));
+  if (!resp.ok) { const e = new Error(data.error||'Erreur serveur'); e.status = resp.status; throw e; }
+  return data;
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// NAVIGATION
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function pg(id,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.tb-btn').forEach(b=>b.classList.remove('act'));
+  document.getElementById('pg-'+id)?.classList.add('act');
+  btn?.classList.add('act');
+}
+function nav(el,id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.sb-item').forEach(i=>i.classList.remove('act'));
+  document.getElementById('pg-'+id)?.classList.add('act');
+  el?.classList.add('act');
+  closeSidebarIfMobile();
+}
+function toggleSidebar(){
+  document.getElementById('sidebar')?.classList.toggle('open');
+  document.getElementById('scrim')?.classList.toggle('show');
+}
+function closeSidebarIfMobile(){
+  if(window.innerWidth<=980){
+    document.getElementById('sidebar')?.classList.remove('open');
+    document.getElementById('scrim')?.classList.remove('show');
+  }
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MODALS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function openM(id){document.getElementById(id)?.classList.add('open')}
+function closeM(id){document.getElementById(id)?.classList.remove('open')}
+document.addEventListener('click',e=>{if(e.target.classList.contains('mb'))e.target.classList.remove('open')});
+
+// SAVE Actions
+let newAgents=[];
+function saveAgent(){
+  const n=document.getElementById('aNom').value,p=document.getElementById('aPNom').value;
+  if(!n||!p){toast('Remplissez les champs obligatoires','err');return;}
+  const mat='AG-'+String(Date.now()).slice(-6);
+  newAgents.unshift({mat,nom:n+' '+p,inst:document.getElementById('aInst').value||'Min. Finances',grade:'Agent',cat:document.getElementById('aCat').value,bio:false,sal:'$'+( document.getElementById('aSal').value||'0'),pay:document.getElementById('aBanque').value||'â€”'});
+  renderAgents();closeM('mAgent');toast(`âœ“ Agent enregistrÃ© â€” Matricule: ${mat}`,'ok');
+}
+
+let newCit=[];
+function saveCit(){
+  const n=document.getElementById('cNom').value,p=document.getElementById('cPNom').value;
+  if(!n||!p){toast('Remplissez les champs obligatoires','err');return;}
+  const nin='KIN'+(new Date().getFullYear())+document.getElementById('cDdn').value.replace(/-/g,'').slice(4,8)+'M'+String(Date.now()).slice(-7)+'0';
+  newCit.unshift({nin,nom:n+' '+p,ddn:document.getElementById('cDdn').value,prov:document.getElementById('cProv').value||'Kinshasa',cni:'En attente',st:'ba',stl:'En attente'});
+  renderCitoyens();closeM('mCit');toast(`âœ“ Citoyen enregistrÃ© â€” NIN: ${nin}`,'ok');
+}
+
+let newDep=[];
+function saveDep(){
+  const m=parseFloat(document.getElementById('dMont').value);
+  if(!m){toast('Entrez un montant','err');return;}
+  const ref='DEP-2027-'+String(Date.now()).slice(-4);
+  newDep.unshift({ref,inst:document.getElementById('dInst').value||'Min. SantÃ©',desc:document.getElementById('dDesc').value||'â€”',mont:'$'+m.toLocaleString('fr-FR'),etape:'Soumis',risk:Math.floor(Math.random()*30)+5});
+  renderDepenses();closeM('mDep');toast(`âœ“ DÃ©pense soumise â€” ${ref}`,'ok');
+}
+
+let newAO=[];
+function saveAO(){
+  const obj=document.getElementById('aoObjet').value;
+  if(!obj){toast('Entrez l\'objet du marchÃ©','err');return;}
+  const ref='AO-2027-'+String(Date.now()).slice(-4);
+  newAO.unshift({ref,inst:document.getElementById('aoInst').value||'Min. SantÃ©',obj,mont:'$'+((parseFloat(document.getElementById('aoMont').value)||0).toLocaleString('fr-FR')),date:document.getElementById('aoDate').value||'â€”',st:'Ouvert',risk:8});
+  renderMarches();closeM('mAO');toast(`âœ“ AO publiÃ© â€” ${ref}`,'ok');
+}
+
+function calcNiv(){
+  const m=parseFloat(document.getElementById('dMont').value)||0;
+  const el=document.getElementById('depNiv');
+  if(m===0){el.textContent='Entrez un montantâ€¦';return;}
+  if(m<5000)el.textContent='âœ… Niveau 1 â€” Validation ministÃ¨re uniquement';
+  else if(m<50000)el.textContent='âš ï¸ Niveau 2 â€” Min. Finances + Ordonnateur';
+  else if(m<500000)el.textContent='âš ï¸ Niveau 3 â€” Primature obligatoire';
+  else el.textContent='ðŸ”´ Niveau 4 â€” PRÃ‰SIDENCE requise';
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// RENDUS
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function renderDashboard(){
+  document.getElementById('budChart').innerHTML=[
+    ['Min. Mines',92,'#F7D618'],['Min. Finances',84,'#1A6B3C'],['Min. SantÃ©',71,'#1E5FAD'],
+    ['Min. Ã‰ducation',68,'#6B21A8'],['Min. Infrastructures',61,'#B45309'],
+    ['DGI',78,'#1A6B3C'],['DGDA',65,'#F7D618'],['Min. Ã‰nergie',58,'#1E5FAD'],
+  ].map(([n,p,c])=>prog(n,p,c)).join('');
+  document.getElementById('alertesD').innerHTML=ALERTES.slice(0,4).map(alertBlock).join('');
+  document.getElementById('riskChart').innerHTML=[
+    ['FiscalitÃ© DGI',28,'#1A6B3C'],['Mines/Cobalt',45,'#B45309'],
+    ['MarchÃ©s Publics',38,'#F7D618'],['Paie/RH',12,'#1A6B3C'],
+    ['Douanes DGDA',42,'#B45309'],['Budget',24,'#1E5FAD'],
+  ].map(([n,p,c])=>prog(n,p,c)).join('');
+  addMsg('dash','bot','ðŸ›ï¸ ARIA â€” Cockpit actif. Budget $5.2B, exÃ©cution 45%, 7 alertes critiques dont fraude cobalt Kolwezi $4.8M et surfacturation AO-0443. Que souhaitez-vous analyser ?');
+}
+
+function renderCitoyens(){
+  const all=[...newCit,...CITOYENS_DATA];
+  document.getElementById('tbCit').innerHTML=all.map(c=>`<tr>
+    <td><code style="font-size:9px">${c.nin}</code></td>
+    <td><strong>${c.nom}</strong></td>
+    <td>${c.ddn}</td><td>${c.prov}</td>
+    <td><code style="font-size:9px">${c.cni}</code></td>
+    <td>${badge(c.stl,c.st)}</td></tr>`).join('');
+  addMsg('pop','bot','ðŸŒ APOLLO â€” 97.4M citoyens, couverture CNI 62.8%, 2 847 doublons supprimÃ©s. Population +2.3%/an. Questions ?');
+}
+
+function renderAgents(){
+  const all=[...newAgents,...AGENTS_DATA];
+  document.getElementById('tbAg').innerHTML=all.map(a=>`<tr>
+    <td><code>${a.mat}</code></td>
+    <td><strong>${a.nom}</strong></td>
+    <td style="font-size:10.5px">${a.inst}</td>
+    <td>${a.grade}</td>
+    <td>${badge(a.cat,'bn')}</td>
+    <td>${a.bio?badge('âœ“ ValidÃ©','bg'):badge('âš  Manquant','br')}</td>
+    <td style="font-weight:700">${a.sal}</td>
+    <td>${a.pay}</td></tr>`).join('');
+  addMsg('ag','bot','ðŸ‘¥ HERMÃˆS â€” 847 432 agents. 1 247 fictifs supprimÃ©s ($2.1M/mois Ã©conomisÃ©s). BiomÃ©trie 98.3%. Questions ?');
+}
+
+function renderBudget(){
+  const d=[
+    ['Min. Ã‰ducation',920,414,'#1E5FAD'],['Min. SantÃ©',740,533,'#1A6B3C'],
+    ['Min. Infrastructures',1200,720,'#F7D618'],['Min. DÃ©fense',380,304,'#CE1021'],
+    ['Min. Mines',180,162,'#6B21A8'],['Min. Ã‰nergie',420,210,'#B45309'],
+    ['26 Gouvernorats',840,504,'#0F2040'],['Autres',520,234,'#4A5568'],
+  ];
+  document.getElementById('budgetBody').innerHTML=`<div class="tw"><table>
+    <thead><tr><th>Institution</th><th>Budget votÃ© ($M)</th><th>PayÃ© ($M)</th><th>Taux exÃ©cution</th><th>Barre</th></tr></thead>
+    <tbody>${d.map(([n,v,p,c])=>`<tr>
+      <td><strong>${n}</strong></td><td>$${v}M</td><td>$${p}M</td>
+      <td style="font-weight:700;color:${p/v>.7?'var(--green)':p/v>.4?'var(--amber)':'var(--red)'}">${Math.round(p/v*100)}%</td>
+      <td><div style="width:120px;height:6px;background:var(--light);border-radius:4px;overflow:hidden;display:inline-block"><div style="width:${Math.round(p/v*100)}%;height:100%;background:${c}"></div></div></td>
+    </tr>`).join('')}</tbody></table></div>`;
+  addMsg('bud','bot','ðŸ“Š HELIOS â€” Budget $5.2B. Taux global: 45% payÃ©. Min. Mines: meilleur taux (90%). Min. Ã‰ducation: 45% (constructions en cours). Questions ?');
+}
+
+function renderDepenses(){
+  const all=[...newDep,...DEPENSES_DATA];
+  document.getElementById('tbDep').innerHTML=all.map(d=>`<tr>
+    <td><code>${d.ref}</code></td>
+    <td style="font-size:10.5px">${d.inst}</td>
+    <td>${d.desc}</td>
+    <td style="font-weight:700">${d.mont}</td>
+    <td>${badge(d.etape,'ba')}</td>
+    <td style="font-weight:700;color:${d.risk>50?'var(--red)':d.risk>20?'var(--amber)':'var(--green)'}">${d.risk}% ${d.risk>50?'ðŸ”´':d.risk>20?'âš ï¸':'âœ“'}</td>
+    <td>${d.st==='Soumis'||!d.st?`<button class="btn sm success" onclick="toast('âœ“ DÃ©pense validÃ©e','ok')">âœ“ Valider</button>`:''}</td>
+  </tr>`).join('');
+}
+
+function renderFiscalite(){
+  document.getElementById('fiscChart').innerHTML=[
+    ['TVA 16%',38,'#F7D618'],['IBP (entreprises)',28,'#1A6B3C'],
+    ['IERE (revenus)',18,'#1E5FAD'],['Patentes',8,'#B45309'],
+    ['IPR (fonctionnaires)',5,'#6B21A8'],['Autres',3,'#CE1021'],
+  ].map(([n,p,c])=>prog(n,p,c)).join('');
+  document.getElementById('fiscProv').innerHTML=[
+    ['Kinshasa',42,'#F7D618'],['Haut-Katanga',18,'#1A6B3C'],['Lualaba',14,'#1E5FAD'],
+    ['Kongo Central',8,'#6B21A8'],['Nord-Kivu',7,'#B45309'],
+    ['KasaÃ¯ Oriental',5,'#CE1021'],['Ã‰quateur',4,'#0F2040'],['Sud-Kivu',2,'#4A5568'],
+  ].map(([n,p,c])=>prog(n,p,c)).join('');
+  addMsg('fisc','bot','ðŸ’° IRIS â€” 1.4M contribuables, $1.12B recettes (78%). TVA = 1Ã¨re source (38%). 12 471 dÃ©clarations en retard. Questions ?');
+}
+
+function renderMarches(){
+  const all=[...newAO,...AO_DATA];
+  document.getElementById('tbAO').innerHTML=all.map(m=>`<tr>
+    <td><code>${m.ref}</code></td>
+    <td style="font-size:10.5px">${m.inst}</td>
+    <td>${m.obj}</td>
+    <td style="font-weight:700">${m.mont}</td>
+    <td>${m.date}</td>
+    <td>${badge(m.st,m.st.includes('Suspendu')?'br':m.st==='Ouvert'?'bg':'bn')}</td>
+    <td style="font-weight:700;color:${m.risk>40?'var(--red)':m.risk>20?'var(--amber)':'var(--green)'}">${m.risk}%</td>
+  </tr>`).join('');
+  addMsg('march','bot','ðŸ“‹ SIGMA â€” AO-2027-0443 suspendu: surfacturation 340%, SOLPRO SARL, conflit d\'intÃ©rÃªt confirmÃ©. 18 suspicions actives. Questions ?');
+}
+
+function renderSante(){
+  document.getElementById('epiAlerts').innerHTML=[
+    {mal:'Mpox â€” Province Ã‰quateur',cas:247,dc:3,niv:'ALERTE',cl:'cr'},
+    {mal:'Rougeole â€” Maniema',cas:89,dc:1,niv:'VIGILANCE',cl:'wn'},
+    {mal:'CholÃ©ra rÃ©siduel â€” KasaÃ¯',cas:12,dc:0,niv:'VIGILANCE',cl:'wn'},
+  ].map(a=>`<div class="alert a-${a.cl}"><div class="alert-icon">âš•ï¸</div><div class="alert-body"><div class="alert-title">${a.mal}</div><div class="alert-desc">${a.cas} cas â€” ${a.dc} dÃ©cÃ¨s â€” RÃ©ponse ASCLEPIOS activÃ©e</div></div><div class="alert-time">${badge(a.niv,'ba')}</div></div>`).join('');
+  document.getElementById('santeProvs').innerHTML=[
+    ['Kinshasa','10/10','100%','bg'],['Nord-Kivu','8/10','80%','bg'],
+    ['Haut-Katanga','9/10','90%','bg'],['Sud-Kivu','7/10','70%','ba'],
+    ['Ã‰quateur','6/10','60% âš ','ba'],['Tshopo','7/10','70%','ba'],
+  ].map(([p,h,pct,cl])=>`<div class="sr"><span class="sr-n">${p} â€” ${h} hÃ´pitaux</span><span class="sr-v">${badge(pct,cl)}</span></div>`).join('');
+  addMsg('sant','bot','ðŸ¥ ASCLEPIOS â€” 2 847 FS. ALERTE: Mpox Ã‰quateur (247 cas, 3 dÃ©cÃ¨s). Campagne rougeole: 12.4M doses. Questions ?');
+}
+
+function renderMines(){
+  document.getElementById('minesChart').innerHTML=`<div class="tw"><table>
+    <thead><tr><th>Substance</th><th>Production 2027</th><th>Valeur USD</th><th>Redevances dues</th><th>PerÃ§ues</th><th>Taux</th></tr></thead>
+    <tbody>${[
+      ['Cobalt','1.84M tonnes','$4.2B','$420M','$398M','94.8%','bg'],
+      ['Cuivre','2.1M tonnes','$6.8B','$680M','$612M','90%','bg'],
+      ['Or','48 tonnes','$2.9B','$290M','$261M','90%','bg'],
+      ['Coltan','18 400 t','$840M','$84M','$71M','84.5%','ba'],
+      ['Diamants','12.4M carats','$1.4B','$140M','$126M','90%','bg'],
+    ].map(([s,p,v,rd,rp,tx,cl])=>`<tr>
+      <td><strong>${s}</strong></td><td>${p}</td>
+      <td style="color:var(--green);font-weight:700">${v}</td>
+      <td>${rd}</td><td>${rp}</td><td>${badge(tx,cl)}</td></tr>`).join('')}</tbody></table></div>`;
+  addMsg('mine','bot','â›ï¸ GAÃA â€” Cobalt: 1.84M t (70% mondial). Redevances: $2.84B. ALERTE: export illÃ©gal Kolwezi $4.8M â€” douanes alertÃ©es. Questions ?');
+}
+
+function renderIA(){
+  function renderAgentsIACards(){
+  document.getElementById('iaAgents').innerHTML=AGENTS_IA.map(a=>`<div class="sr" style="cursor:pointer" onclick="selectAgent('${a.agent_id}',this)"><span class="sr-n">&#129302;</span> <strong>${a.nom}</strong><br><small style="color:var(--muted)">${a.role_ia||''}</small></div>`).join('');
+}
+  } // FIX: fermeture manquante de renderIA()
+function selectAgent(id,el){
+  selectedAgentId=id;
+  document.querySelectorAll('#iaAgents .sr').forEach(x=>x.style.outline='');
+  if(el)el.style.outline='2px solid var(--gold)';
+  const inp=document.getElementById('inp-ia');
+  if(inp)inp.placeholder='Message a cet agent...';
+  addMsg('ia','bot','Agent selectionne. Posez votre question.');
+}
+async function loadRealAgentsIA(){
+  try{
+    AGENTS_IA=await apiGet('/api/agents');
+  }catch(e){ AGENTS_IA=[]; }
+  renderAgentsIACards();
+}
+
+function renderAudit(){
+  ['allAlertes','alertesAll'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.innerHTML=ALERTES.map(alertBlock).join('');
+  });
+}
+
+function renderJournal(){
+  const ops=[
+    ['INSERT','population.citoyens','NIN:KIN202701M0000247 â€” MUAMBA Jean-Paul'],
+    ['UPDATE','rh.agents','AG-002891 â€” BiomÃ©trie validÃ©e â€” Score: 99.2%'],
+    ['INSERT','finances.depenses','DEP-2027-0895 â€” $245K â€” Risque IA: 72%'],
+    ['BLOCK','rh.bulletins_paie','AG-047821 â€” Doublon BLOQUÃ‰ par HERMÃˆS-IA'],
+    ['DELETE','rh.agents','AG-047821 â€” Fictif confirmÃ© â€” SupprimÃ© â€” IGF-001'],
+    ['INSERT','fiscalite.declarations','NIF-2027-1284738 â€” TVA Jan 2027 â€” $184K'],
+    ['ALERT','marches.appels_offres','AO-2027-0443 â€” Surfacturation 340% â€” SIGMA'],
+    ['INSERT','gouvernance.audit_global','SHA-256 block #124847 â€” ChaÃ®ne OK'],
+    ['UPDATE','mines.permis_miniers','PM-KOL-0847 â€” Permis expirÃ© â€” GAÃA alerte'],
+    ['INSERT','population.cni','CNI-2027-108425 â€” LivrÃ©e â€” Kinshasa'],
+  ];
+  const now=new Date().toLocaleTimeString('fr-FR');
+  document.getElementById('journalLog').innerHTML=ops.map((o,i)=>{
+    const col=o[0]==='DELETE'||o[0]==='BLOCK'||o[0]==='ALERT'?'#CE1021':o[0]==='INSERT'?'#1A6B3C':'#1E5FAD';
+    const h=Math.abs([...o[2]].reduce((a,c)=>a*31+c.charCodeAt(0),0)).toString(16).padStart(16,'0');
+    return `<div class="j-line"><span style="color:rgba(201,168,76,0.7)">${now}</span> | <span style="color:${col}">${o[0].padEnd(8)}</span> | <span style="color:rgba(255,255,255,0.5)">${o[1]}</span> | ${o[2]} | <span style="color:rgba(201,168,76,0.5)">#${h}</span></div>`;
+  }).join('');
+}
+
+// Journal rÃ©el : GET /api/audit n'est autorisÃ© qu'au rÃ´le PrÃ©sidence (RBAC serveur) â€”
+// pour tout autre rÃ´le, le 403 renvoyÃ© par le serveur EST la dÃ©monstration recherchÃ©e.
+async function loadRealAudit(){
+  const badgeEl = document.getElementById('journalSrcBadge');
+  try {
+    const rows = await apiGet('/api/audit');
+    if(badgeEl){ badgeEl.textContent='âœ“ DonnÃ©es rÃ©elles â€” GET /api/audit (audit_log)'; badgeEl.style.color='#1A6B3C'; }
+    document.getElementById('journalLog').innerHTML = rows.length ? rows.map(r=>
+      `<div class="j-line"><span style="color:rgba(201,168,76,0.7)">${new Date(r.created_at).toLocaleString('fr-FR')}</span> | <span style="color:#1E5FAD">${String(r.action).padEnd(14)}</span> | <span style="color:rgba(255,255,255,0.5)">${r.entite||'â€”'}</span> | <span style="color:rgba(201,168,76,0.5)">#log-${r.log_id}</span></div>`
+    ).join('') : `<div class="j-line" style="color:rgba(255,255,255,0.4)">Journal vide pour l'instant.</div>`;
+  } catch(e){
+    if(e.status===403){
+      if(badgeEl){ badgeEl.textContent='AccÃ¨s refusÃ© (403) â€” le journal d\'audit est rÃ©servÃ© Ã  la PrÃ©sidence, exactement comme en production'; badgeEl.style.color='#CE1021'; }
+    } else if(badgeEl){ badgeEl.textContent='Serveur injoignable â€” dÃ©monstration affichÃ©e'; badgeEl.style.color='#B45309'; }
+    renderJournal(); // repli illustratif
+  }
+}
+
+let liveProvinces = null;
+let provincesSource = 'demo';
+async function loadRealProvinces(){
+  try {
+    const rows = await apiGet('/api/provinces');
+    liveProvinces = rows.map(r=>{
+      const rNorm = normFR(r.nom); let local = PROVINCES.find(p => normFR(p.nom) === rNorm); if (!local) { local = PROVINCES.find(p => normFR(p.nom).includes(rNorm) || rNorm.includes(normFR(p.nom))); }
+      return local ? {...local, nom:r.nom} : {code:r.code||'â€”',nom:r.nom,chef:'â€”',pop:0,surf:0,res:'DonnÃ©es du serveur â€” dÃ©tails Ã  complÃ©ter',reg:'â€”'};
+    });
+    provincesSource = 'live';
+  } catch(e){
+    liveProvinces = null;
+    provincesSource = e.status===403 ? 'refuse' : 'hors-ligne';
+  }
+  renderProvinces();
+}
+function renderProvinces(){
+  const source = liveProvinces || PROVINCES;
+  const srcBadgeEl = document.getElementById('provSrcBadge');
+  if(srcBadgeEl){
+    const map={live:['âœ“ DonnÃ©es rÃ©elles â€” GET /api/provinces','#1A6B3C'],demo:['DonnÃ©es de dÃ©monstration','#94A3B8'],
+      refuse:['AccÃ¨s refusÃ© par le serveur pour ce rÃ´le (403) â€” dÃ©monstration affichÃ©e','#CE1021'],
+      'hors-ligne':['Serveur injoignable â€” dÃ©monstration affichÃ©e','#B45309']};
+    const [txt,c]=map[provincesSource];
+    srcBadgeEl.textContent=txt; srcBadgeEl.style.color=c;
+  }
+  document.getElementById('provsTable').innerHTML=`<div class="tw"><table>
+    <thead><tr><th>Code</th><th>Province</th><th>Chef-lieu</th><th>Population</th><th>Superficie</th><th>RÃ©gion</th><th>Ressources clÃ©s</th></tr></thead>
+    <tbody>${source.map(p=>`<tr>
+      <td>${badge(p.code,'bb')}</td>
+      <td><strong>${p.nom}</strong></td>
+      <td>${p.chef}</td>
+      <td>${p.pop?fmtNum(p.pop)+' hab.':'â€”'}</td>
+      <td>${p.surf?fmtNum(p.surf)+' kmÂ²':'â€”'}</td>
+      <td>${badge(p.reg,'bn')}</td>
+      <td style="font-size:10.5px;color:var(--muted)">${p.res}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// POSTES & ORGANIGRAMME â€” connectÃ© au vrai serveur
+// GET /api/postes/arborescence + GET /api/postes/:id/environnement
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function escH(s){ return String(s==null?'â€”':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+let posteArboData = null;
+let posteArboSource = 'demo';
+async function loadRealPostes(){
+  try {
+    posteArboData = await apiGet('/api/postes/arborescence');
+    posteArboSource = 'live';
+  } catch(e){
+    posteArboData = null;
+    posteArboSource = e.status===403 ? 'refuse' : 'hors-ligne';
+  }
+  renderPostesArbo();
+}
+
+function renderPostesArbo(){
+  const badgeEl = document.getElementById('posteSrcBadge');
+  if(badgeEl){
+    const map={live:['âœ“ DonnÃ©es rÃ©elles â€” GET /api/postes/arborescence','#1A6B3C'],demo:['DonnÃ©es de dÃ©monstration','#94A3B8'],
+      refuse:['AccÃ¨s refusÃ© par le serveur pour ce rÃ´le (403)','#CE1021'],
+      'hors-ligne':['Serveur injoignable â€” impossible de charger l\'arborescence','#B45309']};
+    const [txt,c]=map[posteArboSource];
+    badgeEl.textContent=txt; badgeEl.style.color=c;
+  }
+  const treeEl = document.getElementById('posteArboTree');
+  if(!treeEl) return;
+  if(!posteArboData){
+    treeEl.innerHTML = `<div style="color:var(--muted);font-size:12px">Aucune donnÃ©e disponible pour l'instant.</div>`;
+    return;
+  }
+  const q = normFR(document.getElementById('posteSearch')?.value||'');
+  const html = posteArboData.map(inst=>{
+    const unites = (inst.unites||[]).map(u=>{
+      const postes = (u.postes||[]).filter(p=>!q || normFR(inst.nom).includes(q) || normFR(u.nom).includes(q) || normFR(p.intitule).includes(q) || normFR(p.missions||'').includes(q) || normFR(p.attributions||'').includes(q));
+      if(q && !normFR(inst.nom).includes(q) && !normFR(u.nom).includes(q) && postes.length===0) return '';
+      const postesHtml = postes.map(p=>{
+        const fn = p.missions || p.attributions || p.responsabilites || '';
+        const fnShort = fn ? (fn.length>110 ? fn.slice(0,110)+'â€¦' : fn) : '';
+        return `<div onclick="loadPosteEnv('${p.poste_id}')" style="cursor:pointer;padding:4px 8px 4px 34px;font-size:12px;border-radius:6px;transition:background .15s" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
+          <i class="ti ti-user-square-rounded" style="font-size:12px;color:var(--gold3);margin-right:6px"></i>${escH(p.intitule)}
+          ${p.statut && p.statut!=='ACTIF' ? badge(p.statut,'bn') : ''}
+          ${fnShort ? `<div style="font-size:10px;color:var(--muted);padding:1px 0 2px 18px;font-style:italic">${escH(fnShort)}</div>` : ''}
+        </div>`;
+      }).join('');
+      return `<div style="margin:4px 0 4px 16px">
+        <div style="font-size:12px;font-weight:600;color:rgba(255,255,255,0.75);padding:3px 0"><i class="ti ti-folder" style="font-size:12px;margin-right:6px"></i>${escH(u.nom)}</div>
+        ${postesHtml || '<div style="padding:2px 8px 2px 34px;font-size:11px;color:var(--muted)">Aucun poste</div>'}
+      </div>`;
+    }).join('');
+    if(q && !unites.trim()) return '';
+    return `<div style="margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:8px">
+      <div style="font-size:13px;font-weight:700;color:var(--gold3);padding:4px 0"><i class="ti ti-building-government" style="margin-right:6px"></i>${escH(inst.nom)}</div>
+      ${unites}
+    </div>`;
+  }).join('');
+  treeEl.innerHTML = html || `<div style="color:var(--muted);font-size:12px">Aucun rÃ©sultat pour cette recherche.</div>`;
+}
+
+async function loadPosteEnv(posteId){
+  const panel = document.getElementById('posteEnvPanel');
+  if(!panel) return;
+  panel.innerHTML = `<div style="color:var(--muted);font-size:12px">Chargement de l'environnement du posteâ€¦</div>`;
+  try {
+    const d = await apiGet(`/api/postes/${posteId}/environnement`);
+    const p = d.poste || {};
+    const t = d.titulaire;
+    const roles = d.roles || [];
+    const perms = d.permissions || [];
+    const docs = d.documents_institution || [];
+    panel.innerHTML = `
+      <div style="margin-bottom:10px">
+        <div style="font-size:14px;font-weight:700;color:var(--gold3)">${escH(p.intitule)}</div>
+        <div style="font-size:11.5px;color:var(--muted)">${escH(p.unite)} â€” ${escH(p.institution)}</div>
+      </div>
+      ${p.missions ? `<div style="margin-bottom:8px"><strong style="font-size:11.5px">Missions :</strong> <span style="font-size:11.5px;color:var(--muted)">${escH(p.missions)}</span></div>` : ''}
+      <div style="margin-bottom:10px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.03)">
+        <div style="font-size:11.5px;font-weight:600;margin-bottom:4px"><i class="ti ti-user" style="margin-right:4px"></i>Titulaire</div>
+        ${t ? `<div style="font-size:12px">${escH(t.prenom)} ${escH(t.nom)} <span style="color:var(--muted)">(${escH(t.email)})</span><br><span style="font-size:10.5px;color:var(--muted)">En poste depuis le ${t.depuis ? new Date(t.depuis).toLocaleDateString('fr-FR') : 'â€”'}</span></div>`
+                : `<div style="font-size:11.5px;color:var(--muted)">Poste vacant â€” aucun titulaire actif actuellement.</div>`}
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11.5px;font-weight:600;margin-bottom:4px"><i class="ti ti-shield" style="margin-right:4px"></i>RÃ´les (${roles.length})</div>
+        ${roles.length ? roles.map(r=>badge(r.nom||r.code,'bb')).join(' ') : '<span style="font-size:11px;color:var(--muted)">Aucun rÃ´le actif.</span>'}
+      </div>
+      <div style="margin-bottom:10px">
+        <div style="font-size:11.5px;font-weight:600;margin-bottom:4px"><i class="ti ti-key" style="margin-right:4px"></i>Permissions (${perms.length})</div>
+        <div style="max-height:140px;overflow-y:auto;font-size:10.5px;color:var(--muted)">
+          ${perms.length ? perms.map(pm=>`<div>${escH(pm.entite)} â€” ${escH(pm.action)}</div>`).join('') : 'Aucune permission rÃ©solue pour ce titulaire.'}
+        </div>
+      </div>
+      <div>
+        <div style="font-size:11.5px;font-weight:600;margin-bottom:4px"><i class="ti ti-files" style="margin-right:4px"></i>Documents de l'institution (${docs.length})</div>
+        <div style="max-height:160px;overflow-y:auto">
+          ${docs.length ? docs.map(doc=>`<div style="font-size:11px;padding:5px 0;border-bottom:1px solid var(--border)">
+              <strong>${escH(doc.titre)}</strong><br>
+              <span style="color:var(--muted);font-size:10px">${escH(doc.reference)} â€” ${badge(doc.statut,'bn')} ${badge(doc.confidentialite,'bb')}</span>
+            </div>`).join('') : '<div style="font-size:11px;color:var(--muted)">Aucun document rattachÃ© Ã  cette institution pour l\'instant.</div>'}
+        </div>
+      </div>
+    `;
+  } catch(e){
+    panel.innerHTML = `<div style="color:#CE1021;font-size:12px">Impossible de charger l'environnement de ce poste (${e.status||'erreur rÃ©seau'}).</div>`;
+  }
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// TOUTES LES INSTITUTIONS (127) + TABLEAU DE BORD GENERIQUE
+// GET /api/institutions/liste + GET /api/institutions/:id/dashboard
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const TYPE_LABELS = {
+  PRESIDENCE:'Institutions SuprÃªmes â€” PrÃ©sidence', PRIMATURE:'Institutions SuprÃªmes â€” Primature',
+  PARLEMENT:'Institutions SuprÃªmes â€” Parlement', CONSEIL_ETAT:'Hautes Juridictions â€” Conseil d\'Ã‰tat',
+  COUR_CASSATION:'Hautes Juridictions â€” Cour de Cassation', COUR_CONSTITUTIONNELLE:'Hautes Juridictions â€” Cour Constitutionnelle',
+  INSTITUTION_CONTROLE:'Institutions de ContrÃ´le', MINISTERE:'Gouvernement â€” MinistÃ¨res',
+  AGENCE:'RÃ©gies & Agences', ENTREPRISE_PUBLIQUE:'Entreprises Publiques',
+  ETD:'EntitÃ©s Territoriales DÃ©centralisÃ©es', PROVINCE:'Provinces'
+};
+const TYPE_ORDER = ['PRESIDENCE','PRIMATURE','PARLEMENT','CONSEIL_ETAT','COUR_CASSATION','COUR_CONSTITUTIONNELLE','INSTITUTION_CONTROLE','MINISTERE','AGENCE','ENTREPRISE_PUBLIQUE','PROVINCE','ETD'];
+
+let institutionsListeData = null;
+let institutionsListeSource = 'demo';
+async function loadInstitutionsListe(){
+  try {
+    institutionsListeData = await apiGet('/api/institutions/liste');
+    institutionsListeSource = 'live';
+  } catch(e){
+    institutionsListeData = null;
+    institutionsListeSource = e.status===403 ? 'refuse' : 'hors-ligne';
+  }
+  renderInstitutionsListe();
+  populateInstSwitch();
+}
+
+function renderInstitutionsListe(){
+  const badgeEl = document.getElementById('instListeSrcBadge');
+  if(badgeEl){
+    const map={live:['âœ“ DonnÃ©es rÃ©elles â€” GET /api/institutions/liste','#1A6B3C'],demo:['DonnÃ©es de dÃ©monstration','#94A3B8'],
+      refuse:['AccÃ¨s refusÃ© par le serveur pour ce rÃ´le (403)','#CE1021'],
+      'hors-ligne':['Serveur injoignable','#B45309']};
+    const [txt,c]=map[institutionsListeSource];
+    badgeEl.textContent=txt; badgeEl.style.color=c;
+  }
+  const el = document.getElementById('instListeGroups');
+  if(!el) return;
+  if(!institutionsListeData){
+    el.innerHTML = `<div style="color:var(--muted);font-size:12px">Aucune donnÃ©e disponible pour l'instant.</div>`;
+    return;
+  }
+  const q = normFR(document.getElementById('instListeSearch')?.value||'');
+  const types = TYPE_ORDER.filter(t=>institutionsListeData[t]);
+  Object.keys(institutionsListeData).forEach(t=>{ if(!types.includes(t)) types.push(t); });
+  const html = types.map(t=>{
+    const items = (institutionsListeData[t]||[]).filter(i=>!q || normFR(i.nom).includes(q) || normFR(i.code).includes(q));
+    if(items.length===0) return '';
+    const cards = items.map(i=>
+      `<div onclick="nav(null,'institution-dashboard');openInstitutionDashboard('${i.institution_id}')" style="cursor:pointer;padding:8px 10px;border:1px solid var(--border);border-radius:8px;font-size:12px;transition:all .15s" onmouseover="this.style.background='rgba(201,168,76,0.08)';this.style.borderColor='var(--gold3)'" onmouseout="this.style.background='transparent';this.style.borderColor='var(--border)'">
+        <div style="font-weight:600">${escH(i.nom)}</div>
+        <div style="font-size:10px;color:var(--muted)">${escH(i.code)}</div>
+      </div>`).join('');
+    return `<div style="margin-bottom:16px">
+      <div style="font-size:12.5px;font-weight:700;color:var(--gold3);margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid var(--border)"><i class="ti ti-corner-down-right" style="margin-right:6px"></i>${escH(TYPE_LABELS[t]||t)} (${items.length})</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px">${cards}</div>
+    </div>`;
+  }).join('');
+  el.innerHTML = html || `<div style="color:var(--muted);font-size:12px">Aucun rÃ©sultat pour cette recherche.</div>`;
+}
+
+function populateInstSwitch(){
+  const sel = document.getElementById('tbInstSwitch');
+  if(!sel || !institutionsListeData) return;
+  const types = TYPE_ORDER.filter(t=>institutionsListeData[t]);
+  Object.keys(institutionsListeData).forEach(t=>{ if(!types.includes(t)) types.push(t); });
+  let html = `<option value="">Changer d'institutionâ€¦</option>`;
+  types.forEach(t=>{
+    const items = institutionsListeData[t]||[];
+    html += `<optgroup label="${escH(TYPE_LABELS[t]||t)}">`;
+    items.forEach(i=>{ html += `<option value="${i.institution_id}">${escH(i.nom)}</option>`; });
+    html += `</optgroup>`;
+  });
+  sel.innerHTML = html;
+}
+
+async function openInstitutionDashboard(institutionId){
+  const kpisEl = document.getElementById('instDashKpis');
+  const orgEl = document.getElementById('instDashOrg');
+  const docsEl = document.getElementById('instDashDocs');
+  const titleEl = document.getElementById('instDashTitle');
+  const subEl = document.getElementById('instDashSub');
+  const badgeEl = document.getElementById('instDashSrcBadge');
+  if(titleEl) titleEl.textContent = 'Chargementâ€¦';
+  if(orgEl) orgEl.innerHTML = `<div style="color:var(--muted);font-size:12px">Chargement de l'organigrammeâ€¦</div>`;
+  if(docsEl) docsEl.innerHTML = '';
+  if(kpisEl) kpisEl.innerHTML = '';
+  try {
+    const d = await apiGet(`/api/institutions/${institutionId}/dashboard`);
+    if(badgeEl){ badgeEl.textContent='âœ“ DonnÃ©es rÃ©elles â€” GET /api/institutions/:id/dashboard'; badgeEl.style.color='#1A6B3C'; }
+    if(titleEl) titleEl.textContent = d.institution.nom;
+    if(subEl) subEl.textContent = `${escH(TYPE_LABELS[d.institution.type_institution]||d.institution.type_institution)} â€” ${escH(d.institution.code)}`;
+    if(kpisEl) kpisEl.innerHTML = `
+      <div class="kpi" style="--kc:#1E5FAD"><div class="kpi-lbl">UnitÃ©s organisationnelles</div><div class="kpi-val">${d.stats.nb_unites}</div></div>
+      <div class="kpi" style="--kc:#1A6B3C"><div class="kpi-lbl">Postes crÃ©Ã©s</div><div class="kpi-val">${d.stats.nb_postes}</div></div>
+      <div class="kpi" style="--kc:#F7D618"><div class="kpi-lbl">Postes pourvus</div><div class="kpi-val">${d.stats.nb_postes_pourvus}</div></div>
+      <div class="kpi" style="--kc:#CE1021"><div class="kpi-lbl">Documents</div><div class="kpi-val">${d.stats.nb_documents}</div></div>
+    `;
+    if(orgEl){
+      orgEl.innerHTML = (d.postes||[]).map(p=>`
+        <div style="padding:6px 8px;border-bottom:1px solid var(--border);font-size:12px">
+          <div><i class="ti ti-user-square-rounded" style="font-size:12px;color:var(--gold3);margin-right:6px"></i><strong>${escH(p.intitule)}</strong> <span style="color:var(--muted);font-size:10.5px">â€” ${escH(p.unite)}</span></div>
+          <div style="font-size:10.5px;color:var(--muted);padding-left:18px">${p.titulaire ? `Titulaire : ${escH(p.titulaire.prenom)} ${escH(p.titulaire.nom)}` : 'Poste vacant'}</div>
+        </div>
+      `).join('') || `<div style="color:var(--muted);font-size:12px">Aucun poste enregistrÃ© pour cette institution.</div>`;
+    }
+    if(docsEl){
+      docsEl.innerHTML = (d.documents||[]).map(doc=>`
+        <div style="font-size:11px;padding:6px 0;border-bottom:1px solid var(--border)">
+          <strong>${escH(doc.titre)}</strong><br>
+          <span style="color:var(--muted);font-size:10px">${escH(doc.reference)} â€” ${badge(doc.statut,'bn')} ${badge(doc.confidentialite,'bb')}</span>
+        </div>
+      `).join('') || `<div style="font-size:11px;color:var(--muted)">Aucun document rattachÃ© Ã  cette institution.</div>`;
+    }
+  } catch(e){
+    if(titleEl) titleEl.textContent = 'Erreur de chargement';
+    if(badgeEl){ badgeEl.textContent = e.status===403 ? 'AccÃ¨s refusÃ© (403)' : 'Serveur injoignable'; badgeEl.style.color='#CE1021'; }
+    if(orgEl) orgEl.innerHTML = `<div style="color:#CE1021;font-size:12px">Impossible de charger cette institution.</div>`;
+  }
+}
+
+const GOVERNANCE=[
+  {ic:'ðŸ›ï¸',nom:'PrÃ©sident de la RÃ©publique',type:'Pilotage stratÃ©gique national',niv:0,
+   role:'Vision, stratÃ©gie, arbitrage, supervision nationale, suivi des performances de toutes les institutions.',
+   lien:'Sommet de l\'Ã‰tat â€” supervise l\'ensemble des pouvoirs'},
+  {ic:'ðŸ¢',nom:'Primature â€” Premier MinistÃ¨re',type:'Coordination gouvernementale',niv:1,
+   role:'Coordination interministÃ©rielle, exÃ©cution du Programme du Gouvernement, suivi des ministÃ¨res et des rÃ©formes.',
+   lien:'â†’ rend compte au PrÃ©sident Â· coordonne les MinistÃ¨res'},
+  {ic:'ðŸ›ï¸',nom:'SÃ©nat â€” 108 sÃ©nateurs',type:'Pouvoir lÃ©gislatif',niv:1,
+   role:'Ã‰laboration des lois, vote du budget, contrÃ´le de l\'action gouvernementale (2áµ‰ chambre).',
+   lien:'â†’ contrÃ´le le Gouvernement Â· vote le budget'},
+  {ic:'ðŸ›ï¸',nom:'AssemblÃ©e Nationale â€” 500 dÃ©putÃ©s',type:'Pouvoir lÃ©gislatif',niv:1,
+   role:'Ã‰laboration des lois, vote du budget, contrÃ´le de l\'action gouvernementale (1Ê³áµ‰ chambre).',
+   lien:'â†’ contrÃ´le le Gouvernement Â· vote le budget'},
+  {ic:'âš–ï¸',nom:'Pouvoir judiciaire (Cours & Tribunaux)',type:'Justice',niv:1,
+   role:'Administration de la justice, protection des droits, contrÃ´le de la lÃ©galitÃ© des actes de l\'Ã‰tat.',
+   lien:'â†’ indÃ©pendant Â· statue sur les litiges de toutes les institutions'},
+  {ic:'ðŸ”',nom:'Institutions d\'appui et de contrÃ´le (Cour des Comptes, IGF, IGA, CENI, ANR)',type:'ContrÃ´le',niv:1,
+   role:'Audit, inspection, contrÃ´le des finances publiques, rÃ©gulation et Ã©valuation des institutions.',
+   lien:'â†’ contrÃ´lent MinistÃ¨res, Provinces et Agences'},
+  {ic:'ðŸ¦',nom:'MinistÃ¨re des Finances',type:'MinistÃ¨re rÃ©galien',niv:2,
+   role:'FiscalitÃ©, TrÃ©sor, dette publique â€” Ã©laboration et mise en Å“uvre de la politique financiÃ¨re de l\'Ã‰tat.',
+   lien:'â†’ rattachÃ© Ã  la Primature Â· exÃ©cute la politique budgÃ©taire'},
+  {ic:'âš•ï¸',nom:'MinistÃ¨re de la SantÃ©',type:'MinistÃ¨re sectoriel',niv:2,
+   role:'Ã‰laboration et mise en Å“uvre de la politique de santÃ© publique, gestion des programmes sanitaires.',
+   lien:'â†’ rattachÃ© Ã  la Primature Â· coordonne les Divisions Provinciales de la SantÃ©'},
+  {ic:'ðŸŽ“',nom:'MinistÃ¨re de l\'Ã‰ducation Nationale',type:'MinistÃ¨re sectoriel',niv:2,
+   role:'Politique Ã©ducative, gestion du rÃ©seau scolaire et des enseignants.',
+   lien:'â†’ rattachÃ© Ã  la Primature'},
+  {ic:'â›ï¸',nom:'MinistÃ¨re des Mines',type:'MinistÃ¨re sectoriel',niv:2,
+   role:'Permis miniers, contrÃ´le de la production et des exportations de ressources stratÃ©giques.',
+   lien:'â†’ rattachÃ© Ã  la Primature'},
+  {ic:'ðŸ’°',nom:'DGI, DGDA, ARMP â€” Agences & Directions',type:'ExÃ©cution technique',niv:3,
+   role:'ExÃ©cution technique, rÃ©gulation, contrÃ´le et prestation de services spÃ©cialisÃ©s (impÃ´ts, douanes, marchÃ©s publics).',
+   lien:'â†’ rattachÃ©es aux MinistÃ¨res de tutelle'},
+  {ic:'ðŸ—ºï¸',nom:'26 Gouvernements provinciaux',type:'Territorial',niv:2,
+   role:'Mise en Å“uvre des politiques nationales et provinciales, coordination des services provinciaux, supervision des ETD.',
+   lien:'â†’ rattachÃ©s Ã  la Primature/IntÃ©rieur Â· supervisent les ETD'},
+  {ic:'ðŸ˜ï¸',nom:'ETD â€” Villes, Communes, Secteurs, Chefferies',type:'Services de proximitÃ©',niv:3,
+   role:'Fourniture des services publics de proximitÃ© (Ã©tat civil, urbanisme, fiscalitÃ© locale) et relation directe avec les citoyens.',
+   lien:'â†’ rattachÃ©es aux Provinces'},
+  {ic:'ðŸ‘¥',nom:'Citoyens Â· Entreprises Â· Partenaires',type:'BÃ©nÃ©ficiaires',niv:4,
+   role:'BÃ©nÃ©ficiaires des services publics et acteurs du dÃ©veloppement Ã©conomique et social.',
+   lien:'â†’ interagissent avec l\'ensemble des institutions via le Portail'},
+];
+function renderInstitutions(){
+  document.getElementById('instTree').innerHTML=GOVERNANCE.map(i=>`<div style="display:flex;gap:10px;padding:10px 0;border-bottom:.5px solid var(--border);margin-left:${i.niv*18}px">
+    <span style="font-size:20px;line-height:1">${i.ic}</span>
+    <div style="flex:1">
+      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><span style="font-size:12.5px;font-weight:700;color:var(--navy)">${i.nom}</span><span style="font-size:9px;padding:1px 7px;border-radius:20px;background:var(--light);color:var(--muted)">${i.type}</span></div>
+      <div style="font-size:10.5px;color:var(--text);margin-top:3px;line-height:1.5">${i.role}</div>
+      <div style="font-size:9.5px;color:var(--gold3);margin-top:2px;font-weight:600">${i.lien}</div>
+    </div></div>`).join('');
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// MINISTÃˆRES DE LA RDC â€” portefeuilles et attributions
+// (structure du Gouvernement Suminwa II, ordonnance prÃ©sidentielle)
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+const MINISTERES=[
+  {nom:"IntÃ©rieur, SÃ©curitÃ©, DÃ©centralisation et Affaires coutumiÃ¨res",type:"rÃ©galien",taches:["Ordre public et sÃ©curitÃ© intÃ©rieure","Administration du territoire et dÃ©centralisation","Tutelle sur les provinces et autoritÃ©s coutumiÃ¨res"]},
+  {nom:"DÃ©fense nationale et Anciens combattants",type:"rÃ©galien",taches:["DÃ©fense du territoire national","Commandement des Forces ArmÃ©es","Prise en charge des anciens combattants"]},
+  {nom:"Affaires Ã‰trangÃ¨res, CoopÃ©ration internationale et Francophonie",type:"rÃ©galien",taches:["Diplomatie et relations bilatÃ©rales/multilatÃ©rales","CoopÃ©ration internationale et aide au dÃ©veloppement","Relations avec la Francophonie et la diaspora"]},
+  {nom:"Justice et Garde des Sceaux",type:"rÃ©galien",taches:["Politique judiciaire et pÃ©nitentiaire","Garde des sceaux â€” textes lÃ©gaux et rÃ©glementaires","Lutte contre l'impunitÃ© et la corruption"]},
+  {nom:"Budget",type:"rÃ©galien",taches:["PrÃ©paration et exÃ©cution du budget de l'Ã‰tat","ContrÃ´le de l'engagement des dÃ©penses publiques","Arbitrages budgÃ©taires interministÃ©riels"]},
+  {nom:"Finances",type:"rÃ©galien",taches:["Politique fiscale et douaniÃ¨re","Gestion du TrÃ©sor public et de la dette","Tutelle sur DGI, DGDA, DGRAD"]},
+  {nom:"Ã‰conomie nationale",type:"sectoriel",taches:["Politique macroÃ©conomique et rÃ©gulation des prix","Suivi de l'inflation et du taux de change","Statistiques Ã©conomiques nationales"]},
+  {nom:"Plan et Coordination de l'aide au dÃ©veloppement",type:"sectoriel",taches:["Planification stratÃ©gique nationale","Coordination des partenaires techniques et financiers","Suivi des projets de dÃ©veloppement"]},
+  {nom:"Fonction Publique, Modernisation de l'Administration et Innovation",type:"sectoriel",taches:["Gestion des agents et fonctionnaires de l'Ã‰tat","RÃ©forme et modernisation administrative","NumÃ©risation des services publics"]},
+  {nom:"Transports et Voies de communication",type:"sectoriel",taches:["Transport routier, fluvial, ferroviaire et aÃ©rien","RÃ©gulation des opÃ©rateurs de transport","SÃ©curitÃ© des voies de communication"]},
+  {nom:"Infrastructures et Travaux publics",type:"sectoriel",taches:["Construction et entretien des routes et ouvrages d'art","BÃ¢timents publics","Grands travaux d'infrastructure"]},
+  {nom:"Agriculture et SÃ©curitÃ© alimentaire",type:"sectoriel",taches:["Politique agricole et sÃ©curitÃ© alimentaire","Appui aux producteurs et coopÃ©ratives","RÃ©serves stratÃ©giques alimentaires"]},
+  {nom:"DÃ©veloppement rural",type:"sectoriel",taches:["DÃ©senclavement des zones rurales","Infrastructures communautaires locales","Programmes de dÃ©veloppement local"]},
+  {nom:"PÃªche et Ã‰levage",type:"sectoriel",taches:["Politique halieutique et pastorale","SantÃ© animale et productions d'Ã©levage","DÃ©veloppement de la filiÃ¨re pÃªche"]},
+  {nom:"Mines",type:"sectoriel",taches:["Octroi et suivi des permis miniers","ContrÃ´le de la production et traÃ§abilitÃ© minÃ©rale","Valorisation des ressources stratÃ©giques"]},
+  {nom:"Hydrocarbures",type:"sectoriel",taches:["Exploration et exploitation pÃ©troliÃ¨re et gaziÃ¨re","Contrats et licences d'hydrocarbures","RÃ©gulation de la distribution des produits pÃ©troliers"]},
+  {nom:"Ressources hydrauliques et Ã‰lectricitÃ©",type:"sectoriel",taches:["Politique Ã©nergÃ©tique et Ã©lectrification","Barrages et infrastructures hydrauliques","AccÃ¨s Ã  l'eau potable"]},
+  {nom:"Environnement et DÃ©veloppement durable",type:"sectoriel",taches:["Protection de l'environnement et des forÃªts","Lutte contre le changement climatique","Ã‰conomie du climat et crÃ©dits carbone"]},
+  {nom:"Industrie et DÃ©veloppement des PME",type:"sectoriel",taches:["Politique industrielle nationale","Promotion et accompagnement des PME","Zones Ã©conomiques spÃ©ciales"]},
+  {nom:"Commerce ExtÃ©rieur",type:"sectoriel",taches:["Politique commerciale et accords d'Ã©changes","Promotion des exportations","RÃ©gulation des importations stratÃ©giques"]},
+  {nom:"Entrepreneuriat / DÃ©veloppement des PME",type:"sectoriel",taches:["Appui Ã  la crÃ©ation d'entreprises","Financement et incubation de start-ups","Formalisation du secteur informel"]},
+  {nom:"Portefeuille",type:"sectoriel",taches:["Tutelle des entreprises publiques","Participations de l'Ã‰tat","Gouvernance des sociÃ©tÃ©s publiques"]},
+  {nom:"Emploi et Travail",type:"sectoriel",taches:["Politique de l'emploi et droit du travail","Relations sociales et dialogue tripartite","Inspection du travail"]},
+  {nom:"Formation professionnelle",type:"sectoriel",taches:["Centres de formation professionnelle","AdÃ©quation formation-emploi","Certification des compÃ©tences"]},
+  {nom:"Ã‰ducation nationale et Nouvelle citoyennetÃ©",type:"sectoriel",taches:["Enseignement primaire et secondaire","GratuitÃ© de l'enseignement de base","Promotion de la citoyennetÃ©"]},
+  {nom:"Enseignement SupÃ©rieur et Universitaire",type:"sectoriel",taches:["UniversitÃ©s et instituts supÃ©rieurs","Recherche scientifique","Reconnaissance des diplÃ´mes"]},
+  {nom:"SantÃ© publique, HygiÃ¨ne et PrÃ©vention",type:"sectoriel",taches:["Politique sanitaire nationale","RÃ©seau hospitalier et centres de santÃ©","Surveillance Ã©pidÃ©miologique et prÃ©vention"]},
+  {nom:"Affaires sociales, Actions humanitaires et SolidaritÃ© nationale",type:"sectoriel",taches:["Protection sociale des groupes vulnÃ©rables","Coordination de l'action humanitaire","SolidaritÃ© nationale et dÃ©placÃ©s internes"]},
+  {nom:"Genre et Famille",type:"sectoriel",taches:["Promotion de l'Ã©galitÃ© de genre","Protection de la famille et de l'enfant","Lutte contre les violences basÃ©es sur le genre"]},
+  {nom:"Jeunesse et Ã‰veil Patriotique",type:"sectoriel",taches:["Politique nationale de la jeunesse","Encadrement et insertion des jeunes","Ã‰veil patriotique et citoyennetÃ©"]},
+  {nom:"Droits humains",type:"sectoriel",taches:["Promotion et protection des droits humains","Suivi des engagements internationaux","Coordination avec les mÃ©canismes de protection"]},
+  {nom:"Urbanisme et Habitat",type:"sectoriel",taches:["Planification urbaine et permis de construire","Politique du logement","Lutte contre l'habitat anarchique"]},
+  {nom:"Affaires fonciÃ¨res",type:"sectoriel",taches:["Gestion du cadastre et titres fonciers","RÃ©gulation des concessions fonciÃ¨res","SÃ©curisation de la propriÃ©tÃ© fonciÃ¨re"]},
+  {nom:"AmÃ©nagement du territoire",type:"sectoriel",taches:["SchÃ©mas nationaux d'amÃ©nagement","CohÃ©rence des projets territoriaux","Coordination provinces / ETD"]},
+  {nom:"Relations avec le Parlement",type:"sectoriel",taches:["Liaison Gouvernement â€” AssemblÃ©e Nationale et SÃ©nat","Suivi des projets et propositions de loi","PrÃ©paration des questions au Gouvernement"]},
+  {nom:"Communication et MÃ©dias",type:"sectoriel",taches:["Porte-parolat du Gouvernement","RÃ©gulation des mÃ©dias publics","Communication institutionnelle de l'Ã‰tat"]},
+  {nom:"Postes et TÃ©lÃ©communications",type:"sectoriel",taches:["RÃ©gulation des tÃ©lÃ©communications","Service postal national","Infrastructures numÃ©riques et connectivitÃ©"]},
+  {nom:"Ã‰conomie numÃ©rique",type:"sectoriel",taches:["StratÃ©gie de transformation numÃ©rique de l'Ã‰tat","Ã‰conomie numÃ©rique et innovation","Ã‰cosystÃ¨me start-up numÃ©rique"]},
+  {nom:"Culture et Arts",type:"sectoriel",taches:["Promotion du patrimoine culturel","Soutien aux industries crÃ©atives","Protection des Å“uvres et artistes"]},
+  {nom:"Tourisme",type:"sectoriel",taches:["Promotion des sites touristiques nationaux","DÃ©veloppement de l'offre touristique","Partenariats avec les opÃ©rateurs du secteur"]},
+  {nom:"Sports et Loisirs",type:"sectoriel",taches:["Politique sportive nationale","Infrastructures sportives","Soutien aux fÃ©dÃ©rations et athlÃ¨tes"]},
+  {nom:"IntÃ©gration rÃ©gionale",type:"sectoriel",taches:["Relations avec les communautÃ©s Ã©conomiques rÃ©gionales","Suivi des accords d'intÃ©gration rÃ©gionale","Coordination des projets transfrontaliers"]},
+];
+// Chargement initial sÃ©parÃ© du rendu, pour ne pas refaire un appel rÃ©seau Ã  chaque frappe de recherche
+let liveMinisteres = null;
+let ministeresSource = 'demo'; // 'live' | 'demo' | 'refuse' | 'hors-ligne'
+function normFR(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+async function loadRealMinisteres(){
+  try {
+    const rows = await apiGet('/api/ministeres');
+    liveMinisteres = rows.map(r=>{
+      const rNorm = normFR(r.nom); let local = MINISTERES.find(m => normFR(m.nom) === rNorm); if (!local) { local = MINISTERES.find(m => normFR(m.nom).includes(rNorm) || rNorm.includes(normFR(m.nom))); }
+      return { nom:r.nom, type: local ? local.type : (normFR(r.type).includes('regal') ? 'rÃ©galien':'sectoriel'),
+        taches: local ? local.taches : [r.description || 'Portefeuille enregistrÃ© dans la base â€” description Ã  complÃ©ter'] };
+    });
+    ministeresSource = 'live';
+  } catch(e){
+    liveMinisteres = null;
+    ministeresSource = e.status===403 ? 'refuse' : 'hors-ligne';
+  }
+  renderMinisteres();
+}
+function renderMinisteres(){
+  const q=(document.getElementById('minSearch')?.value||'').toLowerCase();
+  const source = liveMinisteres || MINISTERES;
+  const list=source.filter(m=>m.nom.toLowerCase().includes(q));
+  document.getElementById('minCountAll').textContent=source.length;
+  document.getElementById('minCountReg').textContent=source.filter(m=>m.type==='rÃ©galien').length;
+  document.getElementById('minCountSect').textContent=source.filter(m=>m.type==='sectoriel').length;
+  const srcBadgeEl = document.getElementById('minSrcBadge');
+  if(srcBadgeEl){
+    const map={live:['âœ“ DonnÃ©es rÃ©elles â€” GET /api/ministeres','#1A6B3C'],demo:['DonnÃ©es de dÃ©monstration','#94A3B8'],
+      refuse:['AccÃ¨s refusÃ© par le serveur pour ce rÃ´le (403) â€” dÃ©monstration affichÃ©e','#CE1021'],
+      'hors-ligne':['Serveur injoignable â€” dÃ©monstration affichÃ©e','#B45309']};
+    const [txt,c]=map[ministeresSource];
+    srcBadgeEl.textContent=txt; srcBadgeEl.style.color=c;
+  }
+  const grid=document.getElementById('minGrid');
+  if(!grid) return;
+  grid.innerHTML=list.map(m=>`<div class="card" style="margin:0">
+    <div class="card-title" style="justify-content:space-between">
+      <span style="font-size:12px">${m.nom}</span>
+      <span style="font-size:8.5px;padding:2px 8px;border-radius:20px;white-space:nowrap;background:${m.type==='rÃ©galien'?'rgba(206,16,33,.1)':'rgba(26,107,60,.1)'};color:${m.type==='rÃ©galien'?'var(--red)':'var(--green)'}">${m.type}</span>
+    </div>
+    <ul style="margin:6px 0 0;padding-left:16px;font-size:10.5px;color:var(--muted);line-height:1.7">
+      ${m.taches.map(t=>`<li>${t}</li>`).join('')}
+    </ul>
+  </div>`).join('') || `<div style="padding:20px;color:var(--muted);font-size:12px">Aucun ministÃ¨re trouvÃ©.</div>`;
+}
+
+// Paie
+function runPaie(){
+  document.getElementById('paieWF').innerHTML=[
+    ['done','âœ“','VÃ©rification biomÃ©trique','98.3% agents validÃ©s â€” 1 247 fictifs exclus'],
+    ['done','âœ“','Calcul INSS+IPR','$218M brut â€” INSS 3.5% â€” IPR barÃ¨me progressif'],
+    ['active','âŸ³','Validation Primature','En cours â€” $185M net'],
+    ['pending','â—‹','Virement BCC','En attente signature'],
+    ['pending','â—‹','Confirmation agents','Notification SMS/App'],
+  ].map(([s,ic,t,d])=>`<div class="wf-step"><div class="wf-dot ${s}">${ic}</div><div class="wf-info"><div class="wf-t">${t}</div><div class="wf-d">${d}</div></div></div>`).join('');
+  document.getElementById('paieChart').innerHTML=[
+    ['Min. Ã‰ducation',18,'#1E5FAD'],['Min. SantÃ©',14,'#1A6B3C'],
+    ['26 Gouvernorats',16,'#0F2040'],['Min. DÃ©fense',15,'#CE1021'],
+    ['Min. Finances',12,'#F7D618'],['Autres',25,'#4A5568'],
+  ].map(([n,p,c])=>prog(n,p,c)).join('');
+  toast('âœ“ Paie Jan. 2027 calculÃ©e â€” 847 432 bulletins â€” Net: $185M','ok');
+}
+
+// BiomÃ©trie
+function doBio(){
+  const s=document.getElementById('bioS'),st=document.getElementById('bioSt');
+  s.style.borderColor='var(--gold)';st.textContent='âŸ³ Scan en coursâ€¦';
+  setTimeout(()=>{
+    const ok=Math.random()>.08;
+    s.style.borderColor=ok?'var(--green)':'var(--red)';
+    st.textContent=ok?'âœ“ IdentitÃ© confirmÃ©e':'âœ• Non reconnu â€” Alerte';
+    const noms=['MUAMBA J.-B.','NSIMBA M.-C.','KABONGO P.','TSHIAMALA C.'];
+    const n=noms[Math.floor(Math.random()*noms.length)];
+    const log=document.getElementById('bioLog');
+    if(log)log.innerHTML=`<div class="alert ${ok?'a-ok':'a-cr'}"><div class="alert-icon">${ok?'âœ“':'âœ•'}</div><div class="alert-body"><div class="alert-title">${n} â€” ${ok?'ValidÃ©':'SUSPECT'}</div><div class="alert-desc">${ok?'Empreinte + iris confirmÃ©s':'BiomÃ©trie non reconnue â€” Suspension paie auto'}</div></div></div>`+log.innerHTML;
+    setTimeout(()=>{s.style.borderColor='var(--gold3)';st.textContent='Cliquez pour scanner';},3000);
+  },2000);
+}
+
+// IA globale
+function runIA(){
+  addMsg('ia','bot','ðŸ§  Analyse globale lancÃ©e â€” 12 agents en parallÃ¨leâ€¦');
+  setTimeout(()=>{
+    addMsg('ia','bot','ðŸ” RÃ‰SULTATS:\nâ€¢ HERMÃˆS: AG-047821 doublon bloquÃ© ($2 840)\nâ€¢ IRIS: 847 dÃ©clarations TVA suspects\nâ€¢ SIGMA: AO-0443 surfacturation 340% confirmÃ©e\nâ€¢ GAÃA: 2 exports cobalt Kolwezi $4.8M alertÃ©s\nâ€¢ APOLLO: 247 NIN suspects Province Ã‰quateur\nâœ… $7.2M fraudes bloquÃ©es ce cycle');
+    document.getElementById('iaResCard').style.display='block';
+    document.getElementById('iaRes').innerHTML=ALERTES.slice(0,3).map(alertBlock).join('');
+  },2500);
+}
+
+// Tresorerie rapide
+function renderTresoSimple(){
+  const el=document.getElementById('tbTresor');
+  if(!el)return;
+  el.innerHTML=[
+    ['2027-01-15 08:47','RECETTE','DGI Kinshasa','BCC Compte principal','+$2 847 000','bg'],
+    ['2027-01-15 09:12','DÃ‰PENSE','Min. SantÃ©','Pharmased RDC','-$480 000','br'],
+    ['2027-01-15 10:30','PAIE','Primature','BCC Masse salariale','-$185 000 000','br'],
+    ['2027-01-15 11:15','RECETTE','DGDA Matadi','BCC Droits douaniers','+$1 240 000','bg'],
+    ['2027-01-15 14:22','DETTE','Min. Finances','Banque Mondiale','-$42 000 000','br'],
+  ].map(([dt,tp,inst,ben,mont,cl])=>`<tr>
+    <td><code style="font-size:9px">${dt}</code></td>
+    <td>${badge(tp,tp==='RECETTE'?'bg':tp==='PAIE'?'ba':'br')}</td>
+    <td style="font-size:10.5px">${inst}</td>
+    <td style="font-size:10.5px">${ben}</td>
+    <td style="font-weight:700;color:${cl==='bg'?'var(--green)':'var(--red)'}">${mont}</td>
+  </tr>`).join('');
+}
+
+function renderDouanesSimple(){
+  const el=document.getElementById('tbDouanes');
+  if(!el)return;
+  el.innerHTML=[
+    ['DCL-2027-08421','KINMINE TRADING','Matadi Port','MatÃ©riel minier','$2 480 000','$248 000','bg','DÃ‰DOUANÃ‰'],
+    ['DCL-2027-08422','PHARMA CONGO','AÃ©roport N\'Djili','MÃ©dicaments ARV','$840 000','$0','bb','EXONÃ‰RÃ‰'],
+    ['DCL-2027-08423','CIMENT DU CONGO','Matadi Port','Clinker â€” 2400t','$1 200 000','$120 000','ba','EN COURS'],
+    ['DCL-2027-08424','AGRI-CONGO','Kasumbalesa','Engrais 800t','$320 000','$32 000','br','âš  CONTRÃ”LE'],
+  ].map(([n,i,p,m,v,d,cl,st])=>`<tr>
+    <td><code>${n}</code></td><td>${i}</td><td>${p}</td>
+    <td style="font-size:10.5px">${m}</td>
+    <td style="font-weight:700">${v}</td>
+    <td style="color:var(--green);font-weight:700">${d}</td>
+    <td>${badge(st,cl)}</td></tr>`).join('');
+}
+
+function renderCNISimple(){
+  const el=document.getElementById('tbCNI');
+  if(!el)return;
+  el.innerHTML=[
+    ['CNI-2027-108421','MUAMBA Jean-Baptiste','Kinshasa','PremiÃ¨re demande','10/01/2027','ba','En traitement'],
+    ['CNI-2027-108422','NSIMBA Marie-Claire','Nord-Kivu','Renouvellement','11/01/2027','bg','ApprouvÃ©e'],
+    ['CNI-2027-108423','KABONGO Pierre','Katanga','PremiÃ¨re demande','12/01/2027','ba','En production'],
+    ['CNI-2027-108424','TSHIAMALA CÃ©cile','KasaÃ¯','Perte','13/01/2027','ba','VÃ©rification'],
+    ['CNI-2027-108425','LUFWA Augustin','Maniema','Renouvellement','14/01/2027','bg','LivrÃ©e'],
+  ].map(([num,dem,prov,mot,dep,cl,st])=>`<tr>
+    <td><code>${num}</code></td><td><strong>${dem}</strong></td>
+    <td>${prov}</td><td>${mot}</td><td>${dep}</td>
+    <td>${badge(st,cl)}</td>
+    <td><button class="btn sm" onclick="toast('Dossier CNI ouvert','ok')">Voir</button></td></tr>`).join('');
+}
+
+function renderECSimple(){
+  const el=document.getElementById('tbEC');
+  if(!el)return;
+  el.innerHTML=`<div class="tw"><table>
+    <thead><tr><th>NÂ° Acte</th><th>Type</th><th>Nom</th><th>Centre</th><th>Province</th><th>Date</th></tr></thead>
+    <tbody>
+      <tr><td><code>NAISS-2027-184721</code></td><td>${badge('Naissance','bg')}</td><td>KABILA MoÃ¯se Junior</td><td>Centre EC Gombe</td><td>Kinshasa</td><td>15/01/2027</td></tr>
+      <tr><td><code>MAR-2027-028471</code></td><td>${badge('Mariage','bb')}</td><td>MBOMBO â€” NSIMBA</td><td>Centre EC Matadi</td><td>Kongo Central</td><td>14/01/2027</td></tr>
+      <tr><td><code>DECES-2027-048271</code></td><td>${badge('DÃ©cÃ¨s','br')}</td><td>KASONGO Emmanuel</td><td>Centre EC Kisangani</td><td>Tshopo</td><td>13/01/2027</td></tr>
+      <tr><td><code>NAISS-2027-184720</code></td><td>${badge('Naissance','bg')}</td><td>MUAMBA JoÃ«lle</td><td>Centre EC Bukavu</td><td>Sud-Kivu</td><td>12/01/2027</td></tr>
+    </tbody></table></div>`;
+}
+
+function renderEduSimple(){
+  const el=document.getElementById('eduTable');
+  if(!el)return;
+  el.innerHTML=`<div class="tw"><table>
+    <thead><tr><th>Province</th><th>Primaires</th><th>Secondaires</th><th>UniversitÃ©s</th><th>Ã‰lÃ¨ves</th><th>Taux scolarisation</th></tr></thead>
+    <tbody>${[
+      ['Kinshasa',95,80,14,'2.8M','94%','bg'],['Nord-Kivu',48,38,6,'1.2M','78%','bg'],
+      ['Haut-Katanga',40,32,5,'984K','82%','bg'],['KasaÃ¯ Central',44,35,5,'1.1M','71%','ba'],
+      ['Ã‰quateur',28,22,3,'647K','68%','ba'],['Total national',650,650,130,'18.4M','84.2%','bg'],
+    ].map(([p,pr,se,un,el,tx,cl])=>`<tr>
+      <td><strong>${p}</strong></td><td>${pr}</td><td>${se}</td><td>${un}</td><td>${el}</td>
+      <td>${badge(tx,cl)}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
+// Remplir les selects provinces et institutions dans les modals
+function fillSelects(){
+  const po=PROVINCES.map(p=>`<option>${p.nom}</option>`).join('');
+  const io=INST.map(i=>`<option>${i}</option>`).join('');
+  ['cProv','ctProv','fsProv'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=po;});
+  ['aInst','dInst','bInst','aoInst'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=io;});
+}
+
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// INIT GLOBAL
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+function initAll(){
+  fillSelects();
+  renderDashboard();renderCitoyens();renderAgents();renderBudget();
+  renderDepenses();renderFiscalite();renderMarches();renderSante();
+  renderMines();renderIA();renderAudit();
+  loadRealProvinces();renderInstitutions();loadRealMinisteres();loadRealAudit();loadRealPostes();loadInstitutionsListe();loadRealAgentsIA();
+  renderTresoSimple();renderDouanesSimple();renderCNISimple();renderECSimple();
+  renderEduSimple();runPaie();
+}
+loadPublicInstitutions();
+</script>
+</body>
+</html>

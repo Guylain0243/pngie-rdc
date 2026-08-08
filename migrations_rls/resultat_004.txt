@@ -1,0 +1,64 @@
+BEGIN
+SET
+ nb_institutions 
+-----------------
+             245
+(1 ligne)
+
+ nb_personnes 
+--------------
+          129
+(1 ligne)
+
+RESET
+ROLLBACK
+BEGIN
+SET
+           personne_id_test           
+--------------------------------------
+ 39e6f0af-c9c3-4782-913f-942e332c2980
+(1 ligne)
+
+INSERT 0 1
+ lignes_journal_audit 
+----------------------
+                    1
+(1 ligne)
+
+RESET
+ROLLBACK
+BEGIN
+SET
+              set_config              
+--------------------------------------
+ f924e2ae-96c6-4b9e-81cc-d9602969ec3f
+(1 ligne)
+
+           document_id_test           
+--------------------------------------
+ 28e20d3c-5347-4435-81ad-f490f3241816
+(1 ligne)
+
+INSERT 0 1
+ lignes_index_recherche 
+------------------------
+                      1
+(1 ligne)
+
+RESET
+ROLLBACK
+BEGIN
+SET
+UPDATE 0
+ lignes_historique 
+-------------------
+                 0
+(1 ligne)
+
+RESET
+ROLLBACK
+  rolname  | rolbypassrls 
+-----------+--------------
+ pngie_app | f
+(1 ligne)
+

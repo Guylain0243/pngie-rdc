@@ -1,0 +1,19 @@
+﻿    code    |                  nom                  |     type_unite      | statut  |          created_at           |           unite_parent_id            
+------------+---------------------------------------+---------------------+---------+-------------------------------+--------------------------------------
+ DIV-RECOUV | Division Recouvrement                 | Division            | ACTIF   | 2026-07-25 12:46:58.062204+02 | aebe8014-a8b4-4c3c-87be-59dd741ff5bf
+ CAB-MIN5   | Cabinet du Ministre                   | Cabinet             | ACTIF   | 2026-07-25 12:46:58.062204+02 | 
+ SG-MIN5    | Secrétariat Général                   | Secrétariat Général | ACTIF   | 2026-07-25 12:46:58.062204+02 | 
+ IG-MIN5    | Inspection Générale des Finances      | Inspection          | ACTIF   | 2026-07-25 12:46:58.062204+02 | 
+ DGI-MIN5   | Direction Générale des Impôts         | Direction Générale  | ACTIF   | 2026-07-25 12:46:58.062204+02 | 
+ DIR-BUDGET | Direction du Budget                   | Direction           | ACTIF   | 2026-07-25 12:46:58.062204+02 | 
+ D_ETUDES   | Direction des Études et Prévisions    | DIRECTION           | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+ CELL_PNGIE | Cellule PNGIE                         | CELLULE             | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+ CABINET    | Cabinet du Ministre                   | CABINET             | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+ D_TRESOR   | Direction du Trésor                   | DIRECTION           | INACTIF | 2026-07-29 11:17:22.395582+02 | 
+ SG         | Secrétariat Général                   | SECRETARIAT         | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+ IG         | Inspection Générale                   | INSPECTION          | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+ D_BUDGET   | Direction du Budget                   | DIRECTION           | INACTIF | 2026-07-29 11:17:22.395582+02 | 
+ D_COMPTA   | Direction de la Comptabilité Publique | DIRECTION           | INACTIF | 2026-07-29 11:17:22.395582+02 | 
+ D_DETTE    | Direction de la Dette Publique        | DIRECTION           | ACTIF   | 2026-07-29 11:17:22.395582+02 | 
+(15 lignes)
+

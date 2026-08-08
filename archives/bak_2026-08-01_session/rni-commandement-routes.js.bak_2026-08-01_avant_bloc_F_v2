@@ -1,0 +1,274 @@
+// ════════════════════════════════════════════════════════════════
+// PNGIE-RDC — Module RNI : Chaîne de commandement dynamique
+// Routeur autonome : connexion directe à Postgres via DATABASE_URL,
+// vérification JWT identique à server.js (même secret / même format de token).
+// Aucune dépendance vers les fichiers internes de server.js — s'intègre
+// par un simple app.use() (voir 03_INSTRUCTIONS_INTEGRATION.md).
+// ════════════════════════════════════════════════════════════════
+const express = require('express');
+const { Pool } = require('pg');
+const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
+const router = express.Router();
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const JWT_SECRET = process.env.JWT_SECRET || 'demo-secret-change-me-in-production';
+
+// ─── Auth (même logique que requireAuth dans server.js) ───
+async function requireAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  if (!token) return res.status(401).json({ error: 'Token manquant.' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    return res.status(401).json({ error: 'Token invalide ou expiré.' });
+  }
+}
+
+function wrap(fn) {
+  return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
+}
+
+router.use(requireAuth);
+
+// ════════════════════════════════════════════════
+// 1. HIÉRARCHIE DYNAMIQUE
+// ════════════════════════════════════════════════
+
+// Graphe complet : toutes les institutions + tous les liens actifs
+router.get('/rni/hierarchie', wrap(async (req, res) => {
+  const institutions = await pool.query(
+    `SELECT institution_id, code, nom FROM institution ORDER BY nom`
+  );
+  const liens = await pool.query(
+    `SELECT lien_id, institution_id, institution_parent_id, type_lien, statut
+     FROM rni_lien_hierarchique WHERE statut = 'ACTIF'`
+  );
+  res.json({ institutions: institutions.rows, liens: liens.rows });
+}));
+
+// Sous-arbre d'une institution : ses parents (chaîne montante) et ses enfants directs
+router.get('/rni/hierarchie/:institutionId', wrap(async (req, res) => {
+  const { institutionId } = req.params;
+  const enfants = await pool.query(
+    `SELECT l.lien_id, l.type_lien, i.institution_id, i.code, i.nom
+     FROM rni_lien_hierarchique l
+     JOIN institution i ON i.institution_id = l.institution_id
+     WHERE l.institution_parent_id = $1 AND l.statut = 'ACTIF'
+     ORDER BY i.nom`,
+    [institutionId]
+  );
+  const parents = await pool.query(
+    `SELECT l.lien_id, l.type_lien, i.institution_id, i.code, i.nom
+     FROM rni_lien_hierarchique l
+     JOIN institution i ON i.institution_id = l.institution_parent_id
+     WHERE l.institution_id = $1 AND l.statut = 'ACTIF'
+     ORDER BY i.nom`,
+    [institutionId]
+  );
+  res.json({ enfants: enfants.rows, parents: parents.rows });
+}));
+
+// Créer un lien hiérarchique
+router.post('/rni/liens', wrap(async (req, res) => {
+  const { institution_id, institution_parent_id, type_lien, reference_juridique } = req.body;
+  if (!institution_id || !institution_parent_id || !type_lien) {
+    return res.status(400).json({ error: 'institution_id, institution_parent_id et type_lien sont requis.' });
+  }
+  if (institution_id === institution_parent_id) {
+    return res.status(400).json({ error: 'Une institution ne peut pas être son propre parent.' });
+  }
+  const lien_id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO rni_lien_hierarchique (lien_id, institution_id, institution_parent_id, type_lien, reference_juridique)
+     VALUES ($1,$2,$3,$4,$5)`,
+    [lien_id, institution_id, institution_parent_id, type_lien, reference_juridique || null]
+  );
+  res.status(201).json({ lien_id });
+}));
+
+// Désactiver un lien (jamais de suppression physique)
+router.post('/rni/liens/:lienId/desactiver', wrap(async (req, res) => {
+  await pool.query(
+    `UPDATE rni_lien_hierarchique SET statut='INACTIF', date_fin=CURRENT_DATE WHERE lien_id=$1`,
+    [req.params.lienId]
+  );
+  res.json({ ok: true });
+}));
+
+// ════════════════════════════════════════════════
+// 2. INSTRUCTIONS (qui donne l'ordre à qui)
+// ════════════════════════════════════════════════
+
+// Lister les instructions (émises et/ou reçues par une institution)
+router.get('/instructions', wrap(async (req, res) => {
+  const { institution_id, sens, statut } = req.query;
+  const clauses = [];
+  const params = [];
+  if (institution_id) {
+    params.push(institution_id);
+    if (sens === 'emises') clauses.push(`i.emetteur_institution_id = $${params.length}`);
+    else if (sens === 'recues') clauses.push(`i.destinataire_institution_id = $${params.length}`);
+    else clauses.push(`(i.emetteur_institution_id = $${params.length} OR i.destinataire_institution_id = $${params.length})`);
+  }
+  if (statut) { params.push(statut); clauses.push(`i.statut = $${params.length}`); }
+  const where = clauses.length ? 'WHERE ' + clauses.join(' AND ') : '';
+  const result = await pool.query(
+    `SELECT i.*, e.nom AS emetteur_nom, d.nom AS destinataire_nom
+     FROM instruction i
+     JOIN institution e ON e.institution_id = i.emetteur_institution_id
+     JOIN institution d ON d.institution_id = i.destinataire_institution_id
+     ${where}
+     ORDER BY i.date_emission DESC`,
+    params
+  );
+  res.json(result.rows);
+}));
+
+// Détail d'une instruction + ses rapports + leurs vérifications
+router.get('/instructions/:id', wrap(async (req, res) => {
+  const { id } = req.params;
+  const instr = await pool.query(
+    `SELECT i.*, e.nom AS emetteur_nom, d.nom AS destinataire_nom
+     FROM instruction i
+     JOIN institution e ON e.institution_id = i.emetteur_institution_id
+     JOIN institution d ON d.institution_id = i.destinataire_institution_id
+     WHERE i.instruction_id = $1`,
+    [id]
+  );
+  if (!instr.rows.length) return res.status(404).json({ error: 'Instruction introuvable.' });
+  const rapports = await pool.query(
+    `SELECT r.* FROM execution_rapport r WHERE r.instruction_id = $1 ORDER BY r.date_rapport DESC`,
+    [id]
+  );
+  const rapportIds = rapports.rows.map(r => r.rapport_id);
+  let verifications = [];
+  if (rapportIds.length) {
+    const vres = await pool.query(
+      `SELECT * FROM verification WHERE rapport_id = ANY($1::uuid[]) ORDER BY date_verification DESC`,
+      [rapportIds]
+    );
+    verifications = vres.rows;
+  }
+  const historique = await pool.query(
+    `SELECT * FROM instruction_historique WHERE instruction_id = $1 ORDER BY date_changement DESC`,
+    [id]
+  );
+  res.json({ instruction: instr.rows[0], rapports: rapports.rows, verifications, historique: historique.rows });
+}));
+
+// Émettre une instruction
+router.post('/instructions', wrap(async (req, res) => {
+  const { destinataire_institution_id, objet, description, priorite, date_echeance, reference_juridique, emetteur_institution_id } = req.body;
+  if (!destinataire_institution_id || !objet || !emetteur_institution_id) {
+    return res.status(400).json({ error: 'emetteur_institution_id, destinataire_institution_id et objet sont requis.' });
+  }
+  const instruction_id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO instruction
+       (instruction_id, emetteur_institution_id, emetteur_person_id, destinataire_institution_id,
+        objet, description, priorite, reference_juridique, date_echeance, statut)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'EMISE')`,
+    [instruction_id, emetteur_institution_id, req.user.sub || null, destinataire_institution_id,
+     objet, description || null, priorite || 'NORMALE', reference_juridique || null, date_echeance || null]
+  );
+  await pool.query(
+    `INSERT INTO instruction_historique (historique_id, instruction_id, ancien_statut, nouveau_statut, person_id, commentaire)
+     VALUES ($1,$2,NULL,'EMISE',$3,'Instruction émise')`,
+    [crypto.randomUUID(), instruction_id, req.user.sub || null]
+  );
+  res.status(201).json({ instruction_id });
+}));
+
+// Changer le statut d'une instruction (ex: annulation, passage en EN_COURS)
+router.post('/instructions/:id/statut', wrap(async (req, res) => {
+  const { id } = req.params;
+  const { statut, commentaire } = req.body;
+  const valides = ['EMISE','EN_COURS','EXECUTEE','EN_RETARD','ANNULEE'];
+  if (!valides.includes(statut)) return res.status(400).json({ error: 'Statut invalide.' });
+  const current = await pool.query(`SELECT statut FROM instruction WHERE instruction_id=$1`, [id]);
+  if (!current.rows.length) return res.status(404).json({ error: 'Instruction introuvable.' });
+  await pool.query(`UPDATE instruction SET statut=$1 WHERE instruction_id=$2`, [statut, id]);
+  await pool.query(
+    `INSERT INTO instruction_historique (historique_id, instruction_id, ancien_statut, nouveau_statut, person_id, commentaire)
+     VALUES ($1,$2,$3,$4,$5,$6)`,
+    [crypto.randomUUID(), id, current.rows[0].statut, statut, req.user.sub || null, commentaire || null]
+  );
+  res.json({ ok: true });
+}));
+
+// ════════════════════════════════════════════════
+// 3. RAPPORTS D'EXÉCUTION
+// ════════════════════════════════════════════════
+
+router.post('/instructions/:id/rapports', wrap(async (req, res) => {
+  const { id } = req.params;
+  const { institution_id, contenu, taux_avancement } = req.body;
+  if (!institution_id || !contenu) {
+    return res.status(400).json({ error: 'institution_id et contenu sont requis.' });
+  }
+  const rapport_id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO execution_rapport (rapport_id, instruction_id, institution_id, redacteur_person_id, contenu, taux_avancement, statut)
+     VALUES ($1,$2,$3,$4,$5,$6,'SOUMIS')`,
+    [rapport_id, id, institution_id, req.user.sub || null, contenu, taux_avancement || 0]
+  );
+  // Passage automatique de l'instruction en EN_COURS si elle était encore EMISE
+  const instr = await pool.query(`SELECT statut FROM instruction WHERE instruction_id=$1`, [id]);
+  if (instr.rows.length && instr.rows[0].statut === 'EMISE') {
+    await pool.query(`UPDATE instruction SET statut='EN_COURS' WHERE instruction_id=$1`, [id]);
+    await pool.query(
+      `INSERT INTO instruction_historique (historique_id, instruction_id, ancien_statut, nouveau_statut, person_id, commentaire)
+       VALUES ($1,$2,'EMISE','EN_COURS',$3,'Premier rapport soumis')`,
+      [crypto.randomUUID(), id, req.user.sub || null]
+    );
+  }
+  res.status(201).json({ rapport_id });
+}));
+
+router.get('/rapports/:id', wrap(async (req, res) => {
+  const result = await pool.query(`SELECT * FROM execution_rapport WHERE rapport_id=$1`, [req.params.id]);
+  if (!result.rows.length) return res.status(404).json({ error: 'Rapport introuvable.' });
+  res.json(result.rows[0]);
+}));
+
+// ════════════════════════════════════════════════
+// 4. VÉRIFICATION
+// ════════════════════════════════════════════════
+
+router.post('/rapports/:id/verification', wrap(async (req, res) => {
+  const { id } = req.params;
+  const { decision, commentaire, verificateur_institution_id } = req.body;
+  const valides = ['CONFORME','NON_CONFORME','A_COMPLETER'];
+  if (!valides.includes(decision) || !verificateur_institution_id) {
+    return res.status(400).json({ error: 'decision (CONFORME/NON_CONFORME/A_COMPLETER) et verificateur_institution_id sont requis.' });
+  }
+  const verification_id = crypto.randomUUID();
+  await pool.query(
+    `INSERT INTO verification (verification_id, rapport_id, verificateur_person_id, verificateur_institution_id, decision, commentaire)
+     VALUES ($1,$2,$3,$4,$5,$6)`,
+    [verification_id, id, req.user.sub || null, verificateur_institution_id, decision, commentaire || null]
+  );
+  const nouveauStatutRapport = decision === 'CONFORME' ? 'VALIDE' : decision === 'A_COMPLETER' ? 'A_COMPLETER' : 'REJETE';
+  await pool.query(`UPDATE execution_rapport SET statut=$1 WHERE rapport_id=$2`, [nouveauStatutRapport, id]);
+
+  // Si conforme, on considère l'instruction exécutée
+  if (decision === 'CONFORME') {
+    const rap = await pool.query(`SELECT instruction_id FROM execution_rapport WHERE rapport_id=$1`, [id]);
+    if (rap.rows.length) {
+      const instructionId = rap.rows[0].instruction_id;
+      const cur = await pool.query(`SELECT statut FROM instruction WHERE instruction_id=$1`, [instructionId]);
+      await pool.query(`UPDATE instruction SET statut='EXECUTEE' WHERE instruction_id=$1`, [instructionId]);
+      await pool.query(
+        `INSERT INTO instruction_historique (historique_id, instruction_id, ancien_statut, nouveau_statut, person_id, commentaire)
+         VALUES ($1,$2,$3,'EXECUTEE',$4,'Rapport vérifié conforme')`,
+        [crypto.randomUUID(), instructionId, cur.rows[0]?.statut || null, req.user.sub || null]
+      );
+    }
+  }
+  res.status(201).json({ verification_id });
+}));
+
+module.exports = router;

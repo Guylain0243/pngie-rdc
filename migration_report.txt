@@ -1,0 +1,88 @@
+institution : 127/127 lignes migrees (0 erreurs)
+unite_organisationnelle : 328/328 lignes migrees (0 erreurs)
+poste : 506/506 lignes migrees (0 erreurs)
+role : 6/6 lignes migrees (0 erreurs)
+permission : 71/71 lignes migrees (0 erreurs)
+personne : 123/123 lignes migrees (0 erreurs)
+affectation : 122/122 lignes migrees (0 erreurs)
+personne_role : 116/123 lignes migrees (7 erreurs)
+  ! personne_role :: reference manquante person=be72c028-9524-477c-bbe9-4435ad507e79 role=84a1e711-c37b-4209-b1f2-fec51176c489 scope=null
+  ! personne_role :: reference manquante person=0d3dc766-668d-41fd-9dc3-c1fff0148504 role=c4d3f171-d1e2-4f88-bd8c-286df714fc4a scope=null
+  ! personne_role :: reference manquante person=bce630e0-1c3d-43a3-9631-29eec45d5977 role=e5ee2c18-3ce6-41a4-be67-427df2081920 scope=null
+  ! personne_role :: reference manquante person=35f16072-3c61-4074-a8b1-157b4fd469e1 role=8a4dff6f-ffc0-420e-9b7f-562981bfd576 scope=null
+  ! personne_role :: reference manquante person=eaa0b8f1-1379-4642-b8d7-4e2e845d1a3f role=dd6f3869-a78c-4186-a8d9-9c1245fcc0d5 scope=null
+  ! personne_role :: reference manquante person=7c178f44-053e-441c-a0e8-3240c5db5cdf role=a629ad92-b063-48f9-9a1a-7bef3220f098 scope=null
+  ! personne_role :: reference manquante person=91051791-d2eb-4a83-80e3-37b745c6ffe6 role=dd6f3869-a78c-4186-a8d9-9c1245fcc0d5 scope=null
+type_document : 5/5 lignes migrees (0 erreurs)
+document : 0/1 lignes migrees (1 erreurs)
+  ! document :: reference manquante type=null org=001a8996-335a-42f1-a58d-1b29a96d5749
+referentiel_national : 17/17 lignes migrees (0 erreurs)
+referentiel_national_section : 255/255 lignes migrees (0 erreurs)
+referentiel_national_item : 3816/3816 lignes migrees (0 erreurs)
+meta_workflow_transition : 0/65 lignes migrees (65 erreurs)
+  ! meta_workflow_transition(a147cd1a-21d4-4a62-8c39-dd3f2856d9d6) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(65ba0bbe-257f-4bc8-95fe-68deb541bc39) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(134c9054-6782-4bbd-bde8-7e7a674358cf) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(79783b90-f09a-4e87-af29-0975651e2fcd) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(40c32cc2-2a42-4250-80d0-e34fc2d5f7b7) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(a397334b-b37f-42ce-b225-57ef3f0b34ba) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(ae6f089f-d074-49cb-8300-115d8dcdca3d) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(88d52bae-7fa8-444e-80a9-1c09c1818d9d) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(4da8f563-7515-4b88-a4c1-4b9bfe4c10fd) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(e8f08f4a-dda4-49a8-8b5d-8a0c6e11e16f) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(fb470d2a-aab2-4a0d-b944-0aa1274ee931) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(2cde2dfa-3e15-4eac-9e44-5ab06b542494) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(e11aa9d4-2a06-45f5-a7e8-9602a129ac5e) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(ae83e4f7-e78a-4063-9d50-4c7654b87d8f) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c916d128-30e4-458d-9f72-4cbec84bd6ed) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(bb54961a-28a8-45f0-ba30-a1fb7a30fef4) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(dda9cc04-b93c-4d15-aa58-0f4b339599b7) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(85680c33-cd24-4ce9-a939-7e9f451b1e50) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(b6795e97-2ab7-4725-b39a-7ba814595b63) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c3f62192-dd07-436b-b172-3f457b38a413) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(5d9d914a-33f1-49ef-8588-325aa3b272b9) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(ffb511c6-73a8-407d-afb0-f01406d70d3c) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(d1205d84-33af-4177-a10b-959159cfb604) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(1b83b70f-4ff0-4cc0-bdb9-4184d2e4d28a) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(64999b35-d47b-441a-9345-d479e5a7639b) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c9fa743a-604b-4588-814d-bdc03c43fd26) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(0a9a0823-af27-42c0-b70f-46a98a5f91c1) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(15b0a6f3-68af-4f1c-85a5-cca802911061) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(06d9922b-38f8-42ea-951a-9d5e43e5d133) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(69683588-337c-448d-ba06-a65900811692) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(bc41d883-7e15-41c7-8b3f-70d68b61e2b2) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(a88e70f0-450b-4192-bba9-e11c3349b617) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(a88affcf-e9a3-4206-bf21-68af75dfd860) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(18572238-32ce-43dd-ba0f-70a79063e47a) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(e7ce60ec-ca0e-4c77-acba-c5bb9c51442d) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(58f3006a-3f0f-4b03-a6d5-31a752f48110) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(4288c57b-9b9f-4fa2-b505-929b007121f8) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(ce6f8afd-2c87-4b63-87e9-cd9891f71409) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(a9829ee1-dca0-4962-92f1-798f11ce8459) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(2804e82b-6067-4236-97bc-d1cfccc01050) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c162037c-c836-41a1-87b1-fff544d1a4b1) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(0a3dd920-be32-4fd0-b374-5ec652920d89) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(b93d2eb2-95af-43a3-a11b-3a6d26c1b82e) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(5cc078c2-c0b9-412c-b158-578fb242903a) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c04d3f82-4c59-4178-a7f6-5d62d11504fd) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(8816c17f-df27-484d-855c-78699c86dd14) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(ba5ae106-e8c9-403c-aa24-614328b1c0d0) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(63147c80-8217-4fbb-baff-a9a540689d9c) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(9771c50a-51ac-4a40-a7e5-456ef9108466) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(18cb19b5-23e1-41ce-a0e8-1961c9360d07) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(a0cf652f-29f7-47ff-8471-177454034d14) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(84b9d9c6-adc5-45d8-97fd-a662aa4afce7) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c909931e-48d7-4f1b-b761-a4954cd86fcc) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(9e8303f5-4326-4566-9a53-dd385eb73723) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(bbd88cdf-2a0f-4e27-8a45-b6f1eff9adc9) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(0ea7ffd3-c008-4737-81ee-7f0000dca959) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(c3cea979-09d6-431d-a85f-d6a11bf00f94) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(830b4195-8bf6-4e91-91a6-05242300d6e3) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(fab5388d-5be0-4f7e-a9ef-28da01bf21d1) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(bb85606f-3e6e-418c-930d-cb704cea80c3) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(3fecb2c2-e3ad-48c3-a404-eb899c540a75) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(afbbbae6-7345-423a-88dc-7682429b6250) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(d7168254-020d-4a17-9118-a04e5f3dcbf0) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(25a3db20-8eb8-4823-8bb0-174904a668d8) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+  ! meta_workflow_transition(null) :: une valeur NULL viole la contrainte NOT NULL de la colonne « entite » dans la relation « meta_workflow_transition »
+meta_rule : 6/6 lignes migrees (0 erreurs)

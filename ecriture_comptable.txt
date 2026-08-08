@@ -1,0 +1,133 @@
+﻿// ==============================================================
+// ROUTEUR GENERE AUTOMATIQUEMENT par government-builder.js
+// Entite : Ã‰criture Comptable  (table : ecriture_comptable)
+// NE PAS MODIFIER A LA MAIN - regenerer via government-builder.js
+// si les metadonnees changent.
+// ==============================================================
+
+const express = require('express');
+const crypto = require('crypto');
+const db = require('../src/db');
+const { verifierRegles } = require('../src/rule-engine');
+const { enregistrerEvenement, historique } = require('../src/event-engine');
+const { exigerPermission } = require('../src/security-engine');
+const { verifierTransition } = require('../src/workflow-engine');
+const { declencherNotifications } = require('../src/notification-engine');
+const router = express.Router();
+
+const CHAMPS = ["compte","libelle","montant_debit","montant_credit","statut"];
+const CHAMPS_OBLIGATOIRES = ["compte","libelle"];
+
+function validerPayload(body) {
+    const manquants = CHAMPS_OBLIGATOIRES.filter(c => body[c] === undefined || body[c] === null || body[c] === '');
+    return manquants;
+}
+
+// LISTE
+router.get('/ecriture_comptables', exigerPermission('ecriture_comptable', 'READ'), async (req, res) => {
+    try {
+        const rows = await db.all(`SELECT * FROM ecriture_comptable ORDER BY created_at DESC`);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DETAIL
+router.get('/ecriture_comptables/:id', exigerPermission('ecriture_comptable', 'READ'), async (req, res) => {
+    try {
+        const row = await db.get(`SELECT * FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [req.params.id]);
+        if (!row) return res.status(404).json({ error: 'Ã‰criture Comptable introuvable' });
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATION
+router.post('/ecriture_comptables', exigerPermission('ecriture_comptable', 'CREATE'), async (req, res) => {
+    const manquants = validerPayload(req.body);
+    if (manquants.length > 0) {
+        return res.status(400).json({ error: 'Champs obligatoires manquants', champs: manquants });
+    }
+    try {
+        const id = crypto.randomUUID();
+        const champsRenseignes = CHAMPS.filter(c => req.body[c] !== undefined);
+        const colonnes = ['ecriture_comptable_id', ...champsRenseignes];
+        const valeurs = [id, ...champsRenseignes.map(c => req.body[c])];
+        const placeholders = colonnes.map(() => '?').join(', ');
+        await db.run(
+            `INSERT INTO ecriture_comptable (${colonnes.join(', ')}) VALUES (${placeholders})`,
+            valeurs
+        );
+        const row = await db.get(`SELECT * FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [id]);
+        await enregistrerEvenement('ecriture_comptable', id, 'CREATION', null, row);
+        res.status(201).json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// MODIFICATION
+router.put('/ecriture_comptables/:id', exigerPermission('ecriture_comptable', 'UPDATE'), async (req, res) => {
+    try {
+        const existant = await db.get(`SELECT * FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [req.params.id]);
+        if (!existant) return res.status(404).json({ error: 'Ã‰criture Comptable introuvable' });
+
+        // Verification des regles metier (meta_rule) avant toute modification
+        const violations = await verifierRegles('ecriture_comptable', 'AVANT_MODIFICATION', existant, req.body);
+        if (violations.length > 0) {
+            return res.status(409).json({ error: 'Regle(s) metier violee(s)', violations });
+        }
+
+        // Verification du workflow si le statut change
+        if (req.body.statut !== undefined && req.body.statut !== existant.statut) {
+            const transitionCheck = await verifierTransition('ecriture_comptable', existant.statut, req.body.statut, req.roleCode);
+            if (!transitionCheck.autorise) {
+                return res.status(409).json({ error: 'Transition de workflow refusee', message: transitionCheck.message });
+            }
+        }
+
+        const champsAModifier = CHAMPS.filter(c => req.body[c] !== undefined);
+        if (champsAModifier.length === 0) {
+            return res.status(400).json({ error: 'Aucun champ a modifier' });
+        }
+        const setClause = champsAModifier.map(c => `${c} = ?`).join(', ');
+        const valeurs = champsAModifier.map(c => req.body[c]);
+        await db.run(
+            `UPDATE ecriture_comptable SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE ecriture_comptable_id = ?`,
+            [...valeurs, req.params.id]
+        );
+        const row = await db.get(`SELECT * FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [req.params.id]);
+        await enregistrerEvenement('ecriture_comptable', req.params.id, 'MODIFICATION', existant, row);
+        await declencherNotifications('ecriture_comptable', req.params.id, 'MODIFICATION', row);
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// SUPPRESSION
+router.delete('/ecriture_comptables/:id', exigerPermission('ecriture_comptable', 'DELETE'), async (req, res) => {
+    try {
+        const existant = await db.get(`SELECT * FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [req.params.id]);
+        if (!existant) return res.status(404).json({ error: 'Ã‰criture Comptable introuvable' });
+        await db.run(`DELETE FROM ecriture_comptable WHERE ecriture_comptable_id = ?`, [req.params.id]);
+        await enregistrerEvenement('ecriture_comptable', req.params.id, 'SUPPRESSION', existant, null);
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// HISTORIQUE (genere automatiquement par le moteur d'evenements)
+router.get('/ecriture_comptables/:id/historique', exigerPermission('ecriture_comptable', 'READ'), async (req, res) => {
+    try {
+        const evenements = await historique('ecriture_comptable', req.params.id);
+        res.json(evenements);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;

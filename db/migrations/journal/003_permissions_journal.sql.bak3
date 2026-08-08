@@ -1,0 +1,45 @@
+-- ============================================================
+-- 003_permissions_journal.sql (régénéré — structure réelle : permission(role_id, entite, action, code, statut))
+-- Mapping appliqué : SN=complet, PR=signataire, MI/PM/AN/GV=émetteur, autres=lecture seule.
+-- À AJUSTER si les codes de rôle réels (ci-dessus dans la sortie console) diffèrent de SN/PR/MI/PM/AN/GV.
+-- ============================================================
+
+BEGIN;
+
+INSERT INTO permission (role_id, entite, action, code, statut) VALUES
+  ('2ee6f93e-ae0e-4db2-a535-eaf73e03ce2c', 'journal', 'signer', 'journal.signer', 'actif'),
+  ('2ee6f93e-ae0e-4db2-a535-eaf73e03ce2c', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('2ee6f93e-ae0e-4db2-a535-eaf73e03ce2c', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif'),
+  ('bd010f9b-ee33-484d-ae11-41f5d61dc1fb', 'journal', 'creer', 'journal.creer', 'actif'),
+  ('bd010f9b-ee33-484d-ae11-41f5d61dc1fb', 'journal', 'modifier', 'journal.modifier', 'actif'),
+  ('bd010f9b-ee33-484d-ae11-41f5d61dc1fb', 'journal', 'valider', 'journal.valider', 'actif'),
+  ('bd010f9b-ee33-484d-ae11-41f5d61dc1fb', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('bd010f9b-ee33-484d-ae11-41f5d61dc1fb', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'creer', 'journal.creer', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'modifier', 'journal.modifier', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'valider', 'journal.valider', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'signer', 'journal.signer', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'publier', 'journal.publier', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'consulter.confidentiel', 'journal.consulter.confidentiel', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'archiver', 'journal.archiver', 'actif'),
+  ('c44708d9-2ec0-4697-9791-975e7175900c', 'journal', 'gerer_diffusion', 'journal.gerer_diffusion', 'actif'),
+  ('148f9a29-373f-4976-93a0-095804e84868', 'journal', 'creer', 'journal.creer', 'actif'),
+  ('148f9a29-373f-4976-93a0-095804e84868', 'journal', 'modifier', 'journal.modifier', 'actif'),
+  ('148f9a29-373f-4976-93a0-095804e84868', 'journal', 'valider', 'journal.valider', 'actif'),
+  ('148f9a29-373f-4976-93a0-095804e84868', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('148f9a29-373f-4976-93a0-095804e84868', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif'),
+  ('65562588-afcc-4309-a9f8-e595dadaa63f', 'journal', 'creer', 'journal.creer', 'actif'),
+  ('65562588-afcc-4309-a9f8-e595dadaa63f', 'journal', 'modifier', 'journal.modifier', 'actif'),
+  ('65562588-afcc-4309-a9f8-e595dadaa63f', 'journal', 'valider', 'journal.valider', 'actif'),
+  ('65562588-afcc-4309-a9f8-e595dadaa63f', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('65562588-afcc-4309-a9f8-e595dadaa63f', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif'),
+  ('095b6c5f-fa21-433c-ad66-92aa818a5ef0', 'journal', 'creer', 'journal.creer', 'actif'),
+  ('095b6c5f-fa21-433c-ad66-92aa818a5ef0', 'journal', 'modifier', 'journal.modifier', 'actif'),
+  ('095b6c5f-fa21-433c-ad66-92aa818a5ef0', 'journal', 'valider', 'journal.valider', 'actif'),
+  ('095b6c5f-fa21-433c-ad66-92aa818a5ef0', 'journal', 'consulter', 'journal.consulter', 'actif'),
+  ('095b6c5f-fa21-433c-ad66-92aa818a5ef0', 'journal', 'consulter.restreint', 'journal.consulter.restreint', 'actif')
+ON CONFLICT DO NOTHING;
+
+COMMIT;

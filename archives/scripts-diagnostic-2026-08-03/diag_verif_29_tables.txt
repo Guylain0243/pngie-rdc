@@ -1,0 +1,33 @@
+﻿          table_name          |    column_name     | is_nullable 
+------------------------------+--------------------+-------------
+ appel_offres                 | institution_id     | NO
+ autorisation_industrielle    | institution_id     | NO
+ bien_culturel_protege        | institution_id     | NO
+ bien_patrimonial             | institution_id     | NO
+ certificat_pki               | institution_id     | NO
+ decision_institutionnelle    | institution_id_new | YES
+ declaration_douaniere        | institution_id     | NO
+ declaration_fiscale          | institution_id     | NO
+ dossier_administratif        | institution_id     | NO
+ dossier_agent_rh             | institution_id     | NO
+ dossier_entreprise           | institution_id     | NO
+ dossier_judiciaire           | institution_id     | NO
+ dossier_logistique_defense   | institution_id     | NO
+ dossier_recouvrement         | institution_id     | NO
+ dossier_scolaire             | institution_id     | NO
+ ecriture_comptable           | institution_id     | NO
+ enquete_statistique          | institution_id     | NO
+ etude_impact_environnemental | institution_id     | NO
+ exploitation_agricole        | institution_id     | NO
+ facture                      | institution_id     | NO
+ federation_sportive          | institution_id     | NO
+ immatriculation_vehicule     | institution_id     | NO
+ incident_securitaire         | institution_id     | NO
+ licence_commerciale          | institution_id     | NO
+ licence_telecom              | institution_id     | NO
+ permis_minier                | institution_id     | NO
+ raccordement_energetique     | institution_id     | NO
+ reclamation_citoyenne        | institution_id     | NO
+ signalement_sanitaire        | institution_id     | NO
+(29 lignes)
+

@@ -1,0 +1,42 @@
+MIN_0 | Intérieur, Sécurité, Décentralisation et Affaires coutumières
+MIN_1 | Défense nationale et Anciens combattants
+MIN_2 | Affaires Étrangères, Coopération internationale et Francophonie
+MIN_3 | Justice et Garde des Sceaux
+MIN_4 | Budget
+MIN_5 | Finances
+MIN_6 | Économie nationale
+MIN_7 | Plan et Coordination de l'aide au développement
+MIN_8 | Fonction Publique, Modernisation de l'Administration et Innovation
+MIN_9 | Transports et Voies de communication
+MIN_10 | Infrastructures et Travaux publics
+MIN_11 | Agriculture et Sécurité alimentaire
+MIN_12 | Développement rural
+MIN_13 | Pêche et Élevage
+MIN_14 | Mines
+MIN_15 | Hydrocarbures
+MIN_16 | Ressources hydrauliques et Électricité
+MIN_17 | Environnement et Développement durable
+MIN_18 | Industrie et Développement des PME
+MIN_19 | Commerce Extérieur
+MIN_20 | Entrepreneuriat / Développement des PME
+MIN_21 | Portefeuille
+MIN_22 | Emploi et Travail
+MIN_23 | Formation professionnelle
+MIN_24 | Éducation nationale et Nouvelle citoyenneté
+MIN_25 | Enseignement Supérieur et Universitaire
+MIN_26 | Santé publique, Hygiène et Prévention
+MIN_27 | Affaires sociales, Actions humanitaires et Solidarité nationale
+MIN_28 | Genre et Famille
+MIN_29 | Jeunesse et Éveil Patriotique
+MIN_30 | Droits humains
+MIN_31 | Urbanisme et Habitat
+MIN_32 | Affaires foncières
+MIN_33 | Aménagement du territoire
+MIN_34 | Relations avec le Parlement
+MIN_35 | Communication et Médias
+MIN_36 | Postes et Télécommunications
+MIN_37 | Économie numérique
+MIN_38 | Culture et Arts
+MIN_39 | Tourisme
+MIN_40 | Sports et Loisirs
+MIN_41 | Intégration régionale

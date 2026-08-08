@@ -1,0 +1,19 @@
+﻿                                    Table ½ public.ligne_budgetaire ╗
+       Colonne       |           Type           | Collationnement | NULL-able |            Par dÚfaut            
+---------------------+--------------------------+-----------------+-----------+---------------------------------
+ ligne_budgetaire_id | uuid                     |                 | not null  | uuid_generate_v4()
+ institution         | text                     |                 | not null  | 
+ exercice            | character varying(4)     |                 | not null  | 
+ programme           | text                     |                 |           | 
+ montant_alloue      | numeric(18,2)            |                 |           | 
+ statut              | character varying(30)    |                 | not null  | 'EN_ATTENTE'::character varying
+ created_at          | timestamp with time zone |                 | not null  | now()
+ updated_at          | timestamp with time zone |                 | not null  | now()
+Index :
+    "ligne_budgetaire_pkey" PRIMARY KEY, btree (ligne_budgetaire_id)
+    "idx_ligne_budgetaire_exercice" btree (exercice)
+    "idx_ligne_budgetaire_institution" btree (institution)
+    "idx_ligne_budgetaire_statut" btree (statut)
+Triggers :
+    trg_ligne_budgetaire_updated_at BEFORE UPDATE ON ligne_budgetaire FOR EACH ROW EXECUTE FUNCTION fn_ligne_budgetaire_set_updated_at()
+

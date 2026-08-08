@@ -1,0 +1,7 @@
+﻿        table_name         |         column_name          
+---------------------------+------------------------------
+ decision_institutionnelle | decision_institutionnelle_id
+ decision_institutionnelle | institution
+ ligne_budgetaire          | institution
+(3 lignes)
+

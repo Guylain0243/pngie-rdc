@@ -1,0 +1,255 @@
+﻿=== 1. LISTE COMPLETE routes-generated/ ===
+accord_cooperation.routes.js
+affectation.routes.js
+agent.routes.js
+agent.routes.js.backup_20260803_225430
+annuaire.routes.js
+appel_offres.routes.js
+arborescence.routes.js
+autorisation_industrielle.routes.js
+bien_culturel_protege.routes.js
+bien_patrimonial.routes.js
+certificat_pki.routes.js
+corps.routes.js
+decision_gouvernementale.routes.js
+decision_institutionnelle.routes.js
+declaration_douaniere.routes.js
+declaration_fiscale.routes.js
+dossier_administratif.routes.js
+dossier_agent_rh.routes.js
+dossier_entreprise.routes.js
+dossier_judiciaire.routes.js
+dossier_logistique_defense.routes.js
+dossier_projet_investissement.routes.js
+dossier_recouvrement.routes.js
+dossier_scolaire.routes.js
+ecriture_comptable.routes.js
+enquete_statistique.routes.js
+etude_impact_environnemental.routes.js
+exploitation_agricole.routes.js
+facture.routes.js
+federation_sportive.routes.js
+grade.routes.js
+immatriculation_vehicule.routes.js
+incident_securitaire.routes.js
+institutions_dashboard.routes.js
+institutions_fiche.routes.js
+institutions_validation.routes.js
+licence_commerciale.routes.js
+licence_telecom.routes.js
+ligne_budgetaire.routes.js
+me_poste.routes.js
+ordre_paiement.routes.js
+permis_minier.routes.js
+plan_developpement.routes.js
+poste_hierarchie.routes.js
+projet_recherche.routes.js
+public_institutions.routes.js
+raccordement_energetique.routes.js
+reclamation_citoyenne.routes.js
+relations.routes.js
+signalement_sanitaire.routes.js
+
+=== 2. CONTENU D'UN FICHIER GÉNÉRÉ TYPE (facture.routes.js) — pour voir le pattern ===
+// =====================================================================
+// ROUTEUR GENERE AUTOMATIQUEMENT par government-builder.js
+// Entite : facture  (table : facture)
+// Scope  : INSTITUTION
+// NE PAS MODIFIER A LA MAIN - regenerer via government-builder.js
+// si les metadonnees changent.
+// =====================================================================
+
+const express = require('express');
+const crypto = require('crypto');
+const db = require('../src/db');
+const { verifierRegles } = require('../src/rule-engine');
+const { enregistrerEvenement, historique } = require('../src/event-engine');
+const { exigerPermission } = require('../src/security-engine');
+const requestContext = require('../src/request-context');
+
+const router = express.Router();
+
+const CHAMPS = ["numero","fournisseur","montant","devise","date_emission","date_echeance","statut"];
+const CHAMPS_OBLIGATOIRES = ["numero","fournisseur","date_emission"];
+
+function validerPayload(body) {
+    const manquants = CHAMPS_OBLIGATOIRES.filter(c => body[c] === undefined || body[c] === null || body[c] === '');
+    return manquants;
+}
+
+function institutionCourante() {
+    const ctx = requestContext.getContext();
+    return ctx ? ctx.institutionId : null;
+}
+
+// LISTE
+router.get('/factures', exigerPermission('facture', 'READ'), async (req, res) => {
+    try {
+        const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const rows = await db.all(`SELECT * FROM facture WHERE institution_id = ? ORDER BY created_at DESC`, [instId]);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// DETAIL
+router.get('/factures/:id', exigerPermission('facture', 'READ'), async (req, res) => {
+    try {
+        const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const row = await db.get(`SELECT * FROM facture WHERE facture_id = ? AND institution_id = ?`, [req.params.id, instId]);
+        if (!row) return res.status(404).json({ error: 'undefined introuvable' });
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// CREATION
+router.post('/factures', exigerPermission('facture', 'CREATE'), async (req, res) => {
+    const manquants = validerPayload(req.body);
+    if (manquants.length > 0) {
+        return res.status(400).json({ error: 'Champs obligatoires manquants', champs: manquants });
+    }
+    try {
+        const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const id = crypto.randomUUID();
+        const champsRenseignes = CHAMPS.filter(c => req.body[c] !== undefined);
+        const colonnes = ['facture_id', ...champsRenseignes, 'institution_id'];
+        const valeurs = [id, ...champsRenseignes.map(c => req.body[c]), instId];
+        const placeholders = colonnes.map(() => '?').join(', ');
+        await db.run(
+            `INSERT INTO facture (${colonnes.join(', ')}) VALUES (${placeholders})`,
+            valeurs
+        );
+        
+        const row = await db.get(`SELECT * FROM facture WHERE facture_id = ?`, [id]);
+        await enregistrerEvenement('facture', id, 'CREATION', null, row, req.user && req.user.sub);
+        res.status(201).json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// MODIFICATION
+router.put('/factures/:id', exigerPermission('facture', 'UPDATE'), async (req, res) => {
+    try {
+        const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const existant = await db.get(`SELECT * FROM facture WHERE facture_id = ? AND institution_id = ?`, [req.params.id, instId]);
+        if (!existant) return res.status(404).json({ error: 'undefined introuvable' });
+
+        // Verification des regles metier (meta_rule) avant toute modification
+        const violations = await verifierRegles('facture', 'AVANT_MODIFICATION', existant, req.body);
+        if (violations.length > 0) {
+            return res.status(409).json({ error: 'Regle(s) metier violee(s)', violations });
+        }
+
+        const champsAModifier = CHAMPS.filter(c => req.body[c] !== undefined);
+        if (champsAModifier.length === 0) {
+            return res.status(400).json({ error: 'Aucun champ a modifier' });
+        }
+        const setClause = champsAModifier.map(c => `${c} = ?`).join(', ');
+        const valeurs = champsAModifier.map(c => req.body[c]);
+        await db.run(
+            `UPDATE facture SET ${setClause}, updated_at = CURRENT_TIMESTAMP WHERE facture_id = ? AND institution_id = ?`,
+            [...valeurs, req.params.id, instId]
+        );
+        const row = await db.get(`SELECT * FROM facture WHERE facture_id = ?`, [req.params.id]);
+        await enregistrerEvenement('facture', req.params.id, 'MODIFICATION', existant, row, req.user && req.user.sub);
+        res.json(row);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// SUPPRESSION
+router.delete('/factures/:id', exigerPermission('facture', 'DELETE'), async (req, res) => {
+    try {
+        const instId = institutionCourante();
+        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+        const existant = await db.get(`SELECT * FROM facture WHERE facture_id = ? AND institution_id = ?`, [req.params.id, instId]);
+        if (!existant) return res.status(404).json({ error: 'undefined introuvable' });
+        await db.run(`DELETE FROM facture WHERE facture_id = ? AND institution_id = ?`, [req.params.id, instId]);
+        await enregistrerEvenement('facture', req.params.id, 'SUPPRESSION', existant, null, req.user && req.user.sub);
+        res.status(204).send();
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// HISTORIQUE (genere automatiquement par le moteur d'evenements)
+router.get('/factures/:id/historique', exigerPermission('facture', 'READ'), async (req, res) => {
+    try {
+        const evenements = await historique('facture', req.params.id);
+        res.json(evenements);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+module.exports = router;
+
+=== 3. TOUS LES FICHIERS GÉNÉRÉS UTILISENT-ILS requireAuth/exigerPermission/audit ? (comptage) ===
+accord_cooperation.routes.js                  auth=False  perm=True   audit=False  institAuth=False 
+affectation.routes.js                         auth=False  perm=True   audit=False  institAuth=False 
+agent.routes.js                               auth=True   perm=True   audit=False  institAuth=False 
+annuaire.routes.js                            auth=False  perm=True   audit=False  institAuth=False 
+appel_offres.routes.js                        auth=False  perm=True   audit=False  institAuth=False 
+arborescence.routes.js                        auth=False  perm=False  audit=False  institAuth=False 
+autorisation_industrielle.routes.js           auth=False  perm=True   audit=False  institAuth=False 
+bien_culturel_protege.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+bien_patrimonial.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+certificat_pki.routes.js                      auth=False  perm=True   audit=False  institAuth=False 
+corps.routes.js                               auth=False  perm=True   audit=False  institAuth=False 
+decision_gouvernementale.routes.js            auth=False  perm=True   audit=False  institAuth=False 
+decision_institutionnelle.routes.js           auth=False  perm=True   audit=False  institAuth=False 
+declaration_douaniere.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+declaration_fiscale.routes.js                 auth=False  perm=True   audit=False  institAuth=False 
+dossier_administratif.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+dossier_agent_rh.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+dossier_entreprise.routes.js                  auth=False  perm=True   audit=False  institAuth=False 
+dossier_judiciaire.routes.js                  auth=False  perm=True   audit=False  institAuth=False 
+dossier_logistique_defense.routes.js          auth=False  perm=True   audit=False  institAuth=False 
+dossier_projet_investissement.routes.js       auth=False  perm=True   audit=False  institAuth=False 
+dossier_recouvrement.routes.js                auth=False  perm=True   audit=False  institAuth=False 
+dossier_scolaire.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+ecriture_comptable.routes.js                  auth=False  perm=True   audit=False  institAuth=False 
+enquete_statistique.routes.js                 auth=False  perm=True   audit=False  institAuth=False 
+etude_impact_environnemental.routes.js        auth=False  perm=True   audit=False  institAuth=False 
+exploitation_agricole.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+facture.routes.js                             auth=False  perm=True   audit=False  institAuth=False 
+federation_sportive.routes.js                 auth=False  perm=True   audit=False  institAuth=False 
+grade.routes.js                               auth=False  perm=True   audit=False  institAuth=False 
+immatriculation_vehicule.routes.js            auth=False  perm=True   audit=False  institAuth=False 
+incident_securitaire.routes.js                auth=False  perm=True   audit=False  institAuth=False 
+institutions_dashboard.routes.js              auth=False  perm=False  audit=False  institAuth=False 
+institutions_fiche.routes.js                  auth=False  perm=False  audit=False  institAuth=False 
+institutions_validation.routes.js             auth=False  perm=True   audit=False  institAuth=False 
+licence_commerciale.routes.js                 auth=False  perm=True   audit=False  institAuth=False 
+licence_telecom.routes.js                     auth=False  perm=True   audit=False  institAuth=False 
+ligne_budgetaire.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+me_poste.routes.js                            auth=False  perm=False  audit=False  institAuth=False 
+ordre_paiement.routes.js                      auth=False  perm=True   audit=False  institAuth=False 
+permis_minier.routes.js                       auth=False  perm=True   audit=False  institAuth=False 
+plan_developpement.routes.js                  auth=False  perm=True   audit=False  institAuth=False 
+poste_hierarchie.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+projet_recherche.routes.js                    auth=False  perm=True   audit=False  institAuth=False 
+public_institutions.routes.js                 auth=False  perm=False  audit=False  institAuth=False 
+raccordement_energetique.routes.js            auth=False  perm=True   audit=False  institAuth=False 
+reclamation_citoyenne.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+relations.routes.js                           auth=False  perm=True   audit=False  institAuth=False 
+signalement_sanitaire.routes.js               auth=False  perm=True   audit=False  institAuth=False 
+
+=== 4. Existe-t-il un générateur (script qui produit routes-generated/) ? ===
+regenerate_all.js
+archives\scripts-diagnostic-2026-08-03\diag_routes_generated_list.txt
+archives\scripts-diagnostic-2026-08-03\rapport_generator.txt
+node_modules\iconv-lite\encodings\sbcs-data-generated.js
+
+=== 5. RNSO et RNSJ — recherche élargie (routes-generated inclus) ===
+me_poste.routes.js
+poste_hierarchie.routes.js

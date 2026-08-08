@@ -1,0 +1,17 @@
+﻿                            Table ½ public.meta_workflow_transition ╗
+     Colonne      |           Type           | Collationnement | NULL-able |         Par dÚfaut          
+------------------+--------------------------+-----------------+-----------+----------------------------
+ transition_id    | uuid                     |                 | not null  | uuid_generate_v4()
+ entite           | character varying(100)   |                 | not null  | 
+ from_statut      | character varying(50)    |                 | not null  | 
+ to_statut        | character varying(50)    |                 | not null  | 
+ role_code_requis | character varying(30)    |                 |           | 
+ condition_json   | jsonb                    |                 |           | 
+ statut           | character varying(20)    |                 | not null  | 'ACTIF'::character varying
+ created_at       | timestamp with time zone |                 | not null  | now()
+Index :
+    "meta_workflow_transition_pkey" PRIMARY KEY, btree (transition_id)
+    "meta_workflow_transition_entite_from_statut_to_statut_role__key" UNIQUE CONSTRAINT, btree (entite, from_statut, to_statut, role_code_requis)
+Contraintes de clÚs ÚtrangÞres :
+    "meta_workflow_transition_role_code_requis_fkey" FOREIGN KEY (role_code_requis) REFERENCES role(code)
+

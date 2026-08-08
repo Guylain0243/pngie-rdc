@@ -1,0 +1,114 @@
+-- pouvoir
+CREATE TABLE pouvoir (
+  pouvoir_id INTEGER PRIMARY KEY, code TEXT UNIQUE NOT NULL, libelle TEXT NOT NULL
+)
+
+-- person
+CREATE TABLE person (
+  person_id TEXT PRIMARY KEY,
+  matricule TEXT UNIQUE,
+  nom TEXT NOT NULL,
+  prenom TEXT,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+)
+
+-- role
+CREATE TABLE role (
+  role_id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, nom TEXT NOT NULL, categorie TEXT
+)
+
+-- permission
+CREATE TABLE permission (
+  permission_id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, nom TEXT NOT NULL
+)
+
+-- role_permission
+CREATE TABLE role_permission (
+  role_id TEXT REFERENCES role(role_id),
+  permission_id TEXT REFERENCES permission(permission_id),
+  PRIMARY KEY (role_id, permission_id)
+)
+
+-- person_role
+CREATE TABLE person_role (
+  person_role_id TEXT PRIMARY KEY,
+  person_id TEXT REFERENCES person(person_id),
+  role_id TEXT REFERENCES role(role_id),
+  scope_org_id TEXT REFERENCES organization(organization_id)
+)
+
+-- document_type
+CREATE TABLE document_type (
+  document_type_id TEXT PRIMARY KEY,
+  nom TEXT NOT NULL,
+  duree_conservation_ans INTEGER,
+  regle_archivage TEXT
+)
+
+-- document
+CREATE TABLE document (
+  document_id TEXT PRIMARY KEY,
+  document_type_id TEXT REFERENCES document_type(document_type_id),
+  organization_id TEXT REFERENCES organization(organization_id),
+  titre TEXT NOT NULL,
+  reference TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+)
+
+-- referentiel_national
+CREATE TABLE referentiel_national (
+      code TEXT PRIMARY KEY,
+      nom TEXT NOT NULL,
+      description TEXT,
+      date_creation TEXT DEFAULT CURRENT_TIMESTAMP
+    )
+
+-- referentiel_national_section
+CREATE TABLE referentiel_national_section (
+      section_id TEXT PRIMARY KEY,
+      referentiel_code TEXT NOT NULL,
+      numero INTEGER,
+      code_officiel TEXT,
+      titre TEXT NOT NULL,
+      contenu_texte TEXT,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (referentiel_code) REFERENCES referentiel_national(code)
+    )
+
+-- referentiel_national_item
+CREATE TABLE referentiel_national_item (
+      item_id TEXT PRIMARY KEY,
+      section_id TEXT NOT NULL,
+      numero INTEGER,
+      libelle TEXT NOT NULL,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (section_id) REFERENCES referentiel_national_section(section_id)
+    )
+
+-- meta_workflow_transition
+CREATE TABLE meta_workflow_transition (
+            transition_id TEXT PRIMARY KEY,
+            entity TEXT NOT NULL,
+            from_statut TEXT NOT NULL,
+            to_statut TEXT NOT NULL,
+            role_code_requis TEXT,
+            statut TEXT DEFAULT 'ACTIF',
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+
+-- meta_rule
+CREATE TABLE meta_rule (
+            rule_id TEXT PRIMARY KEY,
+            entity TEXT NOT NULL,
+            nom TEXT NOT NULL,
+            description TEXT,
+            evenement TEXT NOT NULL,
+            condition_json TEXT NOT NULL,
+            message_erreur TEXT NOT NULL,
+            statut TEXT DEFAULT 'ACTIF',
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        )
+

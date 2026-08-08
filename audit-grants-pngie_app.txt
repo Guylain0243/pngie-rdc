@@ -1,0 +1,160 @@
+ table_schema |                 table_name                 |                          privileges                           
+--------------+--------------------------------------------+---------------------------------------------------------------
+ public       | accord_cooperation                         | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | affectation                                | DELETE, INSERT, SELECT, UPDATE
+ public       | agent                                      | DELETE, INSERT, SELECT, UPDATE
+ public       | agent_ia                                   | DELETE, INSERT, SELECT, UPDATE
+ public       | agent_ia_interaction                       | DELETE, INSERT, SELECT, UPDATE
+ public       | appel_offres                               | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | audit_log                                  | DELETE, INSERT, SELECT, UPDATE
+ public       | autorisation_industrielle                  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | bien_culturel_protege                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | bien_patrimonial                           | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | certificat_pki                             | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | competence                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | corps                                      | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_action                            | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_gouvernementale                   | DELETE, INSERT, SELECT, UPDATE
+ public       | decision_institutionnelle                  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | declaration_douaniere                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | declaration_fiscale                        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | delegation_perimetre                       | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | delegation_pouvoir                         | DELETE, INSERT, REFERENCES, SELECT, UPDATE
+ public       | document                                   | DELETE, INSERT, SELECT, UPDATE
+ public       | document_version                           | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_administratif                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_agent_rh                           | DELETE, INSERT, SELECT, UPDATE
+ public       | dossier_entreprise                         | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_judiciaire                         | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_logistique_defense                 | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_projet_investissement              | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_recouvrement                       | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | dossier_scolaire                           | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ecriture_comptable                         | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | enquete_statistique                        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | entity_event                               | DELETE, INSERT, SELECT, UPDATE
+ public       | entity_relation                            | DELETE, INSERT, SELECT, UPDATE
+ public       | entity_scope                               | DELETE, INSERT, SELECT, UPDATE
+ public       | etude_impact_environnemental               | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | execution_rapport                          | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | exploitation_agricole                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | facture                                    | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | federation_sportive                        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | fiche_tome                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | fonction                                   | DELETE, INSERT, SELECT, UPDATE
+ public       | grade                                      | DELETE, INSERT, SELECT, UPDATE
+ public       | immatriculation_vehicule                   | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | incident_securitaire                       | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | index_recherche_global                     | DELETE, INSERT, SELECT, UPDATE
+ public       | indicateur                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | institution                                | DELETE, INSERT, REFERENCES, SELECT, UPDATE
+ public       | institution_relation                       | DELETE, INSERT, SELECT, UPDATE
+ public       | instruction                                | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | instruction_historique                     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | journal_audit                              | INSERT, SELECT
+ public       | journal_audit_default                      | DELETE, INSERT, SELECT, UPDATE
+ public       | journal_connexion                          | DELETE, INSERT, SELECT, UPDATE
+ public       | licence_commerciale                        | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | licence_telecom                            | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ligne_budgetaire                           | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | manuel_architecture                        | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_attribute                             | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | meta_entity                                | DELETE, INSERT, REFERENCES, SELECT, UPDATE
+ public       | meta_notification_rule                     | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_permission                            | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_rule                                  | DELETE, INSERT, SELECT, UPDATE
+ public       | meta_workflow_transition                   | DELETE, INSERT, SELECT, UPDATE
+ public       | multi_institution_participant              | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_formulaire                          | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow                            | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow_etape                      | DELETE, INSERT, SELECT, UPDATE
+ public       | nocode_workflow_instance                   | DELETE, INSERT, SELECT, UPDATE
+ public       | notification                               | DELETE, INSERT, SELECT, UPDATE
+ public       | ordre_paiement                             | DELETE, INSERT, SELECT, UPDATE
+ public       | organization                               | DELETE, INSERT, SELECT, UPDATE
+ public       | organization_type                          | DELETE, INSERT, SELECT, UPDATE
+ public       | permis_minier                              | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | permission                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | permission_compat                          | DELETE, INSERT, SELECT, UPDATE
+ public       | person                                     | DELETE, INSERT, SELECT, UPDATE
+ public       | person_role                                | DELETE, INSERT, SELECT, UPDATE
+ public       | personne                                   | DELETE, INSERT, REFERENCES, SELECT, UPDATE
+ public       | personne_role                              | DELETE, INSERT, SELECT, UPDATE
+ public       | plan_developpement                         | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | poste                                      | DELETE, INSERT, SELECT, UPDATE
+ public       | poste_role_metier                          | DELETE, INSERT, SELECT, UPDATE
+ public       | pouvoir                                    | DELETE, INSERT, SELECT, UPDATE
+ public       | processus                                  | DELETE, INSERT, SELECT, UPDATE
+ public       | processus_etape                            | DELETE, INSERT, SELECT, UPDATE
+ public       | projet_recherche                           | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | raccordement_energetique                   | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | reclamation_citoyenne                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_auditorat_militaire                    | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_auditorat_militaire_historique         | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_casier_historique                      | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_casier_judiciaire                      | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_condamnation                           | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_cour_appel                             | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_cour_appel_historique                  | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_execution_decision                     | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_execution_historique                   | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_gouvernorat                            | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_greffe                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_greffe_historique                      | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_juridiction_militaire                  | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_juridiction_militaire_historique       | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_parquet                                | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_parquet_historique                     | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tgi_historique                         | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_commerce                      | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_commerce_historique           | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_enfants                       | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_enfants_historique            | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_grande_instance               | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_militaire_garnison            | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_tribunal_militaire_garnison_historique | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | ref_tribunal_paix                          | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_paix_historique               | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_travail                       | DELETE, INSERT, SELECT, UPDATE
+ public       | ref_tribunal_travail_historique            | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_arborescence                   | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | referentiel_national                       | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_national_item                  | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_national_section               | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_niveau_national                | DELETE, INSERT, SELECT, UPDATE
+ public       | referentiel_poste_type                     | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | relation_interinstitutionnelle             | DELETE, INSERT, SELECT, UPDATE
+ public       | relation_type                              | DELETE, INSERT, SELECT, UPDATE
+ public       | relations                                  | DELETE, INSERT, SELECT, UPDATE
+ public       | reorganisation_organisationnelle           | DELETE, INSERT, SELECT, UPDATE
+ public       | rni_lien_hierarchique                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | rnsj_modification                          | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_relation                              | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_texte                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | rnsj_texte_historique                      | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_affectation                           | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_fonction                              | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_hierarchie                            | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_historique                            | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_modele                                | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_modele_historique                     | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_modele_poste                          | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_modele_unite                          | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_poste                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_regle                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_structure                             | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_type_poste                            | DELETE, INSERT, SELECT, UPDATE
+ public       | rnso_type_structure                        | DELETE, INSERT, SELECT, UPDATE
+ public       | role                                       | DELETE, INSERT, SELECT, UPDATE
+ public       | role_metier                                | DELETE, INSERT, SELECT, UPDATE
+ public       | role_permission                            | DELETE, INSERT, SELECT, UPDATE
+ public       | service_public                             | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | session_utilisateur                        | DELETE, INSERT, SELECT, UPDATE
+ public       | signalement_sanitaire                      | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+ public       | signature_electronique                     | DELETE, INSERT, SELECT, UPDATE
+ public       | type_document                              | DELETE, INSERT, SELECT, UPDATE
+ public       | unite_organisationnelle                    | DELETE, INSERT, SELECT, UPDATE
+ public       | validation                                 | DELETE, INSERT, SELECT, UPDATE
+ public       | verification                               | DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE
+(156 lignes)
+

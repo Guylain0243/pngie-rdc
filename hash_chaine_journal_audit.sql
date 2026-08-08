@@ -1,0 +1,8 @@
+﻿CREATE EXTENSION IF NOT EXISTS pgcrypto;
+ALTER TABLE journal_audit ADD COLUMN IF NOT EXISTS hash_prec CHAR(64), ADD COLUMN IF NOT EXISTS hash_actuel CHAR(64);
+DO $$ DECLARE rec RECORD; v_prev TEXT := 'GENESIS_PNGIE_RDC_JOURNAL_AUDIT'; v_data TEXT; v_hash TEXT; BEGIN FOR rec IN SELECT audit_id, created_at, personne_id, action, entite FROM journal_audit ORDER BY created_at ASC, audit_id ASC LOOP v_data := rec.audit_id::TEXT || rec.created_at::TEXT || COALESCE(rec.personne_id::TEXT,'') || COALESCE(rec.action,'') || COALESCE(rec.entite,'') || v_prev; v_hash := encode(digest(v_data,'sha256'),'hex'); UPDATE journal_audit SET hash_prec = v_prev, hash_actuel = v_hash WHERE audit_id = rec.audit_id; v_prev := v_hash; END LOOP; END $$;
+CREATE OR REPLACE FUNCTION fn_hash_chaine_journal_audit() RETURNS TRIGGER AS $$ DECLARE v_prev TEXT; v_data TEXT; BEGIN SELECT hash_actuel INTO v_prev FROM journal_audit ORDER BY created_at DESC, audit_id DESC LIMIT 1; v_prev := COALESCE(v_prev, 'GENESIS_PNGIE_RDC_JOURNAL_AUDIT'); v_data := NEW.audit_id::TEXT || NEW.created_at::TEXT || COALESCE(NEW.personne_id::TEXT,'') || COALESCE(NEW.action,'') || COALESCE(NEW.entite,'') || v_prev; NEW.hash_prec := v_prev; NEW.hash_actuel := encode(digest(v_data,'sha256'),'hex'); RETURN NEW; END; $$ LANGUAGE plpgsql SECURITY DEFINER;
+DROP TRIGGER IF EXISTS trg_hash_chaine_journal_audit ON journal_audit;
+CREATE TRIGGER trg_hash_chaine_journal_audit BEFORE INSERT ON journal_audit FOR EACH ROW EXECUTE FUNCTION fn_hash_chaine_journal_audit();
+REVOKE UPDATE, DELETE, TRUNCATE ON journal_audit FROM pngie_app;
+REVOKE UPDATE, DELETE, TRUNCATE ON journal_audit FROM PUBLIC;

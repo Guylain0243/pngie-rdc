@@ -1,0 +1,56 @@
+﻿// ════════════════════════════════════════════════════════════════
+// PNGIE-RDC — Middleware d'authentification unique
+// Patron "PNGIE Secure API v1"
+//
+// Extraction FIDÈLE du requireAuth historique de server.js (lignes
+// 129-151). AUCUN changement de comportement métier : même
+// vérification JWT, même résolution institutionId via
+// personne_role.scope_org_id, même propagation requestContext.run().
+// Seuls ajouts : réponses normalisées via sendError() (lib/errors.js)
+// et audit des échecs d'authentification (AUTHENTICATION_FAILED).
+//
+// Remplace toutes les copies locales de requireAuth (server.js et
+// rni-commandement-routes.js) : une seule implémentation partagée.
+// ════════════════════════════════════════════════════════════════
+const jwt = require('jsonwebtoken');
+const db = require('../db');
+const requestContext = require('../request-context');
+const { sendError } = require('../lib/errors');
+const audit = require('../lib/audit');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'demo-secret-change-me-in-production';
+
+async function requireAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+
+  if (!token) {
+    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token manquant' });
+    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token manquant.');
+  }
+
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+  } catch {
+    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token invalide ou expiré' });
+    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token invalide ou expiré.');
+  }
+
+  // Résolution de l'institution de portée (scope_org_id), identique à l'original.
+  let institutionId = null;
+  try {
+    if (req.user.roles && req.user.roles.length > 0) {
+      const scope = await db.get(
+        'SELECT scope_org_id FROM personne_role WHERE personne_id = ? AND scope_org_id IS NOT NULL LIMIT 1',
+        [req.user.sub]
+      );
+      institutionId = scope ? scope.scope_org_id : null;
+    }
+  } catch (e) {
+    institutionId = null;
+  }
+
+  requestContext.run({ institutionId }, next);
+}
+
+module.exports = requireAuth;

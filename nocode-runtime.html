@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>PNGIE-RDC — Moteur No-Code</title>
+<style>
+  body{font-family:'Segoe UI',sans-serif;background:#F2F2F0;margin:0;padding:24px;color:#1A1A2E}
+  .wrap{max-width:640px;margin:0 auto}
+  h1{font-size:18px;color:#052C5C}
+  .desc{color:#4A5568;font-size:13px;margin-bottom:20px}
+  .field{margin-bottom:14px}
+  label{display:block;font-size:12px;font-weight:600;margin-bottom:5px;color:#052C5C}
+  input,select,textarea{width:100%;padding:9px 11px;border:1px solid #ddd;border-radius:8px;font-size:13px;box-sizing:border-box}
+  button{background:#052C5C;color:#F7D618;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-size:13px}
+  button:hover{opacity:.9}
+  #status{margin-top:14px;font-size:12.5px}
+  .ok{color:#1A6B3C}.err{color:#CE1021}
+  select[multiple]{height:80px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="app">Chargement de l'application...</div>
+</div>
+<script>
+// ════════════════════════════════════════════════
+// MOTEUR NO-CODE PNGIE-RDC
+// Lit une définition JSON (stockée dans nocode_app.definition_json)
+// et génère un formulaire RÉELLEMENT fonctionnel : validation,
+// types de champs, soumission vers l'API. Rien n'est codé en dur
+// par application — changer le JSON change le formulaire, sans
+// toucher à ce fichier. C'est ça, un moteur no-code.
+// ════════════════════════════════════════════════
+
+const API_BASE = (new URLSearchParams(location.search).get('api')) || 'http://localhost:4000';
+const APP_ID = new URLSearchParams(location.search).get('app');
+const TOKEN = new URLSearchParams(location.search).get('token');
+
+function fieldHTML(f) {
+  const req = f.required ? 'required' : '';
+  const common = `id="f_${f.id}" name="${f.id}" ${req}`;
+  if (f.type === 'select') {
+    return `<select ${common}><option value="">--</option>${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+  }
+  if (f.type === 'textarea') return `<textarea ${common} rows="3"></textarea>`;
+  if (f.type === 'number') return `<input type="number" ${common}>`;
+  if (f.type === 'date') return `<input type="date" ${common}>`;
+  return `<input type="text" ${common} placeholder="${f.placeholder||''}">`;
+}
+
+async function main() {
+  const appEl = document.getElementById('app');
+  if (!APP_ID) { appEl.innerHTML = '<p class="err">Paramètre ?app=ID manquant dans l\u2019URL.</p>'; return; }
+
+  let def;
+  try {
+    const res = await fetch(`${API_BASE}/api/nocode/apps/${APP_ID}`, {
+      headers: TOKEN ? { Authorization: `Bearer ${TOKEN}` } : {},
+    });
+    if (!res.ok) throw new Error((await res.json()).error || res.statusText);
+    def = await res.json();
+  } catch (e) {
+    appEl.innerHTML = `<p class="err">Impossible de charger l'application : ${e.message}</p>`;
+    return;
+  }
+
+  const schema = JSON.parse(def.definition_json);
+  appEl.innerHTML = `
+    <h1>${schema.titre}</h1>
+    <div class="desc">${schema.description||''}</div>
+    <form id="dynForm">
+      ${schema.champs.map(f => `<div class="field"><label>${f.label}${f.required?' *':''}</label>${fieldHTML(f)}</div>`).join('')}
+      <button type="submit">${schema.bouton || 'Envoyer'}</button>
+      <div id="status"></div>
+    </form>`;
+
+  document.getElementById('dynForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = {};
+    schema.champs.forEach(f => { data[f.id] = document.getElementById('f_'+f.id).value; });
+    const statusEl = document.getElementById('status');
+    statusEl.textContent = 'Envoi...'; statusEl.className='';
+    try {
+      const res = await fetch(`${API_BASE}/api/nocode/apps/${APP_ID}/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...(TOKEN?{Authorization:`Bearer ${TOKEN}`}:{}) },
+        body: JSON.stringify({ data }),
+      });
+      const out = await res.json();
+      if (!res.ok) throw new Error(out.error || 'Erreur');
+      statusEl.textContent = '✓ Soumis avec succès (ID : ' + out.submission_id.slice(0,8) + '...)';
+      statusEl.className = 'ok';
+      e.target.reset();
+    } catch (err) {
+      statusEl.textContent = '✗ ' + err.message;
+      statusEl.className = 'err';
+    }
+  });
+}
+main();
+</script>
+</body>
+</html>

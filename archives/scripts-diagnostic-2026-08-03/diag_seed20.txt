@@ -1,0 +1,60 @@
+﻿// ==============================================================
+// TEST DE GENERALISATION - Batch 2 : cycles de vie (workflow)
+// Usage : node 20-seed-workflow-batch2.js
+// A executer depuis C:\pngie-rdc\pngie-backend, APRES 19-seed-meta-batch2.js
+// ==============================================================
+
+const crypto = require('crypto');
+const db = require('./src/db');
+
+async function ajouterTransition(entity, from, to) {
+    const existante = await db.get(
+        'SELECT transition_id FROM meta_workflow_transition WHERE entity = ? AND from_statut = ? AND to_statut = ?',
+        [entity, from, to]
+    );
+    if (existante) {
+        console.log(`(i) Transition ${entity} ${from}->${to} existe deja - ignoree`);
+        return;
+    }
+    await db.run(
+        `INSERT INTO meta_workflow_transition (transition_id, entity, from_statut, to_statut, role_code_requis)
+         VALUES (?, ?, ?, ?, NULL)`,
+        [crypto.randomUUID(), entity, from, to]
+    );
+    console.log(`+-- Transition autorisee : ${entity} ${from} -> ${to}`);
+}
+
+async function main() {
+    // Permis Minier : BROUILLON -> SOUMIS -> OCTROYE / REJETE
+    await ajouterTransition('permis_minier', 'BROUILLON', 'SOUMIS');
+    await ajouterTransition('permis_minier', 'SOUMIS', 'OCTROYE');
+    await ajouterTransition('permis_minier', 'SOUMIS', 'REJETE');
+
+    // Signalement Sanitaire : SIGNALE -> EN_TRAITEMENT -> CLOTURE
+    await ajouterTransition('signalement_sanitaire', 'SIGNALE', 'EN_TRAITEMENT');
+    await ajouterTransition('signalement_sanitaire', 'EN_TRAITEMENT', 'CLOTURE');
+
+    // Dossier Judiciaire : OUVERT -> INSTRUCTION -> JUGE
+    await ajouterTransition('dossier_judiciaire', 'OUVERT', 'INSTRUCTION');
+    await ajouterTransition('dossier_judiciaire', 'INSTRUCTION', 'JUGE');
+
+    // Certificat PKI : DEMANDE -> VALIDEE -> EMISE, ou DEMANDE -> REJETEE
+    await ajouterTransition('certificat_pki', 'DEMANDE', 'VALIDEE');
+    await ajouterTransition('certificat_pki', 'DEMANDE', 'REJETEE');
+    await ajouterTransition('certificat_pki', 'VALIDEE', 'EMISE');
+
+    // Dossier Recouvrement : OUVERT -> EN_COURS -> RECOUVRE / ANNULE
+    await ajouterTransition('dossier_recouvrement', 'OUVERT', 'EN_COURS');
+    await ajouterTransition('dossier_recouvrement', 'EN_COURS', 'RECOUVRE');
+    await ajouterTransition('dossier_recouvrement', 'EN_COURS', 'ANNULE');
+
+    console.log('\nOK - Cycles de vie des 5 entites enregistres.');
+    console.log('Prochaine etape : node 21-seed-permissions-batch2.js');
+}
+
+main()
+    .then(() => { process.exitCode = 0; })
+    .catch(err => {
+        console.error('ERREUR :', err.message);
+        process.exitCode = 1;
+    });

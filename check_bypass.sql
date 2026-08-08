@@ -1,0 +1,1 @@
+SELECT rolname, rolconfig FROM pg_roles WHERE rolname = 'pngie_app';

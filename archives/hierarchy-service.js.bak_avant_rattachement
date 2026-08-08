@@ -1,0 +1,22 @@
+﻿// src/security/hierarchy-service.js
+// Calcule les institutions visibles depuis une institution donnee,
+// en remontant recursivement les relations TUTELLE actives.
+const db = require("../db");
+
+async function getInstitutionsDescendantes(institutionId) {
+  if (!institutionId) return [];
+  const rows = await db.all(`
+    WITH RECURSIVE descendants AS (
+      SELECT institution_id FROM institution WHERE institution_id = ?
+      UNION
+      SELECT ir.institution_cible_id
+      FROM institution_relation ir
+      JOIN descendants d ON d.institution_id = ir.institution_source_id
+      WHERE ir.type_relation = 'TUTELLE' AND ir.actif = TRUE
+    )
+    SELECT institution_id FROM descendants
+  `, [institutionId]);
+  return rows.map(r => r.institution_id);
+}
+
+module.exports = { getInstitutionsDescendantes };

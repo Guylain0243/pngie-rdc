@@ -1,0 +1,157 @@
+﻿
+src\server.js:6:const express = require('express');
+src\server.js:7:const cors = require('cors');
+src\server.js:8:const bcrypt = require('bcrypt');
+src\server.js:9:const jwt = require('jsonwebtoken');
+src\server.js:10:const crypto = require('crypto');
+src\server.js:11:const audit = require('./lib/audit');
+src\server.js:12:const requestContext = require('./request-context');
+src\server.js:13:const db = require('./db');
+src\server.js:14:const { checkLimit } = require('./rateLimiter');
+src\server.js:15:const { askAgent } = require('./aiAgent');
+src\server.js:18:app.use(cors());
+src\server.js:19:app.use(express.json());
+src\server.js:28:  app.use((req, res, next) => {
+src\server.js:47:app.use(express.static(require('path').join(__dirname, '..', 'public')));
+src\server.js:72:app.use('/api', require('../routes-generated/public_institutions.routes'));
+src\server.js:130:const requireAuth = require('./middleware/requireAuth');
+src\server.js:133:function requirePermission(permCode) {
+src\server.js:144:app.get('/api/me', requireAuth, wrap(async (req, res) => {
+src\server.js:156:app.get('/api/ministeres', requireAuth, requirePermission('page:ministeres:read'), wrap(async (req, res) => {
+src\server.js:165:app.get('/api/provinces', requireAuth, requirePermission('page:provinces:read'), wrap(async (req, res) => {
+src\server.js:172:app.get('/api/organigramme', requireAuth, wrap(async (req, res) => {
+src\server.js:180:app.get('/api/audit', requireAuth, wrap(async (req, res) => {
+src\server.js:186:app.get('/api/gouvernance/cycle', requireAuth, requirePermission('page:institutions:read'), wrap(async (req, res) => {
+src\server.js:212:app.get('/api/integrations', requireAuth, wrap(async (req, res) => {
+src\server.js:223:app.get('/api/db-summary', requireAuth, wrap(async (req, res) => {
+src\server.js:264:app.get('/api/agents', requireAuth, wrap(async (req, res) => {
+src\server.js:271:app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
+src\server.js:302:app.get('/api/nocode/apps', requireAuth, wrap(async (req, res) => {
+src\server.js:307:app.get('/api/nocode/apps/:id', requireAuth, wrap(async (req, res) => {
+src\server.js:315:app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
+src\server.js:323:    if (champ.required && !data[champ.id]) {
+src\server.js:337:app.use((err, req, res, next) => {
+src\server.js:344:if (require.main === module) {
+src\server.js:348:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:353:}, require('../routes-generated/facture.routes')); 
+src\server.js:355:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:360:}, require('../routes-generated/permis_minier.routes'));
+src\server.js:362:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:367:}, require('../routes-generated/signalement_sanitaire.routes'));
+src\server.js:369:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:374:}, require('../routes-generated/dossier_judiciaire.routes'));
+src\server.js:376:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:381:}, require('../routes-generated/certificat_pki.routes'));
+src\server.js:383:app.use('/api', requireAuth, (req, res, next) => {
+src\server.js:388:}, require('../routes-generated/dossier_recouvrement.routes'));
+src\server.js:391:app.use('/api', requireAuth, require('../routes-generated/arborescence.routes'));
+src\server.js:394:const decisionInstitutionnelleRouter = require('../routes-generated/decision_institutionnelle.routes');
+src\server.js:395:const dossierAdministratifRouter = require('../routes-generated/dossier_administratif.routes');
+src\server.js:396:const reclamationCitoyenneRouter = require('../routes-generated/reclamation_citoyenne.routes');
+src\server.js:397:const dossierEntrepriseRouter = require('../routes-generated/dossier_entreprise.routes');
+src\server.js:398:const dossierAgentRhRouter = require('../routes-generated/dossier_agent_rh.routes');
+src\server.js:399:const ligneBudgetaireRouter = require('../routes-generated/ligne_budgetaire.routes');
+src\server.js:400:const ordrePaiementRouter = require('../routes-generated/ordre_paiement.routes');
+src\server.js:401:const ecritureComptableRouter = require('../routes-generated/ecriture_comptable.routes');
+src\server.js:402:const declarationFiscaleRouter = require('../routes-generated/declaration_fiscale.routes');
+src\server.js:403:const declarationDouaniereRouter = require('../routes-generated/declaration_douaniere.routes');
+src\server.js:404:const bienPatrimonialRouter = require('../routes-generated/bien_patrimonial.routes');
+src\server.js:405:const appelOffresRouter = require('../routes-generated/appel_offres.routes');
+src\server.js:406:const dossierProjetInvestissementRouter = require('../routes-generated/dossier_projet_investissement.routes');
+src\server.js:407:const incidentSecuritaireRouter = require('../routes-generated/incident_securitaire.routes');
+src\server.js:408:const dossierLogistiqueDefenseRouter = require('../routes-generated/dossier_logistique_defense.routes');
+src\server.js:409:const dossierScolaireRouter = require('../routes-generated/dossier_scolaire.routes');
+src\server.js:410:const exploitationAgricoleRouter = require('../routes-generated/exploitation_agricole.routes');
+src\server.js:411:const raccordementEnergetiqueRouter = require('../routes-generated/raccordement_energetique.routes');
+src\server.js:412:const licenceCommercialeRouter = require('../routes-generated/licence_commerciale.routes');
+src\server.js:413:const autorisationIndustrielleRouter = require('../routes-generated/autorisation_industrielle.routes');
+src\server.js:414:const immatriculationVehiculeRouter = require('../routes-generated/immatriculation_vehicule.routes');
+src\server.js:415:const licenceTelecomRouter = require('../routes-generated/licence_telecom.routes');
+src\server.js:416:const etudeImpactEnvironnementalRouter = require('../routes-generated/etude_impact_environnemental.routes');
+src\server.js:417:const bienCulturelProtegeRouter = require('../routes-generated/bien_culturel_protege.routes');
+src\server.js:418:const federationSportiveRouter = require('../routes-generated/federation_sportive.routes');
+src\server.js:419:const projetRechercheRouter = require('../routes-generated/projet_recherche.routes');
+src\server.js:420:const accordCooperationRouter = require('../routes-generated/accord_cooperation.routes');
+src\server.js:421:const planDeveloppementRouter = require('../routes-generated/plan_developpement.routes');
+src\server.js:422:const enqueteStatistiqueRouter = require('../routes-generated/enquete_statistique.routes');
+src\server.js:423:const relationsRouter = require('../routes-generated/relations.routes');
+src\server.js:424:const posteHierarchieRouter = require('../routes-generated/poste_hierarchie.routes');
+src\server.js:425:const institutionsDashboardRouter = require('../routes-generated/institutions_dashboard.routes');
+src\server.js:426:const mePosteRouter = require('../routes-generated/me_poste.routes');
+src\server.js:427:const institutionsFicheRouter = require('../routes-generated/institutions_fiche.routes');
+src\server.js:428:const institutionsValidationRouter = require('../routes-generated/institutions_validation.routes');
+src\server.js:429:const annuaireRouter = require('../routes-generated/annuaire.routes');
+src\server.js:431:app.use('/api', requireAuth, institutionsValidationRouter);
+src\server.js:432:app.use('/api', requireAuth, annuaireRouter);
+src\server.js:434:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, decisionInstitutionnelleRouter);
+src\server.js:435:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierAdministratifRouter);
+src\server.js:436:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, reclamationCitoyenneRouter);
+src\server.js:437:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierEntrepriseRouter);
+src\server.js:438:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierAgentRhRouter);
+src\server.js:439:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, ligneBudgetaireRouter);
+src\server.js:440:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, ordrePaiementRouter);
+src\server.js:441:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, ecritureComptableRouter);
+src\server.js:442:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, declarationFiscaleRouter);
+src\server.js:443:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, declarationDouaniereRouter);
+src\server.js:444:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, bienPatrimonialRouter);
+src\server.js:445:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, appelOffresRouter);
+src\server.js:446:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierProjetInvestissementRouter);
+src\server.js:447:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, incidentSecuritaireRouter);
+src\server.js:448:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierLogistiqueDefenseRouter);
+src\server.js:449:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, dossierScolaireRouter);
+src\server.js:450:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, exploitationAgricoleRouter);
+src\server.js:451:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, raccordementEnergetiqueRouter);
+src\server.js:452:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, licenceCommercialeRouter);
+src\server.js:453:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, autorisationIndustrielleRouter);
+src\server.js:454:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, immatriculationVehiculeRouter);
+src\server.js:455:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, licenceTelecomRouter);
+src\server.js:456:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, etudeImpactEnvironnementalRouter);
+src\server.js:457:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, bienCulturelProtegeRouter);
+src\server.js:458:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, federationSportiveRouter);
+src\server.js:459:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, projetRechercheRouter);
+src\server.js:460:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, accordCooperationRouter);
+src\server.js:461:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, planDeveloppementRouter);
+src\server.js:462:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, enqueteStatistiqueRouter);
+src\server.js:463:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, relationsRouter);
+src\server.js:464:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, posteHierarchieRouter);
+src\server.js:465:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, institutionsDashboardRouter);
+src\server.js:466:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, mePosteRouter);
+src\server.js:467:app.use('/api', requireAuth, (req, res, next) => { if (req.user && req.user.roles && req.user.roles.length > 0) { req.headers['x-role-code'] = 
+req.user.roles[0]; } next(); }, institutionsFicheRouter);
+src\server.js:468:const rniCommandementRouter = require('./rni-commandement-routes');
+src\server.js:469:app.use('/api', rniCommandementRouter);
+
+

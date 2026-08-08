@@ -1,0 +1,33 @@
+﻿              t               | count 
+------------------------------+-------
+ dossier_agent_rh             |     1
+ facture                      |     0
+ ecriture_comptable           |     0
+ dossier_administratif        |     0
+ dossier_judiciaire           |     0
+ dossier_entreprise           |     0
+ declaration_fiscale          |     0
+ declaration_douaniere        |     0
+ permis_minier                |     0
+ licence_commerciale          |     0
+ licence_telecom              |     0
+ autorisation_industrielle    |     0
+ certificat_pki               |     0
+ bien_patrimonial             |     0
+ bien_culturel_protege        |     0
+ dossier_scolaire             |     0
+ exploitation_agricole        |     0
+ raccordement_energetique     |     0
+ immatriculation_vehicule     |     0
+ incident_securitaire         |     0
+ dossier_logistique_defense   |     0
+ etude_impact_environnemental |     0
+ federation_sportive          |     0
+ enquete_statistique          |     0
+ appel_offres                 |     0
+ dossier_recouvrement         |     0
+ signalement_sanitaire        |     0
+ decision_institutionnelle    |     0
+ reclamation_citoyenne        |     0
+(29 lignes)
+

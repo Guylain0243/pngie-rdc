@@ -1,0 +1,19 @@
+﻿        ancien_code        |      nouveau_code       |                                                                                                   motif                                                                                                    
+---------------------------+-------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ CABINET_MINFIN_ARCHIVE    | CABINET_VAGUEB_ARCHIVE  | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ CABINET_VAGUEB_ARCHIVE    | CAB-MIN5                | Doublon vague B (29/07, plat, sans hierarchie) fusionne vers la structure de reference vague A (25/07). 0 affectation, 0 unite enfant.
+ CELL_PNGIE_MINFIN_ARCHIVE | CELL_PNGIE              | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_BUDGET_MINFIN_ARCHIVE   | D_BUDGET_VAGUEB_ARCHIVE | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_BUDGET_VAGUEB_ARCHIVE   | DIR-BUDGET              | Doublon vague B (29/07, plat, sans hierarchie) fusionne vers la structure de reference vague A (25/07). 0 affectation, 0 unite enfant.
+ D_COMPTA                  | D_COMPTA_VAGUEB_ARCHIVE | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_COMPTA_VAGUEB_ARCHIVE   | D_COMPTA                | Doublon vague B (29/07, oublie lors du premier passage). 0 affectation, 0 unite enfant. [Corrige le 02/08 : cible initiale erronee, pointait vers un autre doublon archive au lieu de la reference active]
+ D_DETTE_MINFIN_ARCHIVE    | D_DETTE                 | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_ETUDES_MINFIN_ARCHIVE   | D_ETUDES                | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_TRESOR                  | D_TRESOR_VAGUEB_ARCHIVE | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ D_TRESOR_VAGUEB_ARCHIVE   | D_TRESOR                | Doublon vague B (29/07, oublie lors du premier passage). 0 affectation, 0 unite enfant. [Corrige le 02/08 : cible initiale erronee, pointait vers un autre doublon archive au lieu de la reference active]
+ IG_MINFIN_ARCHIVE         | IG_VAGUEB_ARCHIVE       | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ IG_VAGUEB_ARCHIVE         | IG-MIN5                 | Doublon vague B (29/07, plat, sans hierarchie) fusionne vers la structure de reference vague A (25/07). 0 affectation, 0 unite enfant.
+ SG_MINFIN_ARCHIVE         | SG_VAGUEB_ARCHIVE       | Unite issue de MIN_FINANCES (doublon), fusionnee vers la structure de reference sous MIN_5. 0 affectation, 0 unite enfant.
+ SG_VAGUEB_ARCHIVE         | SG-MIN5                 | Doublon vague B (29/07, plat, sans hierarchie) fusionne vers la structure de reference vague A (25/07). 0 affectation, 0 unite enfant.
+(15 lignes)
+

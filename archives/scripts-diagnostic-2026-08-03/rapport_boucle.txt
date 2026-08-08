@@ -1,0 +1,109 @@
+﻿
+  government-builder.js:1:// ==============================================================
+  government-builder.js:2:// PILOTE Government Meta Platform - Etape 3 : LE GENERATEUR
+  government-builder.js:3://
+> government-builder.js:4:// Lit les tables meta_entity / meta_attribute et genere automatiquement :
+  government-builder.js:5://   1) le SQL CREATE TABLE de l'objet metier (execute directement)
+  government-builder.js:6://   2) un fichier de routeur Express avec CRUD complet (GET/POST/PUT/DELETE)
+  government-builder.js:7://      pret a etre branche sur le serveur (require + app.use)
+  government-builder.js:8://
+  government-builder.js:91:}
+  government-builder.js:92:
+  government-builder.js:93:// LISTE
+  government-builder.js:94:router.get('/${table}s', exigerPermission('${table}', 'READ'), async (req, res) => {
+> government-builder.js:95:    try {
+  government-builder.js:96:        const rows = await db.all(\`SELECT * FROM ${table} ORDER BY created_at DESC\`);
+  government-builder.js:97:        res.json(rows);
+> government-builder.js:98:    } catch (err) {
+  government-builder.js:99:        res.status(500).json({ error: err.message });
+  government-builder.js:100:    }
+  government-builder.js:101:});
+  government-builder.js:102:
+  government-builder.js:103:// DETAIL
+  government-builder.js:104:router.get('/${table}s/:id', exigerPermission('${table}', 'READ'), async (req, res) => {
+> government-builder.js:105:    try {
+  government-builder.js:106:        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+  government-builder.js:107:        if (!row) return res.status(404).json({ error: '${entity.nom} introuvable' });
+  government-builder.js:108:        res.json(row);
+> government-builder.js:109:    } catch (err) {
+  government-builder.js:110:        res.status(500).json({ error: err.message });
+  government-builder.js:111:    }
+  government-builder.js:112:});
+  government-builder.js:113:
+  government-builder.js:116:    const manquants = validerPayload(req.body);
+  government-builder.js:117:    if (manquants.length > 0) {
+  government-builder.js:118:        return res.status(400).json({ error: 'Champs obligatoires manquants', champs: manquants });
+  government-builder.js:119:    }
+> government-builder.js:120:    try {
+  government-builder.js:121:        const id = crypto.randomUUID();
+  government-builder.js:122:        const champsRenseignes = CHAMPS.filter(c => req.body[c] !== undefined);
+  government-builder.js:123:        const colonnes = ['${pk}', ...champsRenseignes];
+  government-builder.js:124:        const valeurs = [id, ...champsRenseignes.map(c => req.body[c])];
+  government-builder.js:129:        );
+  government-builder.js:130:        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [id]);
+  government-builder.js:131:        await enregistrerEvenement('${table}', id, 'CREATION', null, row);
+  government-builder.js:132:        res.status(201).json(row);
+> government-builder.js:133:    } catch (err) {
+  government-builder.js:134:        res.status(500).json({ error: err.message });
+  government-builder.js:135:    }
+  government-builder.js:136:});
+  government-builder.js:137:
+  government-builder.js:138:// MODIFICATION
+  government-builder.js:139:router.put('/${table}s/:id', exigerPermission('${table}', 'UPDATE'), async (req, res) => {
+> government-builder.js:140:    try {
+  government-builder.js:141:        const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+  government-builder.js:142:        if (!existant) return res.status(404).json({ error: '${entity.nom} introuvable' });
+  government-builder.js:143:
+  government-builder.js:144:        // Verification des regles metier (meta_rule) avant toute modification
+  government-builder.js:168:        const row = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+  government-builder.js:169:        await enregistrerEvenement('${table}', req.params.id, 'MODIFICATION', existant, row);
+  government-builder.js:170:        await declencherNotifications('${table}', req.params.id, 'MODIFICATION', row);
+  government-builder.js:171:        res.json(row);
+> government-builder.js:172:    } catch (err) {
+  government-builder.js:173:        res.status(500).json({ error: err.message });
+  government-builder.js:174:    }
+  government-builder.js:175:});
+  government-builder.js:176:
+  government-builder.js:177:// SUPPRESSION
+  government-builder.js:178:router.delete('/${table}s/:id', exigerPermission('${table}', 'DELETE'), async (req, res) => {
+> government-builder.js:179:    try {
+  government-builder.js:180:        const existant = await db.get(\`SELECT * FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+  government-builder.js:181:        if (!existant) return res.status(404).json({ error: '${entity.nom} introuvable' });
+  government-builder.js:182:        await db.run(\`DELETE FROM ${table} WHERE ${pk} = ?\`, [req.params.id]);
+  government-builder.js:183:        await enregistrerEvenement('${table}', req.params.id, 'SUPPRESSION', existant, null);
+  government-builder.js:184:        res.status(204).send();
+> government-builder.js:185:    } catch (err) {
+  government-builder.js:186:        res.status(500).json({ error: err.message });
+  government-builder.js:187:    }
+  government-builder.js:188:});
+  government-builder.js:189:
+  government-builder.js:190:// HISTORIQUE (genere automatiquement par le moteur d'evenements)
+  government-builder.js:191:router.get('/${table}s/:id/historique', exigerPermission('${table}', 'READ'), async (req, res) => {
+> government-builder.js:192:    try {
+  government-builder.js:193:        const evenements = await historique('${table}', req.params.id);
+  government-builder.js:194:        res.json(evenements);
+> government-builder.js:195:    } catch (err) {
+  government-builder.js:196:        res.status(500).json({ error: err.message });
+  government-builder.js:197:    }
+  government-builder.js:198:});
+  government-builder.js:199:
+  government-builder.js:220:        return;
+  government-builder.js:221:    }
+  government-builder.js:222:
+  government-builder.js:223:    const attributs = await db.all(
+> government-builder.js:224:        'SELECT * FROM meta_attribute WHERE entity_id = ? ORDER BY ordre',
+  government-builder.js:225:        [entity.entity_id]
+  government-builder.js:226:    );
+  government-builder.js:227:
+  government-builder.js:228:    if (attributs.length === 0) {
+  government-builder.js:257:}
+  government-builder.js:258:
+  government-builder.js:259:main()
+  government-builder.js:260:    .then(() => { process.exitCode = process.exitCode ?? 0; })
+> government-builder.js:261:    .catch(err => {
+  government-builder.js:262:        console.error('ERREUR :', err.message);
+  government-builder.js:263:        process.exitCode = 1;
+  government-builder.js:264:    });
+  government-builder.js:265:
+
+

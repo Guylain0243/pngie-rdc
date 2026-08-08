@@ -1,0 +1,11 @@
+const Database = require('better-sqlite3');
+const db = new Database('db\\pngie.db', { readonly: true });
+console.log('--- permission (10 premieres lignes) ---');
+console.log(db.prepare('SELECT * FROM permission LIMIT 10').all());
+console.log('--- pouvoir (toutes) ---');
+console.log(db.prepare('SELECT * FROM pouvoir').all());
+console.log('--- organization_type (toutes) ---');
+console.log(db.prepare('SELECT * FROM organization_type').all());
+console.log('--- document_type (toutes) ---');
+console.log(db.prepare('SELECT * FROM document_type').all());
+db.close();

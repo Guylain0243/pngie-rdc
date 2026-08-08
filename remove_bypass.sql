@@ -1,0 +1,1 @@
+ALTER ROLE pngie_app RESET app.bypass_rls;

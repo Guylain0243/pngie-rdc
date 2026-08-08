@@ -1,0 +1,30 @@
+﻿const express = require("express");
+const db = require("../src/db");
+const router = express.Router();
+
+// LISTE PUBLIQUE DES INSTITUTIONS (pour le sÃ©lecteur de connexion, avant authentification)
+// Expose uniquement nom/code/type â€” aucune donnÃ©e sensible
+router.get("/public/institutions", async (req, res) => {
+  try {
+    const rows = await db.all(`
+      SELECT institution_id, code, nom, type_institution
+      FROM institution
+      WHERE statut = ?
+      ORDER BY type_institution, nom
+    `, ["ACTIF"]);
+
+    const groupes = {};
+    for (const r of rows) {
+      if (!groupes[r.type_institution]) groupes[r.type_institution] = [];
+      groupes[r.type_institution].push({
+        institution_id: r.institution_id, code: r.code, nom: r.nom
+      });
+    }
+
+    res.json(groupes);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+module.exports = router;

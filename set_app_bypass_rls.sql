@@ -1,0 +1,1 @@
+ALTER ROLE pngie_app SET app.bypass_rls = 'true';

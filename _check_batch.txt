@@ -1,0 +1,48 @@
+=== MIN_31 - Urbanisme et Habitat (id=978f3df2-d55b-41ad-a292-f0cc926fd388) ===
+  CAB-MIN_31 | Cabinet du Ministre | niv=1 | id=73bc8a9b-3e16-44d5-ae0d-4c349caabc93
+  DIR | Direction / Cabinet | niv=1 | id=6ccd6f40-d0e8-41ed-a0f4-dbd43acd5bd2
+  SG-MIN_31 | Secretariat General | niv=2 | id=14268f5e-cfc4-4c4e-9ebf-d672829a96cf
+  IG-MIN_31 | Inspection Generale | niv=3 | id=078899f7-e85e-4f5e-94cc-454e1c38e7ec
+  DG-MIN_31 | Direction Générale de l'Urbanisme | niv=4 | id=80000eca-1561-4483-b2f1-63d7d18b78a2
+
+=== MIN_12 - Développement rural (id=865146fa-e535-4973-879e-676ba3dc6c3f) ===
+  CAB-MIN_12 | Cabinet du Ministre | niv=1 | id=0401bd17-4cfb-45c9-ae6d-dab40be69957
+  DIR | Direction / Cabinet | niv=1 | id=00679a09-6659-4b44-ab25-897d9fa660c7
+  SG-MIN_12 | Secretariat General | niv=2 | id=543e948f-90cf-4451-b996-aaceccf39de0
+  IG-MIN_12 | Inspection Generale | niv=3 | id=5bf027f5-2b49-430f-bb5e-c3b56cc48d35
+  DG-MIN_12 | Direction Générale du Développement Rural | niv=4 | id=d6f2c3c2-c9af-47ad-b38c-565ee9720836
+
+=== MIN_24 - Éducation nationale et Nouvelle citoyenneté (id=c403f69b-d547-4aba-a98a-b159cd9a949f) ===
+  CAB-MIN_24 | Cabinet du Ministre | niv=1 | id=8e8d4705-fdd5-41bb-a33e-82a56de3b7ac
+  DIR | Direction / Cabinet | niv=1 | id=299c4dd1-80ad-4b5d-9fa6-9480c2b860b6
+  SG-MIN_24 | Secretariat General | niv=2 | id=c903f0c2-ef0a-4afe-a01f-ee95e2cb189e
+  IG-MIN_24 | Inspection Generale | niv=3 | id=d04d4f9a-d6ea-4b84-94d0-8072632e295a
+  DG-MIN_24 | Direction Générale de l'Éducation Nationale | niv=4 | id=ce2ba66a-1c10-4cb5-aa59-096d92890530
+
+=== MIN_8 - Fonction Publique, Modernisation de l'Administration et Innovation (id=68bbbad1-8dec-4a76-8f20-5d98e752ff3b) ===
+  CAB-MIN_8 | Cabinet du Ministre | niv=1 | id=39540142-9aa5-421c-bce8-9d66712acb29
+  DIR | Direction / Cabinet | niv=1 | id=56700c87-5b93-4ea1-8674-253154d48300
+  SG-MIN_8 | Secretariat General | niv=2 | id=4cc28b2b-feb0-4ef2-8313-de8b7e59c389
+  IG-MIN_8 | Inspection Generale | niv=3 | id=e1c9c784-ee97-4978-a177-9d5c73f5e635
+  DG-MIN_8 | Direction Générale de la Fonction Publique | niv=4 | id=13556228-fd73-4983-981b-cf12057b2be6
+
+=== MIN_21 - Portefeuille (id=b26337d9-6ace-440c-967e-3f508632b804) ===
+  CAB-MIN_21 | Cabinet du Ministre | niv=1 | id=330abaee-38ea-4245-99ee-e025b61ea405
+  DIR | Direction / Cabinet | niv=1 | id=a2519266-d5bb-49ee-9e1c-719821592a85
+  SG-MIN_21 | Secretariat General | niv=2 | id=ebaeadf2-59a2-42e1-95e0-698118ebb9ed
+  IG-MIN_21 | Inspection Generale | niv=3 | id=564e39b4-7d26-4698-abd6-908b1eb13fdd
+  DG-MIN_21 | Direction Générale du Portefeuille | niv=4 | id=fb92ea18-ac50-4662-8a27-f7c625646415
+
+=== MIN_11 - Agriculture et Sécurité alimentaire (id=51fc253e-f614-4ff0-bad7-d7f734075c79) ===
+  CAB-MIN_11 | Cabinet du Ministre | niv=1 | id=0782a29f-e5be-4a77-9bca-a03105b089e2
+  DIR | Direction / Cabinet | niv=1 | id=33cb225a-de35-4e36-8eb9-f0661ce4687e
+  SG-MIN_11 | Secretariat General | niv=2 | id=a48ae2f2-1b48-4e02-a3c0-d82065e1b933
+  IG-MIN_11 | Inspection Generale | niv=3 | id=22c83334-b7a1-4c50-867f-4607d7f496ca
+  DG-MIN_11 | Direction Générale de l'Agriculture | niv=4 | id=3ba3298c-5d78-4369-a111-bf4803aba210
+
+=== MIN_13 - Pêche et Élevage (id=e7e0a790-f5e1-4a3d-b9af-7bf78bf298eb) ===
+  CAB-MIN_13 | Cabinet du Ministre | niv=1 | id=744556cd-b3d1-41c6-88e8-073059230435
+  DIR | Direction / Cabinet | niv=1 | id=771bab40-12a6-4600-8283-2c09e1cef40c
+  SG-MIN_13 | Secretariat General | niv=2 | id=51c64069-1679-4b20-93c7-02f390ef3dc6
+  IG-MIN_13 | Inspection Generale | niv=3 | id=7c4a8a3f-5506-4035-bb9f-e85beaf8619b
+  DG-MIN_13 | Direction Générale de la Pêche et de l'Élevage | niv=4 | id=36055778-1e6d-4723-a726-027303c86420

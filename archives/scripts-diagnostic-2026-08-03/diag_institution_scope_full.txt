@@ -1,0 +1,14 @@
+﻿          table_name           |         column_name          |     data_type     
+-------------------------------+------------------------------+-------------------
+ appel_offres                  | institution                  | text
+ bien_patrimonial              | institution_affectataire     | text
+ decision_institutionnelle     | decision_institutionnelle_id | uuid
+ decision_institutionnelle     | institution                  | text
+ dossier_projet_investissement | institution_porteuse         | text
+ enquete_statistique           | institution_responsable      | text
+ ligne_budgetaire              | institution                  | text
+ ordre_paiement                | institution                  | character varying
+ projet_recherche              | institution_porteuse         | text
+ reclamation_citoyenne         | institution_visee            | text
+(10 lignes)
+

@@ -1,0 +1,22 @@
+﻿                                     Table � public.affectation �
+     Colonne      |           Type           | Collationnement | NULL-able |           Par d�faut            
+------------------+--------------------------+-----------------+-----------+--------------------------------
+ affectation_id   | uuid                     |                 | not null  | uuid_generate_v4()
+ personne_id      | uuid                     |                 | not null  | 
+ poste_id         | uuid                     |                 | not null  | 
+ type_affectation | character varying(30)    |                 | not null  | 'TITULAIRE'::character varying
+ date_debut       | date                     |                 | not null  | 
+ date_fin         | date                     |                 |           | 
+ texte_nomination | character varying(255)   |                 |           | 
+ statut           | character varying(20)    |                 | not null  | 'ACTIF'::character varying
+ created_at       | timestamp with time zone |                 | not null  | now()
+ updated_at       | timestamp with time zone |                 | not null  | now()
+Index :
+    "affectation_pkey" PRIMARY KEY, btree (affectation_id)
+    "idx_affectation_personne" btree (personne_id)
+    "idx_affectation_poste" btree (poste_id)
+    "uq_affectation_poste_active" UNIQUE, btree (poste_id) WHERE statut::text = 'ACTIF'::text AND type_affectation::text = 'TITULAIRE'::text AND date_fin IS NULL
+Contraintes de cl�s �trang�res :
+    "affectation_personne_id_fkey" FOREIGN KEY (personne_id) REFERENCES personne(personne_id)
+    "affectation_poste_id_fkey" FOREIGN KEY (poste_id) REFERENCES poste(poste_id)
+

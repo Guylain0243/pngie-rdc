@@ -1,0 +1,14 @@
+﻿                                          Table � public.rnso_modele_poste �
+       Colonne        |          Type          | Collationnement | NULL-able |                   Par d�faut                   
+----------------------+------------------------+-----------------+-----------+-----------------------------------------------
+ id                   | integer                |                 | not null  | nextval('rnso_modele_poste_id_seq'::regclass)
+ modele_unite_id      | integer                |                 | not null  | 
+ code_poste           | character varying(30)  |                 | not null  | 
+ intitule_poste       | character varying(255) |                 | not null  | 
+ nombre_postes_defaut | integer                |                 | not null  | 1
+Index :
+    "rnso_modele_poste_pkey" PRIMARY KEY, btree (id)
+    "rnso_modele_poste_modele_unite_id_code_poste_key" UNIQUE CONSTRAINT, btree (modele_unite_id, code_poste)
+Contraintes de cl�s �trang�res :
+    "rnso_modele_poste_modele_unite_id_fkey" FOREIGN KEY (modele_unite_id) REFERENCES rnso_modele_unite(id)
+

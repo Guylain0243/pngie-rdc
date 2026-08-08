@@ -1,0 +1,30 @@
+﻿
+  // PILOTE Government Meta Platform - Etape 3 : LE GENERATEUR
+  //
+> // Lit les tables meta_entity / meta_attribute et genere automatiquement :
+  //   1) le SQL CREATE TABLE de l'objet metier (execute directement)
+  //   2) un fichier de routeur Express avec CRUD complet (GET/POST/PUT/DELETE)
+  }
+  
+> function genererRouteurExpress(entity, attributs) {
+      const table = entity.nom_table;
+      const pk = entity.pk_column || `${table}_id`;
+      }
+  
+>     const entity = await db.get('SELECT * FROM meta_entity WHERE nom_table = ?', [nomTable]);
+      if (!entity) {
+>         console.error(`ERREUR : aucune entite meta_entity trouvee pour la table "${nomTable}".`);
+          console.error('Avez-vous execute le script de seed meta correspondant (ex: 10-seed-meta-facture.js) ?');
+          process.exitCode = 1;
+  
+      const attributs = await db.all(
+>         'SELECT * FROM meta_attribute WHERE entity_id = ? ORDER BY ordre',
+          [entity.entity_id]
+      );
+  
+      // 2) Generer le routeur Express
+>     const codeRouteur = genererRouteurExpress(entity, attributs);
+      const dossierGenere = path.join(__dirname, 'routes-generated');
+      if (!fs.existsSync(dossierGenere)) fs.mkdirSync(dossierGenere);
+
+

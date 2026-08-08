@@ -1,0 +1,326 @@
+﻿[
+    {
+        "unite_id":  "39540142-9aa5-421c-bce8-9d66712acb29",
+        "code":  "CAB-MIN_8",
+        "nom":  "Cabinet du Ministre",
+        "type_unite":  "Direction",
+        "niveau_hierarchique":  1,
+        "mission":  "Assiste le Ministre dans la preparation et la coordination des dossiers strategiques de la fonction publique, de la modernisation administrative et de l\u0027innovation du service public.",
+        "postes":  [
+                       {
+                           "poste_id":  "0179b554-b34c-4605-b92e-04617983466f",
+                           "code":  "POS-MIN_8-MINISTRE",
+                           "intitule":  "Ministre de la Fonction Publique, Modernisation de l\u0027Administration et Innovation",
+                           "poste_hierarchique_id":  null,
+                           "niveau_hierarchique":  0,
+                           "categorie":  null,
+                           "missions":  "autorite: decisionnelle",
+                           "attributions":  null,
+                           "responsabilites":  null,
+                           "competences_requises":  null,
+                           "nombre_postes_autorises":  1
+                       }
+                   ],
+        "enfants":  [
+
+                    ]
+    },
+    {
+        "unite_id":  "56700c87-5b93-4ea1-8674-253154d48300",
+        "code":  "DIR",
+        "nom":  "Vice-Ministre",
+        "type_unite":  "Direction",
+        "niveau_hierarchique":  1,
+        "mission":  "Seconde le Ministre dans l\u0027exercice de ses attributions relatives a la fonction publique et a la modernisation de l\u0027administration.",
+        "postes":  [
+                       {
+                           "poste_id":  "c6148fc8-8933-4cff-9df1-0bf635bfb027",
+                           "code":  "f68bce7c-4a5f-4555-86aa-3743b3",
+                           "intitule":  "Ministre",
+                           "poste_hierarchique_id":  "0bcfa2cf-25b4-486f-a7eb-fffe58cd53fd",
+                           "niveau_hierarchique":  2,
+                           "categorie":  null,
+                           "missions":  "role_defaut_id source: dd6f3869-a78c-4186-a8d9-9c1245fcc0d5 | autorite: décisionnelle",
+                           "attributions":  null,
+                           "responsabilites":  null,
+                           "competences_requises":  null,
+                           "nombre_postes_autorises":  1
+                       }
+                   ],
+        "enfants":  [
+
+                    ]
+    },
+    {
+        "unite_id":  "e1c9c784-ee97-4978-a177-9d5c73f5e635",
+        "code":  "IG-MIN_8",
+        "nom":  "Inspection Generale",
+        "type_unite":  "Inspection",
+        "niveau_hierarchique":  2,
+        "mission":  "Controle et audite les services centraux et deconcentres de la fonction publique ; veille au respect de la reglementation administrative.",
+        "postes":  [
+                       {
+                           "poste_id":  "87e67a0c-d86f-471c-9199-7640c8493724",
+                           "code":  "POS-MIN_8-IG",
+                           "intitule":  "Inspecteur General",
+                           "poste_hierarchique_id":  "c6148fc8-8933-4cff-9df1-0bf635bfb027",
+                           "niveau_hierarchique":  1,
+                           "categorie":  null,
+                           "missions":  "autorite: executive",
+                           "attributions":  null,
+                           "responsabilites":  null,
+                           "competences_requises":  null,
+                           "nombre_postes_autorises":  1
+                       }
+                   ],
+        "enfants":  [
+
+                    ]
+    },
+    {
+        "unite_id":  "4cc28b2b-feb0-4ef2-8313-de8b7e59c389",
+        "code":  "SG-MIN_8",
+        "nom":  "Secretariat General",
+        "type_unite":  "Secretariat General",
+        "niveau_hierarchique":  2,
+        "mission":  "Assure la coordination administrative et technique de l\u0027ensemble des services du ministere ; supervise la gestion administrative, financiere et des ressources humaines internes.",
+        "postes":  [
+                       {
+                           "poste_id":  "77d7850e-ecc3-4a7c-89b3-ff1d59fb5a4c",
+                           "code":  "POS-MIN_8-SG",
+                           "intitule":  "Secretaire General",
+                           "poste_hierarchique_id":  "c6148fc8-8933-4cff-9df1-0bf635bfb027",
+                           "niveau_hierarchique":  1,
+                           "categorie":  null,
+                           "missions":  "autorite: executive",
+                           "attributions":  null,
+                           "responsabilites":  null,
+                           "competences_requises":  null,
+                           "nombre_postes_autorises":  1
+                       }
+                   ],
+        "enfants":  [
+                        {
+                            "unite_id":  "9f335572-e5ed-49fa-b763-71fc7a5178ed",
+                            "code":  "COORD-MIN_8-PROV",
+                            "nom":  "Coordinations Provinciales",
+                            "type_unite":  "Service",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Assure la representation et la coordination des services de la fonction publique au niveau des provinces.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "c07ed4a3-d916-4872-a9e8-7bee0fec19f9",
+                            "code":  "DG-MIN_8-PERF",
+                            "nom":  "Direction Generale de l\u0027Evaluation des Performances",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Pilote les indicateurs de performance institutionnelle et developpe les services publics intelligents.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "123af352-fc62-460e-85c0-8a8161144f1d",
+                            "code":  "DG-MIN_8-INNOV",
+                            "nom":  "Direction Generale de l\u0027Innovation du Service Public",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Developpe les laboratoires d\u0027innovation publique, administre les projets innovants et les demarches qualite, evalue la satisfaction des usagers.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "13556228-fd73-4983-981b-cf12057b2be6",
+                            "code":  "DG-MIN_8",
+                            "nom":  "Direction Generale de la Gestion des Ressources Humaines",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Administre les agents publics, gere les recrutements, nominations, affectations, promotions, mutations, detachements, disponibilites et cessations de service.",
+                            "postes":  [
+                                           {
+                                               "poste_id":  "6733da9f-e19b-4bab-a174-2770ea20f5e2",
+                                               "code":  "POS-MIN_8-DG",
+                                               "intitule":  "Directeur General (Direction Générale de la Fonction Publique)",
+                                               "poste_hierarchique_id":  "77d7850e-ecc3-4a7c-89b3-ff1d59fb5a4c",
+                                               "niveau_hierarchique":  1,
+                                               "categorie":  null,
+                                               "missions":  "autorite: executive",
+                                               "attributions":  null,
+                                               "responsabilites":  null,
+                                               "competences_requises":  null,
+                                               "nombre_postes_autorises":  1
+                                           }
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "a9a1dd29-ff68-40dc-b2c1-a231edf51f9b",
+                            "code":  "DG-MIN_8-MOD",
+                            "nom":  "Direction Generale de la Modernisation Administrative",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Developpe les guichets uniques, simplifie et dematerialise les procedures administratives, normalise et optimise les processus.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "486c39a9-0aee-41e1-9d23-b91230200502",
+                            "code":  "DG-MIN_8-NUM",
+                            "nom":  "Direction Generale de la Transformation Numerique",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Supervise les plateformes numeriques de la fonction publique, administre le registre national des agents publics et l\u0027interoperabilite administrative.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+                                            {
+                                                "unite_id":  "fbc9beec-a98c-4b9c-b7d6-72b795e28978",
+                                                "code":  "DIR-MIN_8-SI",
+                                                "nom":  "Direction des Systemes d\u0027Information",
+                                                "type_unite":  "Direction",
+                                                "niveau_hierarchique":  4,
+                                                "mission":  "Assure le developpement et l\u0027exploitation des systemes d\u0027information du ministere.",
+                                                "postes":  [
+
+                                                           ],
+                                                "enfants":  [
+
+                                                            ]
+                                            }
+                                        ]
+                        },
+                        {
+                            "unite_id":  "05f9f8e6-3364-49aa-bb8e-d17486260d54",
+                            "code":  "DG-MIN_8-CARR",
+                            "nom":  "Direction Generale des Carrieres Administratives",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Constitue les dossiers administratifs, administre les grades et echelons, gere les evaluations individuelles, sanctions disciplinaires, recompenses et plans de succession.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "a8ad7592-2261-47b0-8831-4b325df5cedd",
+                            "code":  "DG-MIN_8-CONC",
+                            "nom":  "Direction Generale des Concours et Recrutements",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Organise les concours administratifs, gere les recrutements et les nominations dans la fonction publique.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "60e382e1-a582-4af3-becf-66289eb2e21a",
+                            "code":  "DG-MIN_8-PAIE",
+                            "nom":  "Direction Generale des Effectifs et de la Paie Administrative",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Administre les effectifs de la fonction publique et supervise la gestion de la paie administrative.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "a9f1eb1a-459d-402c-8f47-dd9d8d9a5c0d",
+                            "code":  "DG-MIN_8-REF",
+                            "nom":  "Direction Generale des Reformes Administratives",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Pilote le diagnostic, la conception et le deploiement des reformes de l\u0027administration publique.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "fa76bea0-c3ec-4e32-b23f-3fe0bc7fb088",
+                            "code":  "DG-MIN_8-STAT",
+                            "nom":  "Direction Generale des Statistiques Administratives",
+                            "type_unite":  "Direction Generale",
+                            "niveau_hierarchique":  3,
+                            "mission":  "Produit les statistiques administratives nationales relatives aux effectifs, a la masse salariale, a la mobilite et a la performance.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "eedd04ff-3b7c-460d-9ce2-a7ecec69d5d4",
+                            "code":  "CELL-PNGIE-MIN_8",
+                            "nom":  "Cellule PNGIE",
+                            "type_unite":  "Direction",
+                            "niveau_hierarchique":  4,
+                            "mission":  "Assure la coordination de la mise en oeuvre du PNGIE-RDC au sein du ministere.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "c6a854f2-cb97-49e7-a731-e399cf2c128c",
+                            "code":  "DAF-MIN_8",
+                            "nom":  "Direction Administrative et Financiere",
+                            "type_unite":  "Direction",
+                            "niveau_hierarchique":  4,
+                            "mission":  "Gere le budget, les finances et le patrimoine administratif du ministere.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        },
+                        {
+                            "unite_id":  "7a6b0f4a-6710-4c32-91dd-9839cc89ec78",
+                            "code":  "DRH-MIN_8",
+                            "nom":  "Direction des Ressources Humaines",
+                            "type_unite":  "Direction",
+                            "niveau_hierarchique":  4,
+                            "mission":  "Gere les ressources humaines internes du ministere.",
+                            "postes":  [
+
+                                       ],
+                            "enfants":  [
+
+                                        ]
+                        }
+                    ]
+    }
+]

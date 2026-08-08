@@ -1,0 +1,2 @@
+INSERT INTO meta_notification_rule (entite, evenement, condition_json, message_template, canal, destinataire_role_code, statut)
+VALUES ('ordre_paiement', 'MODIFICATION', '[]', 'Ordre de paiement modifie : {beneficiaire} - {montant} USD', 'INTERNE', 'MI', 'ACTIF');

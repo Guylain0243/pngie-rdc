@@ -1,0 +1,28 @@
+﻿ institution  | unite_code |           poste_code           |               intitule                | statut_poste | nb_affectations 
+--------------+------------+--------------------------------+---------------------------------------+--------------+-----------------
+ MIN_5        | DIR-BUDGET | ad627834-f520-4730-8752-0922a0 | Directeur du Budget                   | ACTIF        |               1
+ MIN_5        | DGI-MIN5   | POS-MIN5-DGDGI                 | Directeur Général de la DGI           | ACTIF        |               0
+ MIN_5        | IG-MIN5    | POS-MIN5-IG                    | Inspecteur Général des Finances       | ACTIF        |               0
+ MIN_5        | SG-MIN5    | POS-MIN5-SG                    | Secrétaire Général                    | ACTIF        |               0
+ MIN_5        | CAB-MIN5   | POS-MIN5-MINISTRE              | Ministre des Finances                 | ACTIF        |               0
+ MIN_5        | DIV-RECOUV | POS-MIN5-CHEFDIVRECOUV         | Chef de Division Recouvrement         | ACTIF        |               0
+ MIN_5        | D_TRESOR   | DT                             | Directeur du Trésor                   | ACTIF        |               0
+ MIN_5        | CABINET    | MIN                            | Ministre                              | ACTIF        |               0
+ MIN_5        | SG         | SG                             | Secrétaire Général                    | ACTIF        |               0
+ MIN_5        | IG         | IG                             | Inspecteur Général                    | ACTIF        |               0
+ MIN_5        | D_BUDGET   | DB                             | Directeur du Budget                   | ACTIF        |               0
+ MIN_5        | D_COMPTA   | DCP                            | Directeur de la Comptabilité Publique | ACTIF        |               0
+ MIN_5        | D_DETTE    | DDP                            | Directeur de la Dette Publique        | ACTIF        |               0
+ MIN_5        | D_ETUDES   | DEP                            | Directeur des Études et Prévisions    | ACTIF        |               0
+ MIN_5        | CELL_PNGIE | CP                             | Chef de la Cellule PNGIE              | ACTIF        |               0
+ MIN_FINANCES | D_BUDGET   | DB                             | Directeur du Budget                   | ACTIF        |               0
+ MIN_FINANCES | D_ETUDES   | DEP                            | Directeur des Études et Prévisions    | ACTIF        |               0
+ MIN_FINANCES | CELL_PNGIE | CP                             | Chef de la Cellule PNGIE              | ACTIF        |               0
+ MIN_FINANCES | IG         | IG                             | Inspecteur Général                    | ACTIF        |               0
+ MIN_FINANCES | SG         | SG                             | Secrétaire Général                    | ACTIF        |               0
+ MIN_FINANCES | CABINET    | MIN                            | Ministre                              | ACTIF        |               0
+ MIN_FINANCES | D_TRESOR   | DT                             | Directeur du Trésor                   | ACTIF        |               0
+ MIN_FINANCES | D_DETTE    | DDP                            | Directeur de la Dette Publique        | ACTIF        |               0
+ MIN_FINANCES | D_COMPTA   | DCP                            | Directeur de la Comptabilité Publique | ACTIF        |               0
+(24 lignes)
+

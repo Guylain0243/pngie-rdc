@@ -1,0 +1,1 @@
+SELECT fn_entite_existe('institution', 'caa61add-1ff7-4021-8913-ae1b46f1f0bd'::uuid) AS existe;
