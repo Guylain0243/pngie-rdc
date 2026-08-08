@@ -1,0 +1,361 @@
+﻿=== src/db.js ===
+// Couche d'abstraction base de donnÃ©es. Un seul jeu de requÃªtes (placeholders `?`),
+// deux moteurs possibles :
+//   - SQLite (better-sqlite3)  : utilisÃ© par dÃ©faut, pour le dev local et les tests
+//   - PostgreSQL (pg)          : utilisÃ© dÃ¨s que DATABASE_URL est dÃ©finie â€” c'est le
+//                                moteur destinÃ© Ã  la production, seul capable de vraies
+//                                Ã©critures concurrentes (voir l'audit de charge).
+// Toutes les fonctions sont asynchrones (Promise), mÃªme pour SQLite, afin que le code
+// appelant soit strictement identique quel que soit le moteur choisi.
+const path = require("path");
+const { getContext } = require("./request-context");
+
+const usePostgres = !!process.env.DATABASE_URL;
+
+function toPg(sql) {
+  let i = 0;
+  return sql.replace(/\?/g, () => `$${++i}`);
+}
+
+let impl;
+
+if (usePostgres) {
+  const { Pool } = require("pg");
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+  // Chaque appel s'exÃ©cute dans une transaction courte (BEGIN/SET LOCAL/requÃªte/COMMIT)
+  // plutÃ´t que via pool.query() direct, afin que app.current_institution_id soit bien
+  // propagÃ© Ã  la connexion qui exÃ©cute la requÃªte (RLS par institution).
+  async function withConnection(sql, params) {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const { institutionId } = getContext();
+      await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+      const result = await client.query(toPg(sql), params);
+      await client.query("COMMIT");
+      return result;
+    } catch (err) {
+      try { await client.query("ROLLBACK"); } catch (e) {}
+      throw err;
+    } finally {
+      client.release();
+    }
+  }
+
+  // Transaction explicite : une seule connexion pour plusieurs requetes liees.
+  // Usage : await db.transaction(async (tx) => { await tx.run(...); await tx.run(...); });
+  // Si tx.run/tx.get/tx.all leve une erreur, ROLLBACK automatique et l'erreur remonte.
+  async function transaction(fn) {
+    const client = await pool.connect();
+    try {
+      await client.query("BEGIN");
+      const { institutionId } = getContext();
+      await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+      const tx = {
+        async get(sql, params = []) { const { rows } = await client.query(toPg(sql), params); return rows[0] || null; },
+        async all(sql, params = []) { const { rows } = await client.query(toPg(sql), params); return rows; },
+        async run(sql, params = []) { const { rowCount } = await client.query(toPg(sql), params); return { changes: rowCount }; },
+      };
+      const result = await fn(tx);
+      await client.query("COMMIT");
+      return result;
+    } catch (err) {
+      try { await client.query("ROLLBACK"); } catch (e) {}
+      throw err;
+    } finally {
+      client.release();
+    }
+  }
+
+  impl = {
+    driver: "postgres",
+    async get(sql, params = []) {
+      const { rows } = await withConnection(sql, params);
+      return rows[0] || null;
+    },
+    async all(sql, params = []) {
+      const { rows } = await withConnection(sql, params);
+      return rows;
+    },
+    async run(sql, params = []) {
+      const { rowCount } = await withConnection(sql, params);
+      return { changes: rowCount };
+    },
+    async close() { await pool.end(); },
+    transaction,
+  };
+} else {
+  const Database = require("better-sqlite3");
+  const dbPath = process.env.DB_PATH || path.join(__dirname, "..", "db", "pngie.db");
+  const sqlite = new Database(dbPath);
+  sqlite.pragma("journal_mode = WAL"); // autorise au moins des lectures concurrentes pendant une Ã©criture
+
+  impl = {
+    driver: "sqlite",
+    async get(sql, params = []) { return sqlite.prepare(sql).get(...params) || null; },
+    async all(sql, params = []) { return sqlite.prepare(sql).all(...params); },
+    async run(sql, params = []) {
+      const r = sqlite.prepare(sql).run(...params);
+      return { changes: r.changes };
+    },
+    async close() { sqlite.close(); },
+    async transaction(fn) {
+      const tx = {
+        async get(sql, params = []) { return sqlite.prepare(sql).get(...params) || null; },
+        async all(sql, params = []) { return sqlite.prepare(sql).all(...params); },
+        async run(sql, params = []) { const r = sqlite.prepare(sql).run(...params); return { changes: r.changes }; },
+      };
+      const runTx = sqlite.transaction(async () => await fn(tx));
+      return runTx();
+    },
+  };
+}
+
+module.exports = impl;
+
+=== src/lib/errors.js ===
+// ============================================================================
+// PNGIE-RDC â€” Module central d'erreurs normalisÃ©es
+// Patron "PNGIE Secure API v1" â€” bloc D
+//
+// Convention unique pour TOUT le backend :
+//   { success: false, error: { code, message, details? } }
+//
+// Codes HTTP rÃ©servÃ©s :
+//   400 VALIDATION_ERROR        â€” entrÃ©e invalide (UUID, enum, champ manquant...)
+//   401 AUTHENTICATION_REQUIRED â€” token absent, invalide ou expirÃ©
+//   403 FORBIDDEN                â€” authentifiÃ© mais permission refusÃ©e
+//   403 FORBIDDEN_INSTITUTION    â€” authentifiÃ©, permission ok, mais institution non autorisÃ©e
+//   404 NOT_FOUND                 â€” ressource inexistante
+//   409 CONFLICT                  â€” conflit mÃ©tier (statut incompatible, transition refusÃ©e...)
+//   500 INTERNAL_ERROR            â€” incident serveur (jamais de dÃ©tail SQL/stack au client)
+// ============================================================================
+
+const ERROR_CODES = Object.freeze({
+    VALIDATION_ERROR: 'VALIDATION_ERROR',
+    AUTHENTICATION_REQUIRED: 'AUTHENTICATION_REQUIRED',
+    FORBIDDEN: 'FORBIDDEN',
+    FORBIDDEN_INSTITUTION: 'FORBIDDEN_INSTITUTION',
+    NOT_FOUND: 'NOT_FOUND',
+    CONFLICT: 'CONFLICT',
+    INTERNAL_ERROR: 'INTERNAL_ERROR',
+});
+
+const DEFAULT_HTTP_STATUS = Object.freeze({
+    VALIDATION_ERROR: 400,
+    AUTHENTICATION_REQUIRED: 401,
+    FORBIDDEN: 403,
+    FORBIDDEN_INSTITUTION: 403,
+    NOT_FOUND: 404,
+    CONFLICT: 409,
+    INTERNAL_ERROR: 500,
+});
+
+function sendError(res, httpStatusOrCode, codeOrMessage, messageOrDetails, maybeDetails) {
+    let httpStatus, code, message, details;
+
+    if (typeof httpStatusOrCode === 'string') {
+        code = httpStatusOrCode;
+        httpStatus = DEFAULT_HTTP_STATUS[code] || 500;
+        message = codeOrMessage;
+        details = messageOrDetails;
+    } else {
+        httpStatus = httpStatusOrCode;
+        code = codeOrMessage;
+        message = messageOrDetails;
+        details = maybeDetails;
+    }
+
+    const body = { success: false, error: { code, message } };
+    if (details !== undefined) body.error.details = details;
+    return res.status(httpStatus).json(body);
+}
+
+// Succes : { success: true, data: {...} }
+// httpStatus optionnel (defaut 200 ; 201 pour une creation, 204 sans corps pour une suppression).
+function sendSuccess(res, data, httpStatus = 200) {
+    if (httpStatus === 204) return res.status(204).end();
+    return res.status(httpStatus).json({ success: true, data });
+}
+
+function globalErrorHandler(err, req, res, next) {
+    console.error('[ERREUR NON GEREE]', {
+        method: req.method,
+        path: req.originalUrl,
+        message: err.message,
+        stack: err.stack,
+    });
+
+    if (res.headersSent) return next(err);
+
+    return sendError(
+        res, 500, ERROR_CODES.INTERNAL_ERROR,
+        'Une erreur interne est survenue. Veuillez rÃ©essayer ou contacter un administrateur.'
+    );
+}
+
+module.exports = { ERROR_CODES, DEFAULT_HTTP_STATUS, sendError, sendSuccess, globalErrorHandler };
+
+=== src/middleware/requireAuth.js ===
+// ----------------------------------------------------------------
+// PNGIE-RDC ï¿½ Middleware d'authentification unique
+// Patron "PNGIE Secure API v1"
+//
+// Extraction FIDï¿½LE du requireAuth historique de server.js (lignes
+// 129-151). AUCUN changement de comportement mï¿½tier : mï¿½me
+// vï¿½rification JWT, mï¿½me rï¿½solution institutionId via
+// personne_role.scope_institution_id, mï¿½me propagation requestContext.run().
+// Seuls ajouts : rï¿½ponses normalisï¿½es via sendError() (lib/errors.js)
+// et audit des ï¿½checs d'authentification (AUTHENTICATION_FAILED).
+//
+// Remplace toutes les copies locales de requireAuth (server.js et
+// rni-commandement-routes.js) : une seule implï¿½mentation partagï¿½e.
+// ----------------------------------------------------------------
+const jwt = require('jsonwebtoken');
+const db = require('../db');
+const requestContext = require('../request-context');
+const { sendError } = require('../lib/errors');
+const audit = require('../lib/audit');
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  console.error("ERREUR FATALE : JWT_SECRET absent ou trop faible (minimum 32 caracteres). Definir une variable d'environnement JWT_SECRET valide avant de demarrer le serveur.");
+  process.exit(1);
+}
+
+async function requireAuth(req, res, next) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+
+  if (!token) {
+    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token manquant' });
+    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token manquant.');
+  }
+
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+  } catch {
+    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token invalide ou expirï¿½' });
+    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token invalide ou expirï¿½.');
+  }
+
+  // Rï¿½solution de l'institution de portï¿½e (scope_institution_id), identique ï¿½ l'original.
+  let institutionId = null;
+  try {
+    if (req.user.roles && req.user.roles.length > 0) {
+      const scope = await db.get(
+        'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
+        [req.user.sub]
+      );
+      institutionId = scope ? scope.scope_institution_id : null;
+    }
+  } catch (e) {
+    institutionId = null;
+  }
+
+  requestContext.run({ institutionId }, next);
+}
+
+module.exports = requireAuth;
+
+=== src/request-context.js ===
+const { AsyncLocalStorage } = require("async_hooks");
+const storage = new AsyncLocalStorage();
+
+function run(context, callback) {
+  return storage.run(context, callback);
+}
+
+function getContext() {
+  return storage.getStore() || {};
+}
+
+module.exports = { run, getContext };
+
+=== Contenu recursif de src/domains/journal/ ===
+
+FullName                                                 Length
+--------                                                 ------
+C:\pngie-rdc\pngie-backend\src\domains\journal\README.md    244
+
+
+
+
+=== institutions_fiche.routes.js (premieres 60 lignes) ===
+const express = require("express");
+const db = require("../src/db");
+const router = express.Router();
+
+// FICHE COMPLETE D'UNE INSTITUTION : organigramme (unites + postes) + relations
+router.get("/institutions/:id/fiche-complete", async (req, res) => {
+  try {
+    const institutionId = req.params.id;
+
+    const institution = await db.get(
+      `SELECT institution_id, code, nom, sigle, type_institution, institution_parent_id,
+              niveau_hierarchique, description, adresse, telephone, email, site_web, statut
+       FROM institution WHERE institution_id = ?`,
+      [institutionId]
+    );
+
+    if (!institution) {
+      return res.status(404).json({ error: "Institution introuvable" });
+    }
+
+    const unites = await db.all(
+      `SELECT unite_id, unite_parent_id, code, nom, type_unite, niveau_hierarchique, mission, statut
+       FROM unite_organisationnelle
+       WHERE institution_id = ? AND statut = ?
+       ORDER BY niveau_hierarchique, nom`,
+      [institutionId, "ACTIF"]
+    );
+
+    const postes = await db.all(
+      `SELECT p.poste_id, p.unite_id, p.code, p.intitule, p.poste_hierarchique_id,
+              p.niveau_hierarchique, p.categorie, p.missions, p.attributions,
+              p.responsabilites, p.competences_requises, p.nombre_postes_autorises, p.statut
+       FROM poste p
+       JOIN unite_organisationnelle u ON u.unite_id = p.unite_id
+       WHERE u.institution_id = ? AND p.statut = ?
+       ORDER BY p.niveau_hierarchique, p.intitule`,
+      [institutionId, "ACTIF"]
+    );
+
+    // Regroupe les postes par unite
+    const postesParUnite = {};
+    for (const p of postes) {
+      if (!postesParUnite[p.unite_id]) postesParUnite[p.unite_id] = [];
+      postesParUnite[p.unite_id].push({
+        poste_id: p.poste_id,
+        code: p.code,
+        intitule: p.intitule,
+        poste_hierarchique_id: p.poste_hierarchique_id,
+        niveau_hierarchique: p.niveau_hierarchique,
+        categorie: p.categorie,
+        missions: p.missions,
+        attributions: p.attributions,
+        responsabilites: p.responsabilites,
+        competences_requises: p.competences_requises,
+        nombre_postes_autorises: p.nombre_postes_autorises
+      });
+    }
+
+    // Construit l'arbre des unites (avec leurs postes nested)
+    const unitesById = {};
+
+=== Dependances package.json ===
+
+
+axios          : ^1.19.0
+bcrypt         : ^6.0.0
+better-sqlite3 : ^12.11.1
+cors           : ^2.8.5
+express        : ^4.19.2
+ioredis        : ^5.11.1
+jsonwebtoken   : ^9.0.2
+pg             : ^8.22.0
+
+
+
+
