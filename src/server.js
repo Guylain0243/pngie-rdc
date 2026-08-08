@@ -382,7 +382,7 @@ app.use('/api', requireAuth, require('../routes-generated/dossier_recouvrement.r
 
 
 app.use('/api', requireAuth, require('../routes-generated/arborescence.routes'));
-app.use('/api', requireAuth, require('../domains/journal/journal.routes'));
+app.use('/api', requireAuth, require('./domains/journal/journal.routes'));
 
 // === BATCH3 ROUTES ===
 const decisionInstitutionnelleRouter = require('../routes-generated/decision_institutionnelle.routes');
