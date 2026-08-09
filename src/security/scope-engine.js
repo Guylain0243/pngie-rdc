@@ -13,8 +13,8 @@ function exigerPortee({ type, source } = {}) {
   return async (req, res, next) => {
     try {
       if (!req.scope) {
-        const { institutionId, institutionsVisibles } = await resoudrePorteeInstitution(req.user.sub);
-        req.scope = { institutionId, institutionsVisibles };
+        const { institutionId, institutionsVisibles, lectureNationale } = await resoudrePorteeInstitution(req.user.sub);
+        req.scope = { institutionId, institutionsVisibles, lectureNationale: !!lectureNationale };
       }
       if (!source) {
         return next();

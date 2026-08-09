@@ -468,4 +468,13 @@ app.use('/api', require('../routes-generated/affectation.routes'));
 const rniCommandementRouter = require('./rni-commandement-routes');
 app.use('/api', rniCommandementRouter);
 
-
+// Cockpit Gouvernemental V1 (09/08/2026) -- src/domains/governance/.
+// Migration PROGRESSIVE de decision_gouvernementale/decision_action hors de
+// routes-generated (meta_permission) vers le patron Journal National
+// (permission/personne_role). L'ancienne route (../routes-generated/
+// decision_gouvernementale.routes, prefixe /decisions) reste montee
+// volontairement le temps de valider le nouveau chemin (prefixe
+// /governance/decisions) par les tests E2E -- a retirer une fois
+// confirme, PAS avant (cf. decision d'architecture du 09/08/2026).
+app.use('/api', require('./domains/governance/decision.routes'));
+app.use('/api', require('./domains/governance/cockpit.routes'));
