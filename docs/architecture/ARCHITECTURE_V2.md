@@ -1,194 +1,220 @@
-﻿# ARCHITECTURE_V2 — PNGIE-RDC
+# PNGIE-RDC — Architecture v2 (document de référence technique)
 
-Document de référence architecture. Créé le 07/08/2026, reconstruit le
-07/08/2026 (le fichier original n'avait jamais été effectivement committé
-dans le dépôt malgré une mention en ce sens dans un résumé de session
-antérieur — voir docs/sessions/).
+> Document vivant. Statut global : 🟡 En construction — Section 4 (Cartographie PostgreSQL / Sécurité) amorcée à partir des audits RLS existants (AUDIT_RLS_PRE_SWITCH.md, résumés de session Chantier B). Toutes les autres sections sont en squelette, à compléter au fil des prochaines sessions.
+>
+> Dernière mise à jour : 07/08/2026
+
+---
 
 ## 1. Vision globale
 
-*(à compléter)*
+**Statut : ⬜ à rédiger**
+
+- Objectifs du PNGIE-RDC (mission, périmètre fonctionnel actuel vs cible).
+- Principes d'architecture directeurs (ex. : sécurité par défaut / defer-deny, RLS systématique sur les tables métier, pas d'accès superuser en prod applicative, tests E2E comme filet de sécurité avant toute bascule).
+- Contraintes de sécurité (RBAC, RLS, scope_institution_id, audit).
+- Conventions de développement (nommage, structure de dossiers, gestion des secrets, style SQL/JS).
+
+*À compléter : reprendre les décisions déjà actées dans les sessions précédentes (ex. "ne jamais modifier pngie_rdc directement", "mots de passe via $env:PGPASSWORD", etc.) et les élever au rang de principes documentés.*
+
+---
 
 ## 2. Cartographie fonctionnelle
 
-*(à compléter)*
+**Statut : ⬜ à rédiger**
+
+```
+PNGIE-RDC
+│
+├── Sécurité
+│     ├── Auth
+│     ├── RBAC
+│     ├── ScopeResolver
+│     ├── RLS
+│
+├── RH
+├── Documents
+├── Gouvernance          (23 tables identifiées, non encore inventoriées)
+├── Journal National      (suspendu, priorité 1 de la feuille de route)
+├── Recherche
+├── Finances
+├── Marchés publics
+├── IA
+└── Administration
+```
+
+*À compléter : pour chaque bloc, lister les cas d'usage couverts aujourd'hui vs prévus, et l'état (actif / dormant / à créer). Le bloc Gouvernance est actuellement "dormant" (tables présentes, non exploitées).*
+
+---
 
 ## 3. Cartographie technique
 
-*(à compléter)*
+**Statut : 🟡 amorcée (volet sécurité uniquement)**
 
-## 4. Cartographie PostgreSQL / Sécurité
+### 3.1 Middleware de sécurité (connu)
 
-### 4.1 à 4.6
+- `requireAuth.js` — point d'entrée d'authentification applicatif.
+- Le pool de connexion applicatif utilise le rôle `pngie_app` (et non `postgres`) — condition nécessaire pour que RLS s'applique réellement.
+- ⚠️ Point de vigilance documenté : des **vues de compatibilité** (`person`, `person_role`, `organization`, `permission_compat`, `role_permission`, `meta_permission`, `rnso_hierarchie`) sont interrogées par le code applicatif à la place des tables sources (`personne`, `personne_role`, etc.). Ces vues doivent impérativement porter `security_invoker = true` (PostgreSQL 15+), sans quoi elles s'exécutent avec les privilèges du propriétaire de la vue et **contournent silencieusement RLS**.
 
-*(à compléter — contenu original perdu, à reconstituer à partir des audits
-RLS existants dans docs/audits/, notamment AUDIT_RLS_PRE_SWITCH.md et
-BUG_G_RLS_SCOPE_NATIONAL.md)*
+*À compléter : routes, services, helpers, modèles, triggers applicatifs — inventaire systématique à faire (ex. via `Get-ChildItem -Recurse` + revue des fichiers `routes/*.js`, `services/*.js`).*
 
-### 4.7 — Leçon d'architecture RLS (07/08/2026)
+### 3.2 Routes / services
 
-Les rôles nationaux doivent conserver leur visibilité sur leurs propres
-affectations. Une policy RLS ne doit jamais rendre un utilisateur invisible
-pour lui-même. Cas concret rencontré : comparaison par `=` sur une colonne
-nullable (`scope_institution_id`) contre un `current_setting` potentiellement
-NULL, masquant silencieusement les rôles à portée nationale (voir Bug G,
-docs/audits/BUG_G_RLS_SCOPE_NATIONAL.md).
+**Statut : ⬜ à rédiger** — nécessite l'arborescence réelle du dépôt (`tree src` ou équivalent) pour être documentée fidèlement plutôt que supposée.
 
-Règle retenue : toute nouvelle policy RLS impliquant une colonne nullable
-comparée à un contexte de session doit utiliser `IS NOT DISTINCT FROM`
-plutôt que `=`, sauf besoin explicite contraire documenté.
+---
 
-Toute nouvelle policy devra être validée par une suite E2E complète avant
-déploiement — cette session a démontré qu'un run E2E systématique après
-changement RLS permet d'isoler et de confirmer une cause racine avec
-certitude (77/77 après correctif, contre 9/77 avant).
+## 4. Cartographie PostgreSQL
+
+**Statut : 🟢 amorcée avec des données concrètes issues des audits**
+
+### 4.1 Généralités
+
+- Serveur PostgreSQL en version **16.14**.
+- Base de développement réelle : `pngie_rdc`.
+- Base de test isolée (copie fidèle via `pg_dump`/`pg_restore`) : `pngie_rdc_rls_test` — **156 tables**, 6 comptes de test avec `scope_institution_id = NULL`.
+- Rôle superuser historique : `postgres` (utilisé jusqu'ici par l'application — anomalie corrigée par le Chantier B).
+- Rôle applicatif cible : `pngie_app` (privilèges limités, RLS appliquée).
+
+### 4.2 Vues de compatibilité (7 identifiées, corrigées sur l'environnement de test)
+
+| Vue | security_invoker (test) | security_invoker (prod/dev réelle `pngie_rdc`) |
+|---|---|---|
+| `person` | ✅ corrigé | ❌ pas encore reproduit |
+| `person_role` | ✅ corrigé | ❌ pas encore reproduit |
+| `organization` | ✅ corrigé | ❌ pas encore reproduit |
+| `permission_compat` | ✅ corrigé | ❌ pas encore reproduit |
+| `role_permission` | ✅ corrigé | ❌ pas encore reproduit |
+| `meta_permission` | ✅ corrigé | ❌ pas encore reproduit |
+| `rnso_hierarchie` | ✅ corrigé | ❌ pas encore reproduit |
+
+> ⚠️ La correction n'a été appliquée que sur `pngie_rdc_rls_test`. **Ne pas considérer le problème comme résolu tant que la Priorité 5 (reproduction sur `pngie_rdc`) n'est pas faite.**
+
+**Action de suivi non close** : auditer l'ensemble des vues du schéma `public` (pas seulement ces 7) pour détecter d'autres cas de `security_invoker` manquant, en particulier celles pouvant wrapper `document` ou `index_recherche_global` (tables déjà connues pour porter une policy RLS) :
+
+```sql
+SELECT viewname FROM pg_views WHERE schemaname='public';
+SELECT relname, reloptions FROM pg_class WHERE relkind='v' AND relnamespace = 'public'::regnamespace;
+```
+
+### 4.3 GRANTs applicatifs (rôle `pngie_app`)
+
+- **7 vues de compatibilité** (voir 4.2) : GRANT appliqué sur l'environnement de test.
+- **11 tables prioritaires** (référencées dans le code applicatif) : GRANT appliqué sur l'environnement de test —
+  `entity_relation`, `entity_scope`, `indicateur`, `manuel_architecture`, `meta_attribute`, `meta_entity`, `referentiel_national`, `referentiel_national_item`, `referentiel_national_section`, `relation_type`, `type_document`.
+- **51 tables restantes sans GRANT**, non référencées dans le code scanné (majoritairement `ref_*` et `rnso_*`) — statut : à vérifier avant de les classer "non prioritaires". Cas particulier `rnso_*` : semble porter l'organigramme mais n'apparaît dans aucun fichier `.js` scanné → accès probablement indirect via une vue non encore identifiée (à croiser avec l'audit 4.2).
+
+### 4.4 Policies RLS connues
+
+- Table `person_role` (via la vue `person_role`) : policy s'appuyant sur `scope_institution_id`. Sans fallback : un compte avec `scope_institution_id = NULL` perd tout accès une fois RLS réellement appliquée (comportement confirmé par le test A/B, cf. 4.6).
+- `institution` et `index_recherche_global` : policies **avec fallback explicite déjà présent** (contre-exemple utile pour la décision R2, cf. section 7).
+- Policy nommée `personne_role_scope_institution` : au cœur de la décision R2 (fallback vs peuplement systématique de `scope_institution_id`).
+
+*À compléter : inventaire exhaustif de toutes les policies RLS du schéma (`SELECT * FROM pg_policies;`), pas seulement celles déjà rencontrées au fil des audits.*
+
+### 4.5 Comptes de test connus
+
+- `test-mi@pngie.local` (rôle MI) — `scope_institution_id = NULL` dans l'environnement de test, utilisé pour le test A/B de la découverte `security_invoker`.
+- Comptes PR et SN — utilisés dans les tests E2E manuels ; ont déclenché un rate-limiter applicatif (429) lors de sollicitations répétées pendant la session du 07/08.
+
+### 4.6 Découverte de sécurité majeure — traçabilité
+
+**Constat** : les 7 vues de compatibilité créées par `postgres` sans `security_invoker = true` s'exécutaient avec les privilèges du propriétaire (superuser), contournant RLS pour la quasi-totalité du trafic réel (le code applicatif interroge systématiquement les vues de compatibilité, jamais les tables sources directement).
+
+**Test A/B réalisé** (documenté dans `AUDIT_RLS_PRE_SWITCH.md`, section 8.2) :
+- Avant correction : requête sur `person_role` pour `test-mi@pngie.local` → 1 ligne trouvée, alors que `scope_institution_id = NULL` aurait dû bloquer l'accès.
+- Après `ALTER VIEW ... SET (security_invoker = true)` sur les 7 vues → 0 ligne. RLS s'applique enfin réellement.
+
+**Portée** : sans cette correction, le problème serait resté invisible indéfiniment tant que l'application se connectait en superuser — un cas d'école pour justifier l'inventaire systématique prévu en 4.2.
+
+### 4.7 État des tests E2E (à date du 07/08/2026)
+
+- Run historique (rôle `postgres`, base `pngie_rdc`) : suite de référence, doit rester verte avant toute bascule.
+- Run sur `pngie_rdc_rls_test` (rôle `pngie_app`), **avant** correction `security_invoker` : 59 pass / 18 fail — majoritairement dus à un rate-limiter applicatif, pas à un vrai problème RLS/GRANT.
+- Run **après** correction `security_invoker` : **pas encore relancé** — c'est la Priorité 0 en cours.
+
+---
 
 ## 5. Dépendances
 
-*(à compléter)*
+**Statut : ⬜ à rédiger**
+
+```
+Journal National
+        │
+        ├── Documents
+        ├── Recherche
+        ├── Workflow
+        ├── Audit
+        ├── Notification
+        └── IA
+```
+
+*À compléter pour chaque module cible une fois la cartographie fonctionnelle (section 2) stabilisée.*
+
+---
 
 ## 6. Modularisation cible
 
-*(à compléter)*
+**Statut : ⬜ à rédiger**
+
+```
+src/
+    domains/
+        security/
+        rh/
+        documents/
+        journal/
+        gouvernance/
+        recherche/
+        workflow/
+        finances/
+        administration/
+```
+
+*À compléter : mapping fichier-par-fichier entre l'arborescence actuelle et cette cible, une fois l'inventaire du code (section 3.2) fait.*
+
+---
 
 ## 7. Feuille de route
 
-1. Clôture documentaire du chantier RLS — FAIT (07/08/2026)
-2. Architecture v2 (ce document) — reconstruction en cours
-3. Modularisation du backend par domaines
-4. Journal National
-5. Cockpit gouvernemental
-6. IA juridique
-7. Recherche avancée
-8. Modules métier (Finances, Marchés, RH, Patrimoine, etc.)
+**Statut : 🟡 amorcée**
 
-## 2. Cartographie fonctionnelle (mise à jour 08/08/2026)
+### 7.1 Court terme — Chantier B (sécurité RLS), en cours
 
-Établie par inventaire automatique du code + de la base (148 tables/7 vues),
-croisée avec le contenu réel des routes. Trois états distingués : implémenté,
-partiellement exposé, modélisé sans API.
+| # | Action | Statut |
+|---|---|---|
+| P0 | Relancer les tests E2E complets sur `pngie_rdc_rls_test` après correction `security_invoker` | 🔴 à faire — priorité immédiate |
+| P1 | Auditer toutes les vues du schéma public pour d'autres cas `security_invoker` manquant | 🔴 à faire |
+| P2 | Trancher le sort des 51 tables restantes sans GRANT | 🔴 à faire |
+| P3 | Décision métier R2 : fallback explicite vs peuplement de `scope_institution_id` | 🔴 en attente d'arbitrage métier |
+| P4 | Décision métier R3 : stratégie de peuplement/maintenance de `scope_institution_id` | 🔴 en attente d'arbitrage métier |
+| P5 | Reproduire GRANTs + `security_invoker` sur `pngie_rdc` (base réelle) | 🔴 bloqué tant que P0–P4 non clos |
+| P6 | Débloquer Chantier A (`projet_recherche`) | 🔴 bloqué tant que Chantier B non clos |
+| P7 | Rotation des mots de passe `postgres` / `pngie_app` (échangés en clair en session) | 🔴 urgent, jamais fait |
 
-| Domaine | Tables (échantillon) | API | Services dédiés | État |
-|---|---|---|---|---|
-| Auth | personne, personne_role, role, permission, session_utilisateur | ✔ (server.js) | middleware/requireAuth, resoudreRoleDepuisJWT | Mature |
-| RBAC / Scope | role_permission, meta_rule, meta_entity | ✔ (transverse) | security/scope-engine, scope-resolver, resource-resolver, hierarchy-service | Mature |
-| RNI (Commandement) | institution, rni_lien_hierarchique, instruction, execution_rapport, verification, instruction_historique | ✔ (rni-commandement-routes.js, module dédié écrit à la main) | security-engine, institution-authority, audit | Mature — module de référence |
-| Documents | document, document_version, type_document, signature_electronique | ✔ | RLS actif | Mature |
-| Recherche | index_recherche_global, referentiel_national* | ✔ (partiel) | RLS actif | Mature |
-| No-Code / Workflow | nocode_formulaire, nocode_workflow*, processus* | ✔ (/api/nocode/*) | workflow-engine | Implémenté |
-| IA | agent, agent_ia, agent_ia_interaction | ✔ (/api/agents/*) | aiAgent.js | Implémentation partielle |
-| Institutions / Gouvernance | institution, decision_gouvernementale, decision_institutionnelle | ✔ (routes-generated + server.js) | — | Implémenté (généré) |
-| Finances | facture, ligne_budgetaire, ordre_paiement, ecriture_comptable, declaration_fiscale, declaration_douaniere | ✔ (routes-generated, CRUD généré) | rule-engine, event-engine | Implémenté (généré) — pas de vérification d'autorité institutionnelle explicite |
-| Patrimoine | bien_patrimonial, bien_culturel_protege | ✔ (routes-generated) | idem | Implémenté (généré) |
-| Marchés publics | appel_offres | ✔ (routes-generated) | idem | Implémenté (généré) |
-| RH générique | dossier_agent_rh, corps, grade, fonction | ✔ (routes-generated) | idem | Implémenté (généré) |
-| Régulation/Licences | licence_commerciale, licence_telecom, autorisation_industrielle, permis_minier, immatriculation_vehicule | ✔ (routes-generated) | idem | Implémenté (généré) |
-| Divers sectoriel | dossier_scolaire, exploitation_agricole, federation_sportive, signalement_sanitaire, etc. | ✔ (routes-generated) | idem | Implémenté (généré) |
-| **RNSO (RH/Organigramme national)** | rnso_poste, rnso_structure, rnso_affectation, rnso_hierarchie, rnso_modele*, poste, grade, competence | ✖ quasi-totale (seulement me_poste, poste_hierarchie, marginaux) | rnso_hierarchie (vue) existe | **À développer** |
-| **RNSJ (Référentiel Justice)** | rnsj_texte, rnsj_relation, rnsj_modification, ref_tribunal*, ref_greffe*, ref_parquet*, ref_cour_appel* (+ historiques) | ✖ totale | RLS actif sur rnsj_texte/relation/modification (protection posée, jamais exploitée par une route) | **À développer** |
+### 7.2 Moyen terme — consolidation
 
-## 3. Cartographie technique (mise à jour 08/08/2026)
+1. ✅ Terminer la Phase 2 RLS (Chantier B).
+2. 📘 **Architecture v2** — ce document (en cours).
+3. 🧱 Modularisation progressive du backend par domaines, sans régression fonctionnelle.
 
-### 3.1 Deux patrons de développement coexistent
+### 7.3 Long terme — modules métier (feuille de route stratégique)
 
-**Patron A — Module écrit à la main (RNI)** : `src/rni-commandement-routes.js`.
-Chaîne complète par route : `requireAuth → validate() → permission RNI (meta_permission)
-→ autorité institutionnelle (verifierAutoriteInstitution/estAutoriseSurInstitution)
-→ transaction db.js → audit() → réponse JSON normalisée`. Revérifie explicitement
-que l'appelant représente l'institution qu'il prétend représenter, indépendamment
-du contexte de session. Le seul module RLS-conscient au sens strict (audit trail
-détaillé par action : PERMISSION_DENIED, INSTITUTION_MISMATCH, ACTION_SUCCESS).
+4. 📰 Journal National
+5. 📊 Cockpit Gouvernemental (après inventaire des 23 tables gouvernance)
+6. 🤖 IA décisionnelle
+7. 🔍 Recherche nationale avancée
+8. 🔄 Workflows gouvernementaux
+9. Phase 3+ : finances publiques, marchés publics, RH étendue, patrimoine, projets nationaux, puis phases 4 à 15 (intelligence gouvernementale, plateforme citoyenne, interopérabilité, SIGI-RDC).
 
-**Patron B — Généré automatiquement** : `routes-generated/*.routes.js`, produit par
-`regenerate_all.js` / `government-builder.js` à partir de métadonnées (probablement
-`meta_entity`/`meta_attribute`/`meta_rule` en base — à confirmer). Chaîne par route :
-`requireAuth (au montage dans server.js) → exigerPermission → institutionCourante()
-(résolution automatique via request-context) → verifierRegles (meta_rule, avant
-modification) → db → enregistrerEvenement/historique (event-engine) → réponse`.
-Fichiers marqués `NE PAS MODIFIER À LA MAIN`. ~40 domaines couverts par ce patron.
+---
 
-Différence de posture notable : le patron B fait confiance au contexte institution
-résolu automatiquement (403 si non résolu), sans revérification explicite d'autorité
-comme le fait RNI. À évaluer si cet écart est acceptable ou doit être comblé
-(cf. section 9, dette technique).
+## Annexe — Points de méthode actés (à respecter dans toutes les sessions futures)
 
-### 3.2 Middlewares
-- `middleware/requireAuth.js` — authentification JWT unique, partagée
-- `middleware/resoudreRoleDepuisJWT.js`
-- `middleware/validation.js` + `middleware/validerCorps.js` — validation déclarative
-- `security/scope-engine.js` (exigerPortee), `security/scope-resolver.js`,
-  `security/resource-resolver.js`, `security/hierarchy-service.js`
-
-### 3.3 Moteurs applicatifs (mono-fichier, non regroupés en modules)
-`event-engine.js`, `notification-engine.js`, `rule-engine.js`,
-`workflow-engine.js`, `aiAgent.js`
-
-### 3.4 Générateur de routes
-`regenerate_all.js` — produit l'intégralité de `routes-generated/`. À documenter
-en détail avant toute modularisation touchant ces domaines : modifier un fichier
-généré à la main serait écrasé à la prochaine régénération.
-
-## 4bis. Sécurité — état RLS (mesure du 08/08/2026)
-
-8 tables sur 148 ont RLS activé : `document, institution, personne_role,
-rnsj_texte_historique, rnsj_texte, index_recherche_global, rnsj_modification,
-rnsj_relation`.
-
-Point notable : RLS est actif sur les tables RNSJ alors qu'aucune route n'existe
-pour les exploiter — protection posée par anticipation, non encore utile
-fonctionnellement. Cohérent avec R1 (GRANT sur tables restantes, en attente
-d'arbitrage métier, cf. AUDIT_RLS_PRE_SWITCH.md).
-
-## 9. Dette technique identifiée (08/08/2026)
-
-- 17 fichiers `.backup` trouvés dans `src/` — déplacés vers `archive/backups-src/`
-  (hors src/, hors dépôt) lors de cette session. Non versionnés désormais.
-- Double driver DB (`pg` et `better-sqlite3` en dépendances) — mode de bascule
-  à documenter clairement (probablement dev sans Postgres).
-- `ioredis` déclaré en dépendance, aucun usage observé dans le code — code mort
-  probable, à confirmer avant suppression.
-- RNSO et RNSJ : bases de données riches et modélisées, aucune (RNSJ) ou quasi
-  aucune (RNSO) route d'exposition. Écart majeur entre modèle de données et
-  surface API — prochain développement fonctionnel naturel après Journal National
-  selon la feuille de route, ou à réordonner si ces référentiels sont des
-  prérequis d'autres modules.
-- Écart de posture de sécurité entre le patron RNI (vérification d'autorité
-  institutionnelle explicite à chaque action) et le patron généré (confiance au
-  contexte résolu automatiquement) — à trancher : normaliser vers RNI, ou
-  documenter comme choix assumé selon la sensibilité du domaine.
-
-## 10. Découverte — système d'audit trigger généralisé (08/08/2026)
-
-Un mécanisme d'audit au niveau base de données existe déjà et est actif,
-indépendant de `lib/audit.js` (utilisé par le module RNI et les routes
-générées) :
-
-- Fonction `fn_audit_generique()` + trigger `trg_audit_<table>` posés sur
-  5 tables : `document, institution, personne, personne_role, role`.
-- Écrit dans `journal_audit` (680 lignes au 08/08/2026) — table à laquelle
-  `pngie_app` n'a qu'un droit INSERT (cohérent : seul le trigger, exécuté
-  avec les droits du propriétaire de la fonction, doit pouvoir lire/chaîner).
-- Chaînage d'intégrité par hash (`fn_hash_chaine_journal_audit`,
-  colonnes `hash_prec`/`hash_actuel`) — garantit qu'une ligne d'audit ne
-  peut être falsifiée rétroactivement sans casser la chaîne.
-- Expurge automatiquement `password_hash`/`mfa_secret` avant stockage.
-- Table jumelle `journal_audit_default` (même structure, même trigger,
-  0 ligne observée) — rôle exact à clarifier (peut-être un gabarit ou une
-  table de fallback).
-- `journal_connexion` (7 colonnes, 0 ligne) — table prête pour
-  journaliser les tentatives de connexion, non encore alimentée.
-
-**Important — nommage** : `journal_audit` n'a aucun rapport fonctionnel
-avec le futur module "Journal National" (publication d'actes officiels,
-cf. docs/specs/Journal_National_Spec_v1.md). Coïncidence de nom source de
-confusion. Le schéma du Journal National utilise volontairement le préfixe
-`acte_*` pour éviter toute ambiguïté.
-
-**Dette technique** : deux mécanismes d'audit coexistent sans registre unique
-documenté (`lib/audit.js` orienté application/API, `fn_audit_generique`
-orienté base de données/triggers). Ni redondants ni contradictoires dans
-leur usage actuel observé, mais à clarifier : lequel est la source de vérité
-en cas de divergence ? Ce trigger devrait-il être étendu à d'autres tables
-sensibles (ex. les tables RNI, actuellement couvertes seulement par
-`lib/audit.js` applicatif) ? Décision à prendre ultérieurement, hors
-périmètre du chantier Journal National.
+- Ne jamais modifier `pngie_rdc` directement : toujours valider sur `pngie_rdc_rls_test` d'abord.
+- Toujours tester empiriquement (A/B avant/après) plutôt que déduire du code seul.
+- Mots de passe à caractères spéciaux : toujours via `$env:PGPASSWORD`, jamais dans une URL construite à la main.
+- Contenu Markdown à sauvegarder : utiliser le bouton de copie des blocs de code, pas une sélection manuelle (risque d'antislashs parasites). Vérifier avec `Get-Content -Tail N` en cas de doute.
+- Sécurité : les mots de passe `postgres` et `pngie_app` ont été échangés en clair à plusieurs reprises dans les sessions — rotation à faire dès que possible (cf. 7.1 P7).

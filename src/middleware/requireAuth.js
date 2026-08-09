@@ -1,17 +1,15 @@
-// ----------------------------------------------------------------
-// PNGIE-RDC � Middleware d'authentification unique
+// ----------------------------------------------------------------------
+// PNGIE-RDC - Middleware d'authentification unique
 // Patron "PNGIE Secure API v1"
 //
-// Extraction FID�LE du requireAuth historique de server.js (lignes
-// 129-151). AUCUN changement de comportement m�tier : m�me
-// v�rification JWT, m�me r�solution institutionId via
-// personne_role.scope_institution_id, m�me propagation requestContext.run().
-// Seuls ajouts : r�ponses normalis�es via sendError() (lib/errors.js)
-// et audit des �checs d'authentification (AUTHENTICATION_FAILED).
+// Verification JWT, puis resolution de institutionId via
+// personne_role.scope_institution_id, puis propagation via requestContext.run().
+// Reponses normalisees via sendError() (lib/errors.js) et audit des echecs
+// d'authentification (AUTHENTICATION_FAILED).
 //
 // Remplace toutes les copies locales de requireAuth (server.js et
-// rni-commandement-routes.js) : une seule impl�mentation partag�e.
-// ----------------------------------------------------------------
+// rni-commandement-routes.js) : une seule implementation partagee.
+// ----------------------------------------------------------------------
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const requestContext = require('../request-context');
@@ -36,22 +34,30 @@ async function requireAuth(req, res, next) {
   try {
     req.user = jwt.verify(token, JWT_SECRET);
   } catch {
-    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token invalide ou expir�' });
-    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token invalide ou expir�.');
+    await audit(null, 'AUTHENTICATION_FAILED', 'auth', null, { raison: 'Token invalide ou expire' });
+    return sendError(res, 'AUTHENTICATION_REQUIRED', 'Token invalide ou expire.');
   }
 
-  // R�solution de l'institution de port�e (scope_institution_id), identique � l'original.
+  // Resolution unique de l'institution de portee (scope_institution_id),
+  // toujours via bypass RLS : la lecture de personne_role se heurterait
+  // sinon a RLS elle-meme (l'utilisateur ne peut pas encore se voir tant
+  // que le contexte n'est pas etabli). Pattern deja approuve : app.bypass_rls
+  // (cf. policies RLS existantes et
+  // db/migrations/journal/006_fix_rls_journal_scope_national.sql).
   let institutionId = null;
-  try {
-    if (req.user.roles && req.user.roles.length > 0) {
+  if (req.user.roles && req.user.roles.length > 0) {
+    institutionId = await requestContext.run({ bypassRls: true }, async () => {
+      try {
       const scope = await db.get(
-        'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
-        [req.user.sub]
-      );
-      institutionId = scope ? scope.scope_institution_id : null;
-    }
-  } catch (e) {
-    institutionId = null;
+          'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
+          [req.user.sub]
+        );
+        return scope ? scope.scope_institution_id : null;
+      } catch (e) {
+        console.error('requireAuth: echec resolution institutionId (bypass RLS) pour', req.user.sub, ':', e && e.message);
+        return null;
+      }
+    });
   }
 
   requestContext.run({ institutionId }, next);

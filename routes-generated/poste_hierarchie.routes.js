@@ -1,13 +1,14 @@
-﻿const express = require("express");
+const express = require("express");
 const db = require("../src/db");
 const { exigerPermission } = require("../src/security-engine");
 const { resoudrePorteeInstitution } = require("../src/security/scope-resolver");
+const requestContext = require("../src/request-context");
 const router = express.Router();
 
 // ARBORESCENCE : institution -> unite -> postes, filtree par perimetre de l utilisateur
 router.get("/postes/arborescence", exigerPermission("unite_organisationnelle", "READ"), async (req, res) => {
   try {
-    const { institutionsVisibles } = await resoudrePorteeInstitution(req.user.sub);
+    const { institutionsVisibles } = await requestContext.run({ bypassRls: true }, () => resoudrePorteeInstitution(req.user.sub));
     if (institutionsVisibles.length === 0) {
       return res.status(403).json({ error: "Aucune institution de rattachement trouvee pour cet utilisateur" });
     }
@@ -55,16 +56,16 @@ router.get("/postes/arborescence", exigerPermission("unite_organisationnelle", "
 // ENVIRONNEMENT D UN POSTE : bloque si le poste est hors du perimetre de l utilisateur
 router.get("/postes/:id/environnement", exigerPermission("unite_organisationnelle", "READ"), async (req, res) => {
   try {
-    const poste = await db.get(`
+    const poste = await requestContext.run({ bypassRls: true }, async () => db.get(`
       SELECT p.*, u.nom AS unite_nom, u.institution_id, i.nom AS institution_nom
       FROM poste p
       JOIN unite_organisationnelle u ON u.unite_id = p.unite_id
       JOIN institution i ON i.institution_id = u.institution_id
       WHERE p.poste_id = ?
-    `, [req.params.id]);
+    `, [req.params.id]));
     if (!poste) return res.status(404).json({ error: "Poste introuvable" });
 
-    const { institutionsVisibles } = await resoudrePorteeInstitution(req.user.sub);
+    const { institutionsVisibles } = await requestContext.run({ bypassRls: true }, () => resoudrePorteeInstitution(req.user.sub));
     if (!institutionsVisibles.includes(poste.institution_id)) {
       return res.status(403).json({ error: "Ce poste est hors de votre perimetre de visibilite" });
     }

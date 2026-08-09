@@ -1,9 +1,9 @@
-﻿const { test } = require("node:test");
+const { test } = require("node:test");
 const assert = require("node:assert");
 const { login, apiRequest } = require("./helpers");
 
 const AGENT_ID = "6660d7d9-b855-4ca6-966a-4e622c8de64b"; // TestScope Agent, MIN_9
-const INSTITUTION_MIN9_ID = "fd1eab38-e23a-4e9e-bc76-796df0cd35e5"; // Transports (MI)
+const INSTITUTION_MIN9_ID = "27303992-29ff-477f-b7d2-20101b9502e7"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
 const INSTITUTION_MIN2_ID = "061cbc50-a582-44d9-8c9c-31b25debe98d"; // Affaires Etrangeres
 const AGENT_INEXISTANT_ID = "00000000-0000-0000-0000-000000000000";
 

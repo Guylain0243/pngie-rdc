@@ -1,9 +1,9 @@
-﻿const { test } = require("node:test");
+const { test } = require("node:test");
 const assert = require("node:assert");
 const { login, apiRequest } = require("./helpers");
 
 // Poste "Ministre" - unite_id de MIN_9 (Transports), institution de MI
-const POSTE_MIN9_ID = "b409eec0-f131-4dfe-8300-445c93c1942c";
+const POSTE_MIN9_ID = "51f7f699-0a2a-42e0-9a5e-a295d64c2447"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
 // Poste "Directeur General des Organisations Internationales" - institution MIN_2 (Affaires Etrangeres)
 // Hors du perimetre de tous les comptes de test sauf PR (national)
 const POSTE_MIN2_ID = "04b42a20-327a-4a88-b99b-a409e413402e";

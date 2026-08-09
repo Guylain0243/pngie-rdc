@@ -7,3 +7,7 @@
 *.db-wal
 *.log
 .env.development
+
+*.zip
+tests/e2e/.token-cache.json
+*-dump.txt

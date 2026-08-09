@@ -29,8 +29,12 @@ if (usePostgres) {
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      const { institutionId } = getContext();
-      await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+      const { institutionId, bypassRls } = getContext();
+      if (bypassRls) {
+        await client.query("SELECT set_config('app.bypass_rls', 'true', true)");
+      } else {
+        await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+      }
       const result = await client.query(toPg(sql), params);
       await client.query("COMMIT");
       return result;

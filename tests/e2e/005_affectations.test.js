@@ -1,16 +1,16 @@
-﻿const { test } = require("node:test");
+const { test } = require("node:test");
 const assert = require("node:assert");
 const { login, apiRequest } = require("./helpers");
 
 // Poste libre MIN_9 (aucune affectation active) - utilise pour creation/suppression
-const POSTE_LIBRE_MIN9_ID = "b13e1fc6-0f62-4398-b1f6-5a52d234c514";
+const POSTE_LIBRE_MIN9_ID = "fd7fdec6-553b-4322-af16-305a83f3ca5f"; // MIN_0 (Interieur), libre, corrige le 08/08/2026
 // Personne neutre, sans lien avec les comptes de test ni MIN_9/MIN_2
 const PERSONNE_NEUTRE_ID = "edbf2003-d3ac-4102-aa18-ef0488a70018";
 
 // Affectations existantes
-const AFFECTATION_MIN9_ID = "e7c3a296-f81b-4906-8b77-b0bea6ac4848"; // Ministre, MIN_9, TITULAIRE
+const AFFECTATION_MIN9_ID = "28a9e73f-2c02-406c-be82-5c2c574e87e8"; // MIN_0 (Interieur), Ministre MI, corrige le 08/08/2026
 const AFFECTATION_MIN2_ID = "f59cee7f-2065-4e91-8603-d2dd65355a14"; // Ministre, MIN_2, TITULAIRE
-const POSTE_MIN9_DEJA_POURVU_ID = "b409eec0-f131-4dfe-8300-445c93c1942c"; // poste de AFFECTATION_MIN9_ID
+const POSTE_MIN9_DEJA_POURVU_ID = "51f7f699-0a2a-42e0-9a5e-a295d64c2447"; // MIN_0 (Interieur), corrige le 08/08/2026
 const AFFECTATION_INEXISTANTE_ID = "00000000-0000-0000-0000-000000000000";
 
 let createdAffectationId = null;
