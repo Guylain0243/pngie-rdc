@@ -13,15 +13,36 @@ async function verifierAccesCockpit(ctx) {
   }
 }
 
+// Regroupe une liste d'actions critiques (deja triee niveau DESC, echeance ASC)
+// en compteurs par niveau + un extrait limite pour affichage, sans dupliquer
+// la logique de criticite (deja calculee en SQL dans le repository).
+function synthetiserActionsCritiques(actions) {
+  const compteurs = { niveau1: 0, niveau2: 0, niveau3: 0 };
+  for (const a of actions) {
+    if (a.niveau_criticite === 3) compteurs.niveau3++;
+    else if (a.niveau_criticite === 2) compteurs.niveau2++;
+    else compteurs.niveau1++;
+  }
+  return {
+    total: actions.length,
+    par_niveau: compteurs,
+    items: actions.slice(0, 10),
+  };
+}
+
 async function obtenirIndicateurs(ctx) {
   await verifierAccesCockpit(ctx);
   const filtres = decisionService.resoudreFiltresListe(ctx);
 
-  const [parStatut, enRetard, repartition, actesPublies] = await Promise.all([
+  const [parStatut, enRetard, repartition, actesPublies, actionsCritiques, alertes, repartitionProvince, dernieresActivites] = await Promise.all([
     cockpitRepo.compterDecisionsParStatut(filtres),
     cockpitRepo.compterDecisionsEnRetard(filtres),
     cockpitRepo.repartitionParInstitution(filtres),
     cockpitRepo.compterActesPublies({}),
+    cockpitRepo.listerActionsCritiques(filtres),
+    cockpitRepo.listerAlertesPourPersonne(ctx.personneId),
+    cockpitRepo.repartitionParProvince(filtres),
+    cockpitRepo.listerDernieresActivites(filtres),
   ]);
 
   const total = parStatut.reduce((acc, r) => acc + Number(r.total), 0);
@@ -32,6 +53,10 @@ async function obtenirIndicateurs(ctx) {
     decisions_en_retard: enRetard,
     repartition_par_institution: repartition,
     actes_publies_journal: actesPublies,
+    actions_critiques: synthetiserActionsCritiques(actionsCritiques),
+    alertes_nationales: alertes,
+    repartition_par_province: repartitionProvince,
+    dernieres_activites: dernieresActivites,
   };
 }
 
