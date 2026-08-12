@@ -16,6 +16,7 @@ async function main() {
 
   if (usePostgres) {
     const db0 = require('../src/db');
+    await db0.run(`SELECT set_config('app.bypass_rls', 'true', false)`);
     const tables = await db0.all(`SELECT tablename FROM pg_tables WHERE schemaname='public'`);
     if (tables.length) {
       await db0.run(`TRUNCATE TABLE ${tables.map(t => `"${t.tablename}"`).join(',')} RESTART IDENTITY CASCADE`);
