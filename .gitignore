@@ -11,3 +11,5 @@
 *.zip
 tests/e2e/.token-cache.json
 *-dump.txt
+
+archive/debug/
