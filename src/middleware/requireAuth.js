@@ -1,4 +1,4 @@
-// ----------------------------------------------------------------------
+﻿// ----------------------------------------------------------------------
 // PNGIE-RDC - Middleware d'authentification unique
 // Patron "PNGIE Secure API v1"
 //
@@ -13,6 +13,7 @@
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const requestContext = require('../request-context');
+const { possedeLectureNationale } = require('../security/scope-resolver');
 const { sendError } = require('../lib/errors');
 const audit = require('../lib/audit');
 
@@ -45,22 +46,28 @@ async function requireAuth(req, res, next) {
   // (cf. policies RLS existantes et
   // db/migrations/journal/006_fix_rls_journal_scope_national.sql).
   let institutionId = null;
+  let lectureNationale = false;
+  let resolved = { institutionId: null, lectureNationale: false };
   if (req.user.roles && req.user.roles.length > 0) {
-    institutionId = await requestContext.run({ bypassRls: true }, async () => {
+    resolved = await requestContext.run({ bypassRls: true }, async () => {
       try {
       const scope = await db.get(
           'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
           [req.user.sub]
         );
-        return scope ? scope.scope_institution_id : null;
+        const national = await possedeLectureNationale(req.user.sub);
+        return { institutionId: scope ? scope.scope_institution_id : null, lectureNationale: !!national };
       } catch (e) {
         console.error('requireAuth: echec resolution institutionId (bypass RLS) pour', req.user.sub, ':', e && e.message);
-        return null;
+        return { institutionId: null, lectureNationale: false };
       }
     });
   }
 
-  requestContext.run({ institutionId }, next);
+  institutionId = resolved.institutionId;
+  lectureNationale = resolved.lectureNationale;
+
+  requestContext.run({ institutionId, lectureNationale }, next);
 }
 
 module.exports = requireAuth;

@@ -1,10 +1,10 @@
-// Couche d'abstraction base de données. Un seul jeu de requêtes (placeholders `?`),
+﻿// Couche d'abstraction base de donnÃ©es. Un seul jeu de requÃªtes (placeholders `?`),
 // deux moteurs possibles :
-//   - SQLite (better-sqlite3)  : utilisé par défaut, pour le dev local et les tests
-//   - PostgreSQL (pg)          : utilisé dès que DATABASE_URL est définie — c'est le
-//                                moteur destiné à la production, seul capable de vraies
-//                                écritures concurrentes (voir l'audit de charge).
-// Toutes les fonctions sont asynchrones (Promise), même pour SQLite, afin que le code
+//   - SQLite (better-sqlite3)  : utilisÃ© par dÃ©faut, pour le dev local et les tests
+//   - PostgreSQL (pg)          : utilisÃ© dÃ¨s que DATABASE_URL est dÃ©finie â€” c'est le
+//                                moteur destinÃ© Ã  la production, seul capable de vraies
+//                                Ã©critures concurrentes (voir l'audit de charge).
+// Toutes les fonctions sont asynchrones (Promise), mÃªme pour SQLite, afin que le code
 // appelant soit strictement identique quel que soit le moteur choisi.
 const path = require("path");
 const { getContext } = require("./request-context");
@@ -22,18 +22,19 @@ if (usePostgres) {
   const { Pool } = require("pg");
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
-  // Chaque appel s'exécute dans une transaction courte (BEGIN/SET LOCAL/requête/COMMIT)
-  // plutôt que via pool.query() direct, afin que app.current_institution_id soit bien
-  // propagé à la connexion qui exécute la requête (RLS par institution).
+  // Chaque appel s'exÃ©cute dans une transaction courte (BEGIN/SET LOCAL/requÃªte/COMMIT)
+  // plutÃ´t que via pool.query() direct, afin que app.current_institution_id soit bien
+  // propagÃ© Ã  la connexion qui exÃ©cute la requÃªte (RLS par institution).
   async function withConnection(sql, params) {
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      const { institutionId, bypassRls } = getContext();
+      const { institutionId, bypassRls, lectureNationale } = getContext();
       if (bypassRls) {
         await client.query("SELECT set_config('app.bypass_rls', 'true', true)");
       } else {
         await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+        await client.query("SELECT set_config('app.lecture_nationale', $1, true)", [lectureNationale ? "true" : "false"]);
       }
       const result = await client.query(toPg(sql), params);
       await client.query("COMMIT");
@@ -53,8 +54,13 @@ if (usePostgres) {
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      const { institutionId } = getContext();
-      await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+      const { institutionId, bypassRls, lectureNationale } = getContext();
+      if (bypassRls) {
+        await client.query("SELECT set_config('app.bypass_rls', 'true', true)");
+      } else {
+        await client.query("SELECT set_config('app.current_institution_id', $1, true)", [institutionId || ""]);
+        await client.query("SELECT set_config('app.lecture_nationale', $1, true)", [lectureNationale ? "true" : "false"]);
+      }
       const tx = {
         async get(sql, params = []) { const { rows } = await client.query(toPg(sql), params); return rows[0] || null; },
         async all(sql, params = []) { const { rows } = await client.query(toPg(sql), params); return rows; },
@@ -92,7 +98,7 @@ if (usePostgres) {
   const Database = require("better-sqlite3");
   const dbPath = process.env.DB_PATH || path.join(__dirname, "..", "db", "pngie.db");
   const sqlite = new Database(dbPath);
-  sqlite.pragma("journal_mode = WAL"); // autorise au moins des lectures concurrentes pendant une écriture
+  sqlite.pragma("journal_mode = WAL"); // autorise au moins des lectures concurrentes pendant une Ã©criture
 
   impl = {
     driver: "sqlite",
