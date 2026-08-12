@@ -27,8 +27,8 @@ const { login, apiRequest, clearTokenCache } = require("./helpers");
 // corrige pour les comptes de test) :
 //   MI -> Interieur, Securite, Decentralisation et Affaires coutumieres (MIN_0)
 //   SN -> Senat (SENAT)
-const INSTITUTION_MI = "27303992-29ff-477f-b7d2-20101b9502e7";
-const INSTITUTION_SN = "59b51324-1791-4ccb-821c-08d3d38c0de7";
+const INSTITUTION_MI = "8d3c813c-9d17-4da3-8dbc-95eaba52d94c";
+const INSTITUTION_SN = "d4e62450-d23b-406b-b89f-9cba465b0765";
 
 function chargerEnvAdmin() {
   const p = path.join(__dirname, "..", "..", ".env.admin.local");
@@ -57,8 +57,8 @@ async function connexionAdmin() {
   return client;
 }
 
-// Pré-requis : scripts/prepare-cycle-test.js doit avoir été exécuté au moins une
-// fois pour générer scripts/donnees-test-cycle.json (institutionId + typeActeId
+// Prï¿½-requis : scripts/prepare-cycle-test.js doit avoir ï¿½tï¿½ exï¿½cutï¿½ au moins une
+// fois pour gï¿½nï¿½rer scripts/donnees-test-cycle.json (institutionId + typeActeId
 // de COMMUNIQUE), exactement comme le fait scripts/test-cycle-complet.js.
 const DONNEES_PATH = path.join(__dirname, "..", "..", "scripts", "donnees-test-cycle.json");
 
@@ -66,7 +66,7 @@ function chargerDonneesTest() {
   if (!fs.existsSync(DONNEES_PATH)) {
     throw new Error(
       `Fichier manquant : ${DONNEES_PATH}\n` +
-      "Exécuter d'abord : node .\\scripts\\prepare-cycle-test.js"
+      "Exï¿½cuter d'abord : node .\\scripts\\prepare-cycle-test.js"
     );
   }
   return JSON.parse(fs.readFileSync(DONNEES_PATH, "utf8"));
@@ -79,7 +79,7 @@ test("007 - Journal National - cycle de vie complet", async (t) => {
 
   let acteId;
 
-  await t.test("1. Création d'un acte (POST /api/journal/actes) -> 201", async () => {
+  await t.test("1. Crï¿½ation d'un acte (POST /api/journal/actes) -> 201", async () => {
     const res = await apiRequest(tokenPM, "POST", "/api/journal/actes", {
       typeActeId,
       institutionEmettriceId: institutionId,

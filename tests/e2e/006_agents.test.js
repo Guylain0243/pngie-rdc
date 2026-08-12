@@ -3,8 +3,8 @@ const assert = require("node:assert");
 const { login, apiRequest } = require("./helpers");
 
 const AGENT_ID = "6660d7d9-b855-4ca6-966a-4e622c8de64b"; // TestScope Agent, MIN_9
-const INSTITUTION_MIN9_ID = "27303992-29ff-477f-b7d2-20101b9502e7"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
-const INSTITUTION_MIN2_ID = "061cbc50-a582-44d9-8c9c-31b25debe98d"; // Affaires Etrangeres
+const INSTITUTION_MIN9_ID = "8d3c813c-9d17-4da3-8dbc-95eaba52d94c"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
+const INSTITUTION_MIN2_ID = "8f34340e-cc80-4954-b719-b9bb795c88ed"; // Affaires Etrangeres
 const AGENT_INEXISTANT_ID = "00000000-0000-0000-0000-000000000000";
 
 let createdAgentId = null;
