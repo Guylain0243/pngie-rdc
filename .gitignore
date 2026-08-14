@@ -13,3 +13,8 @@ tests/e2e/.token-cache.json
 *-dump.txt
 
 archive/debug/
+
+# Outils d'administration locaux (non versionnés)
+reset-all-passwords.js
+grant-person.js
+grant-update.js
