@@ -163,26 +163,35 @@ async function main() {
   const PAGES = ['dashboard','population','cni','etatcivil','agents','paie','biometrie','budget','tresorerie',
     'depenses','fiscalite','douanes','marches','sante','education','mines','portail','ia','audit','journal',
     'alertes','provinces','institutions','ministeres','justice','economie','securite'];
-  const permIds = {};
-  for (const p of PAGES) {
-    const id = uuid(); permIds[p] = id;
-    await db.run('INSERT INTO permission VALUES (?,?,?)', [id, 'page:'+p+':read', 'Lecture page '+p]);
-  }
+const ROLE_PAGES = {
+  PR: PAGES,
+  PM: ['dashboard','alertes','provinces','institutions','ministeres','budget','depenses','marches','sante','education','mines','journal'],
+  SN: ['dashboard','budget','institutions','ministeres','journal'],
+  AN: ['dashboard','budget','institutions','ministeres','journal'],
+  MI: ['dashboard','budget','tresorerie','depenses','fiscalite','douanes','marches','journal','institutions','ministeres'],
+  GV: ['dashboard','population','agents','budget','depenses','sante','education','mines','journal','institutions','provinces','ministeres'],
+};
 
-  const ROLE_PAGES = {
-    PR: PAGES,
-    PM: ['dashboard','alertes','provinces','institutions','ministeres','budget','depenses','marches','sante','education','mines','journal'],
-    SN: ['dashboard','budget','institutions','ministeres','journal'],
-    AN: ['dashboard','budget','institutions','ministeres','journal'],
-    MI: ['dashboard','budget','tresorerie','depenses','fiscalite','douanes','marches','journal','institutions','ministeres'],
-    GV: ['dashboard','population','agents','budget','depenses','sante','education','mines','journal','institutions','provinces','ministeres'],
-  };
-  for (const [roleCode, pages] of Object.entries(ROLE_PAGES)) {
-    for (const p of pages) {
-      await db.run('INSERT INTO role_permission VALUES (?,?)', [roleIds[roleCode], permIds[p]]);
-    }
+const permIds = {};
+for (const [roleCode, pages] of Object.entries(ROLE_PAGES)) {
+  for (const p of pages) {
+    const id = uuid();
+    permIds[roleCode + ':' + p] = id;
+    await db.run(
+      'INSERT INTO permission (permission_id, role_id, entite, action) VALUES (?,?,?,?)',
+      [id, roleIds[roleCode], 'page:' + p, 'read']
+    );
   }
+}
 
+for (const [roleCode, pages] of Object.entries(ROLE_PAGES)) {
+  for (const p of pages) {
+    await db.run(
+      'INSERT INTO role_permission (role_id, permission_id) VALUES (?,?)',
+      [roleIds[roleCode], permIds[roleCode + ':' + p]]
+    );
+  }
+}
   const DEMO_PASSWORD = 'Pngie#2027';
   const hash = await bcrypt.hash(DEMO_PASSWORD, 12);
   for (const [code, nom] of ROLES) {

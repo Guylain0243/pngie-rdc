@@ -1,6 +1,21 @@
 const express = require("express");
 const db = require("../src/db");
+const requestContext = require("../src/request-context");
 const router = express.Router();
+
+// Verifie que l'utilisateur a le droit de consulter l'institution demandee dans l'URL.
+// Bloque toute fuite inter-institutions sur les routes /institutions/:id/*.
+function verifierAccesInstitution(req, res) {
+  const ctx = requestContext.getContext();
+  if (!ctx) {
+    res.status(403).json({ error: "Contexte utilisateur non resolu." });
+    return false;
+  }
+  if (ctx.lectureNationale) return true;
+  if (ctx.institutionId && ctx.institutionId === req.params.id) return true;
+  res.status(403).json({ error: "Acces refuse a cette institution." });
+  return false;
+}
 
 // LISTE DE TOUTES LES INSTITUTIONS, GROUPEES PAR TYPE
 router.get("/institutions/liste", async (req, res) => {
@@ -29,6 +44,7 @@ router.get("/institutions/liste", async (req, res) => {
 
 // TABLEAU DE BORD GENERIQUE D'UNE INSTITUTION
 router.get("/institutions/:id/dashboard", async (req, res) => {
+  if (!verifierAccesInstitution(req, res)) return;
   try {
     const inst = await db.get(`
       SELECT institution_id, code, nom, type_institution, description, adresse, email, telephone

@@ -1,6 +1,11 @@
-﻿const db = require('./src/db');
+﻿const { Client } = require('pg');
+const c = new Client({ connectionString: process.env.DATABASE_URL });
+
 async function main() {
-  const rows = await db.all("SELECT person_id, email FROM person ORDER BY email");
-  console.log(JSON.stringify(rows, null, 2));
+  await c.connect();
+  const r = await c.query("SELECT p.email, r.code, r.nom FROM person p JOIN person_role pr ON pr.person_id = p.person_id JOIN role r ON r.role_id = pr.role_id ORDER BY r.code LIMIT 30");
+  console.table(r.rows);
+  await c.end();
 }
-main().then(() => process.exit(0)).catch(e => { console.error('Erreur:', e.message); process.exit(1); });
+
+main().catch(e => { console.error('ERREUR:', e.message); process.exit(1); });

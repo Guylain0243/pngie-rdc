@@ -37,10 +37,10 @@ async function resoudreInstitutionPersonne(personneId) {
 // a l'appelant. Aucune policy RLS n'est modifiee par ce mecanisme.
 async function possedeLectureNationale(personneId) {
   const row = await db.get(`
-    SELECT r.lecture_nationale
-    FROM personne_role pr
+    SELECT 1
+    FROM person_role pr
     JOIN role r ON r.role_id = pr.role_id
-    WHERE pr.personne_id = ? AND LOWER(pr.statut) = 'actif' AND r.lecture_nationale = true
+    WHERE pr.person_id = ? AND LOWER(pr.statut) = 'actif' AND r.code = 'PR'
     LIMIT 1
   `, [personneId]);
   return !!row;
