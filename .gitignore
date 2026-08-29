@@ -21,3 +21,7 @@ grant-update.js
 
 create_statements_found.csv
 current_objects.txt
+
+scripts/diagnostic/*_report.json
+
+scripts/diagnostic/*_report.json
