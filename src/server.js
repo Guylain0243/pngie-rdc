@@ -1,8 +1,8 @@
-﻿// PNGIE-RDC â€” Backend fonctionnel
-// Authentification rÃ©elle (bcrypt async + JWT), RBAC vÃ©rifiÃ© cÃ´tÃ© serveur,
-// journal d'audit chaÃ®nÃ© par hash, moteur de base de donnÃ©es double
-// (SQLite pour le dev/tests, PostgreSQL pour la production â€” voir src/db.js),
-// rate limiting distribuÃ© (Redis en production, mÃ©moire locale en dev â€” voir src/rateLimiter.js).
+// PNGIE-RDC — Backend fonctionnel
+// Authentification réelle (bcrypt async + JWT), RBAC vérifié côté serveur,
+// journal d'audit chaîné par hash, moteur de base de données double
+// (SQLite pour le dev/tests, PostgreSQL pour la production — voir src/db.js),
+// rate limiting distribué (Redis en production, mémoire locale en dev — voir src/rateLimiter.js).
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -18,10 +18,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// â”€â”€ BarriÃ¨re d'accÃ¨s supplÃ©mentaire, avant mÃªme l'Ã©cran de connexion â”€â”€
-// ActivÃ©e uniquement si GATE_USER et GATE_PASS sont dÃ©finis (utile surtout
-// quand le serveur est exposÃ© publiquement, via un tunnel par exemple).
-// Comparaison en temps constant pour Ã©viter les attaques par mesure de timing.
+// ── Barrière d'accès supplémentaire, avant même l'écran de connexion ──
+// Activée uniquement si GATE_USER et GATE_PASS sont définis (utile surtout
+// quand le serveur est exposé publiquement, via un tunnel par exemple).
+// Comparaison en temps constant pour éviter les attaques par mesure de timing.
 const GATE_USER = process.env.GATE_USER;
 const GATE_PASS = process.env.GATE_PASS;
 if (GATE_USER && GATE_PASS) {
@@ -51,11 +51,11 @@ if (GATE_USER && GATE_PASS) {
       if (userOk && passOk) return next();
     }
     res.set('WWW-Authenticate', 'Basic realm="PNGIE-RDC - Acces restreint"');
-    res.status(401).send('AccÃ¨s refusÃ©.');
+    res.status(401).send('Accès refusé.');
   });
-  console.log('âœ“ BarriÃ¨re d\'accÃ¨s HTTP activÃ©e (GATE_USER/GATE_PASS dÃ©finis)');
+  console.log('✓ Barrière d\'accès HTTP activée (GATE_USER/GATE_PASS définis)');
 } else {
-  console.log('âš  BarriÃ¨re d\'accÃ¨s HTTP NON activÃ©e â€” GATE_USER/GATE_PASS non dÃ©finis (recommandÃ© si exposÃ© publiquement)');
+  console.log('⚠ Barrière d\'accès HTTP NON activée — GATE_USER/GATE_PASS non définis (recommandé si exposé publiquement)');
 }
 
 app.use(express.static(require('path').join(__dirname, '..', 'public')));
@@ -68,8 +68,8 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
 const TOKEN_TTL = '8h';
 
 // Enveloppe les handlers async pour que toute erreur (y compris une panne DB)
-// retourne un 500 propre au lieu de faire planter le processus entier â€”
-// jamais testÃ© explicitement avant cette migration, corrigÃ© ici.
+// retourne un 500 propre au lieu de faire planter le processus entier —
+// jamais testé explicitement avant cette migration, corrigé ici.
 const wrap = (fn) => (req, res, next) => fn(req, res, next).catch(next);
 
 // audit() deplacee vers src/lib/audit.js (module partage) le 2026-08-01
@@ -86,12 +86,12 @@ async function hasPermission(roles, permCode) {
   return false;
 }
 
-// â”€â”€â”€ POST /api/auth/login â€” authentification rÃ©elle â”€â”€â”€
+// ─── POST /api/auth/login — authentification réelle ───
 app.use('/api', require('../routes-generated/public_institutions.routes'));
 
 app.post('/api/auth/login', wrap(async (req, res) => {
   const rateLimitEnabled = process.env.RATE_LIMIT_DISABLED !== "true"; const blocked = rateLimitEnabled ? await checkLimit(req.ip, 10, 900) : false;
-  if (blocked) return res.status(429).json({ error: 'Trop de tentatives. RÃ©essayez plus tard.' });
+  if (blocked) return res.status(429).json({ error: 'Trop de tentatives. Réessayez plus tard.' });
 
   const { email, password } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
@@ -143,19 +143,19 @@ app.post('/api/auth/logout', wrap(async (req, res) => {
   res.json({ message: 'Deconnexion reussie.' });
 }));
 
-// â”€â”€â”€ Middleware d'authentification â”€â”€â”€
+// ─── Middleware d'authentification ───
 // --- Middleware d'authentification (implementation unique, partagee) ---
 const requireAuth = require('./middleware/requireAuth');
 app.use('/api', requireAuth);
 const resoudreRoleDepuisJWT = require('./middleware/resoudreRoleDepuisJWT');
 
-// â”€â”€â”€ Middleware RBAC â”€â”€â”€
+// ─── Middleware RBAC ───
 function requirePermission(permCode) {
   return wrap(async (req, res, next) => {
     const allowed = await hasPermission(req.user.roles, permCode);
     if (!allowed) {
       await audit(req.user.sub, 'ACCESS_DENIED', 'permission', null, { permCode });
-      return res.status(403).json({ error: 'AccÃ¨s refusÃ© pour votre rÃ´le.' });
+      return res.status(403).json({ error: 'Accès refusé pour votre rôle.' });
     }
     next();
   });
@@ -198,7 +198,7 @@ app.get('/api/organigramme', requireAuth, wrap(async (req, res) => {
 }));
 
 app.get('/api/audit', requireAuth, wrap(async (req, res) => {
-  if (!req.user.roles.includes('PR') && !req.user.roles.includes('PM')) return res.status(403).json({ error: 'RÃ©servÃ© Ã  la PrÃ©sidence.' });
+  if (!req.user.roles.includes('PR') && !req.user.roles.includes('PM')) return res.status(403).json({ error: 'Réservé à la Présidence.' });
   const rows = await db.all('SELECT log_id,action,entite,created_at FROM audit_log ORDER BY log_id DESC LIMIT 50');
   res.json(rows);
 }));
@@ -277,9 +277,9 @@ app.get('/api/db-summary', requireAuth, wrap(async (req, res) => {
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'pngie-rdc-backend', db_driver: db.driver }));
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════
 // AGENTS IA
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════
 
 app.get('/api/agents', requireAuth, wrap(async (req, res) => {
   const agents = await db.all(`SELECT agent_id, code, nom, type_agent AS role_ia, statut FROM agent_ia WHERE statut='ACTIF'`);
@@ -294,7 +294,7 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
 
   if (agent.permission_code && !(await hasPermission(req.user.roles, agent.permission_code))) {
     await audit(req.user.sub, 'ACCESS_DENIED', 'ai_agent', agent.agent_id, {});
-    return res.status(403).json({ error: 'Votre rÃ´le n\'a pas accÃ¨s Ã  cet agent.' });
+    return res.status(403).json({ error: 'Votre rôle n\'a pas accès à cet agent.' });
   }
 
   const { message } = req.body || {};
@@ -310,12 +310,12 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
   res.status(result.ok ? 200 : 502).json(result);
 }));
 
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════
 // NO-CODE
-// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+// ═══════════════════════════════════════════════════════════
 
 function parseDefinition(raw) {
-  // PostgreSQL (JSONB) renvoie dÃ©jÃ  un objet ; SQLite (TEXT) renvoie une chaÃ®ne Ã  parser.
+  // PostgreSQL (JSONB) renvoie déjà un objet ; SQLite (TEXT) renvoie une chaîne à parser.
   return typeof raw === 'string' ? JSON.parse(raw) : raw;
 }
 
@@ -353,18 +353,18 @@ app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
   res.json({ ok: true, submission_id: instanceId });
 }));
 
-// â”€â”€â”€ Gestionnaire d'erreurs global : jamais de plantage silencieux du process â”€â”€â”€
+// ─── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ───
 app.use((err, req, res, next) => {
-  console.error('Erreur non gÃ©rÃ©e:', err);
+  console.error('Erreur non gérée:', err);
   if (res.headersSent) return next(err);
   res.status(500).json({ error: 'Erreur interne du serveur.' });
 });
 
 const PORT = process.env.PORT || 4000;
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`âœ“ PNGIE-RDC backend dÃ©marrÃ© sur http://localhost:${PORT} (BDD: ${db.driver})`));
+  app.listen(PORT, () => console.log(`✓ PNGIE-RDC backend démarré sur http://localhost:${PORT} (BDD: ${db.driver})`));
 }
-module.exports = app;// â”€â”€ Gestionnaire d'erreurs global : jamais de plantage silencieux du process â”€â”€ // â”€â”€ Government Meta Platform : branchement du routeur genere (Facture) â”€â”€
+module.exports = app;// ── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ── // ── Government Meta Platform : branchement du routeur genere (Facture) ──
 // Resolution du role depuis le JWT, montee UNE SEULE FOIS pour toutes les routes /api protegees.
 // Remplace progressivement les blocs inline dupliques ci-dessous (en cours de nettoyage).
 app.use('/api', resoudreRoleDepuisJWT);
@@ -378,6 +378,8 @@ app.use('/api', require('../routes-generated/signalement_sanitaire.routes'));
 app.use('/api', require('../routes-generated/dossier_judiciaire.routes'));
 
 app.use('/api', require('../routes-generated/certificat_pki.routes'));
+
+app.use('/api', require('../routes-generated/ref_tribunal_paix.routes'));
 
 app.use('/api', require('../routes-generated/dossier_recouvrement.routes'));
 
@@ -478,4 +480,3 @@ app.use('/api', rniCommandementRouter);
 // confirme, PAS avant (cf. decision d'architecture du 09/08/2026).
 app.use('/api', require('./domains/governance/decision.routes'));
 app.use('/api', require('./domains/governance/cockpit.routes'));
-
