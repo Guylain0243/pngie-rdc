@@ -1,0 +1,34 @@
+--- appel_offres ---
+  Manquantes dans SQLite: institution_id
+
+--- autorisation_industrielle ---
+  Manquantes dans SQLite: institution_id
+
+--- bien_culturel_protege ---
+  Manquantes dans SQLite: institution_id
+
+--- bien_patrimonial ---
+  Manquantes dans SQLite: institution_id
+
+--- certificat_pki ---
+  Manquantes dans SQLite: institution_id
+
+--- referentiel_national ---
+  Manquantes dans SQLite: referentiel_id, institution_id, statut, created_at
+  En trop dans SQLite: date_creation
+
+--- referentiel_national_item ---
+  Manquantes dans SQLite: code_item, metadata_json
+  En trop dans SQLite: numero
+
+--- referentiel_national_section ---
+  Manquantes dans SQLite: referentiel_id, numero_section
+  En trop dans SQLite: referentiel_code, numero
+
+--- role ---
+  Manquantes dans SQLite: description, statut, created_at, lecture_nationale
+
+--- signalement_sanitaire ---
+  Manquantes dans SQLite: institution_id
+
+(48 tables communes avec des differences de colonnes sur 60 tables communes)
