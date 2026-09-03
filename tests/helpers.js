@@ -10,6 +10,13 @@ const TEST_DB = path.join(ROOT, 'db', 'test.db');
 const TEST_PORT = 4111;
 const BASE_URL = `http://localhost:${TEST_PORT}`;
 
+// Environnement de base pour les sous-processus de test : on part de process.env
+// mais on retire DATABASE_URL, qui peut etre definie de facon persistante au
+// niveau de la session/utilisateur Windows et ferait sinon basculer src/db.js
+// et db/seed.js sur PostgreSQL au lieu de la base SQLite isolee attendue ici.
+const testEnv = { ...process.env };
+delete testEnv.DATABASE_URL;
+
 let serverProcess = null;
 
 async function startTestServer() {
@@ -19,13 +26,13 @@ async function startTestServer() {
   // pour ne jamais faire tourner des tests contre une base à moitié vide.
   execFileSync('node', ['db/seed.js'], {
     cwd: ROOT,
-    env: { ...process.env, DB_PATH: TEST_DB },
+    env: { ...testEnv, DB_PATH: TEST_DB },
     stdio: 'pipe',
   });
 
   serverProcess = spawn('node', ['src/server.js'], {
     cwd: ROOT,
-    env: { ...process.env, DB_PATH: TEST_DB, PORT: String(TEST_PORT), JWT_SECRET: 'test-secret-not-for-production-32chars' },
+    env: { ...testEnv, DB_PATH: TEST_DB, PORT: String(TEST_PORT), JWT_SECRET: 'test-secret-not-for-production-32chars' },
     stdio: 'pipe',
   });
 
