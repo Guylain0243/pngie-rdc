@@ -1,11 +1,11 @@
-﻿const fs = require("fs");
+const fs = require("fs");
 function stripComments(content) {
   return content.split("\n")
     .filter(l => !l.trim().startsWith("--") && l.trim() !== "")
     .join("\n").trim();
 }
-const ref = stripComments(fs.readFileSync("docs/sprint-2c/poste-reference.sql", "utf8"));
-const gen = stripComments(fs.readFileSync("docs/sprint-2c/generated/poste.sql", "utf8"));
+const ref = stripComments(fs.readFileSync("docs/sprint-2c/acte-officiel-reference.sql", "utf8"));
+const gen = stripComments(fs.readFileSync("docs/sprint-2c/generated/acte_officiel.sql", "utf8"));
 if (ref === gen) {
   console.log("SUCCESS - generation identique a la Golden Reference");
 } else {

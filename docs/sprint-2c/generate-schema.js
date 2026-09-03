@@ -1,4 +1,4 @@
-﻿const fs = require("fs");
+const fs = require("fs");
 
 function parseColumns(file) {
   const map = new Map();
@@ -39,12 +39,13 @@ function convertType(pgType) {
   if (t === "integer") return "INTEGER";
   if (t === "boolean") return "BOOLEAN";
   if (t.startsWith("timestamp")) return "TEXT";
+  if (t === "tsvector") return "TEXT";
   throw new Error(`Type non gere: ${pgType}`);
 }
 
 function convertDefault(def, pgType) {
   if (!def) return null;
-  if (def.includes("uuid_generate_v4()")) return null;
+  if (def.includes("uuid_generate_v4()") || def.includes("gen_random_uuid()")) return null;
   if (def.includes("now()") || def.includes("CURRENT_TIMESTAMP")) return "(datetime('now'))";
   const strMatch = def.match(/^'([^']*)'::/);
   if (strMatch) return `'${strMatch[1]}'`;
@@ -96,6 +97,6 @@ const cols = parseColumns("docs/phase5-colonnes-33-tables.txt");
 const pks = parsePK("docs/phase5-pk-33-tables.txt");
 const fks = parseFK("docs/phase5-fk-33-tables.txt");
 
-const sql = generateTable("poste", cols, pks, fks);
-fs.writeFileSync("docs/sprint-2c/generated/poste.sql", sql);
+const sql = generateTable("acte_officiel", cols, pks, fks);
+fs.writeFileSync("docs/sprint-2c/generated/acte_officiel.sql", sql);
 console.log(sql);
