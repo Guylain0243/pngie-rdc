@@ -1,25 +1,28 @@
-﻿{
-    "name":  "pngie-rdc-backend",
-    "version":  "1.0.0",
-    "type":  "commonjs",
-    "main":  "src/server.js",
-    "scripts":  {
-                    "seed":  "node db/seed.js",
-                    "start":  "node src/server.js",
-                    "test":  "node --test tests/*.test.js",
-                    "loadtest":  "node scripts/loadtest.js",
-                    "reset-test-users":  "node scripts/reset-test-users.js",
-                    "verify-test-users":  "node scripts/verify-test-users.js",
-                    "assign-test-roles":  "node scripts/assign-test-roles.js"
-                },
-    "dependencies":  {
-                         "axios":  "^1.19.0",
-                         "bcrypt":  "^6.0.0",
-                         "better-sqlite3":  "^12.11.1",
-                         "cors":  "^2.8.5",
-                         "express":  "^4.19.2",
-                         "ioredis":  "^5.11.1",
-                         "jsonwebtoken":  "^9.0.2",
-                         "pg":  "^8.22.0"
-                     }
+{
+    "name": "pngie-rdc-backend",
+    "version": "1.0.0",
+    "type": "commonjs",
+    "main": "src/server.js",
+    "scripts": {
+        "seed": "node db/seed.js",
+        "start": "node src/server.js",
+        "test": "node --test tests/*.test.js",
+        "loadtest": "node scripts/loadtest.js",
+        "reset-test-users": "node scripts/reset-test-users.js",
+        "verify-test-users": "node scripts/verify-test-users.js",
+        "assign-test-roles": "node scripts/assign-test-roles.js"
+    },
+    "dependencies": {
+        "axios": "^1.19.0",
+        "bcrypt": "^6.0.0",
+        "better-sqlite3": "^12.11.1",
+        "cors": "^2.8.5",
+        "express": "^4.19.2",
+        "ioredis": "^5.11.1",
+        "jsonwebtoken": "^9.0.2",
+        "pg": "^8.22.0"
+    },
+    "devDependencies": {
+        "jest": "^30.5.0"
+    }
 }

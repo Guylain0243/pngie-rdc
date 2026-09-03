@@ -1,4 +1,4 @@
-const { test } = require("node:test");
+﻿const { test } = require("node:test");
 const assert = require("node:assert");
 const fs = require("fs");
 const path = require("path");
@@ -27,8 +27,8 @@ const { login, apiRequest, clearTokenCache } = require("./helpers");
 // corrige pour les comptes de test) :
 //   MI -> Interieur, Securite, Decentralisation et Affaires coutumieres (MIN_0)
 //   SN -> Senat (SENAT)
-const INSTITUTION_MI = "8d3c813c-9d17-4da3-8dbc-95eaba52d94c";
-const INSTITUTION_SN = "d4e62450-d23b-406b-b89f-9cba465b0765";
+const INSTITUTION_MI = "1ed01a6a-2086-44f8-9659-c781242c9b97";
+const INSTITUTION_SN = "5940a400-82a7-4e1e-9c3c-71a13df4c459";
 
 function chargerEnvAdmin() {
   const p = path.join(__dirname, "..", "..", ".env.admin.local");
@@ -57,8 +57,8 @@ async function connexionAdmin() {
   return client;
 }
 
-// Pr�-requis : scripts/prepare-cycle-test.js doit avoir �t� ex�cut� au moins une
-// fois pour g�n�rer scripts/donnees-test-cycle.json (institutionId + typeActeId
+// Prï¿½-requis : scripts/prepare-cycle-test.js doit avoir ï¿½tï¿½ exï¿½cutï¿½ au moins une
+// fois pour gï¿½nï¿½rer scripts/donnees-test-cycle.json (institutionId + typeActeId
 // de COMMUNIQUE), exactement comme le fait scripts/test-cycle-complet.js.
 const DONNEES_PATH = path.join(__dirname, "..", "..", "scripts", "donnees-test-cycle.json");
 
@@ -66,7 +66,7 @@ function chargerDonneesTest() {
   if (!fs.existsSync(DONNEES_PATH)) {
     throw new Error(
       `Fichier manquant : ${DONNEES_PATH}\n` +
-      "Ex�cuter d'abord : node .\\scripts\\prepare-cycle-test.js"
+      "Exï¿½cuter d'abord : node .\\scripts\\prepare-cycle-test.js"
     );
   }
   return JSON.parse(fs.readFileSync(DONNEES_PATH, "utf8"));
@@ -79,7 +79,7 @@ test("007 - Journal National - cycle de vie complet", async (t) => {
 
   let acteId;
 
-  await t.test("1. Cr�ation d'un acte (POST /api/journal/actes) -> 201", async () => {
+  await t.test("1. Crï¿½ation d'un acte (POST /api/journal/actes) -> 201", async () => {
     const res = await apiRequest(tokenPM, "POST", "/api/journal/actes", {
       typeActeId,
       institutionEmettriceId: institutionId,
@@ -258,3 +258,4 @@ test("007d - Journal National - trace dans journal_audit", async (t) => {
     }
   });
 });
+

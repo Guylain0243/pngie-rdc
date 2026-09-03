@@ -5,9 +5,11 @@
 // directement liee en source voit l institution rattachee - pas d heritage
 // de subordination, conformement a l independance fonctionnelle de ces organes.
 const db = require("../db");
-
 async function getInstitutionsDescendantes(institutionId) {
   if (!institutionId) return [];
+
+  const _ctx = await db.all(`SELECT current_setting('app.current_institution_id', true) AS inst, current_setting('app.bypass_rls', true) AS bypass`);
+  console.error('DEBUG RLS CONTEXT:', JSON.stringify(_ctx));
 
   const tutelle = await db.all(`
     WITH RECURSIVE descendants AS (
@@ -20,15 +22,12 @@ async function getInstitutionsDescendantes(institutionId) {
     )
     SELECT institution_id FROM descendants
   `, [institutionId]);
-
   const rattachements = await db.all(`
     SELECT institution_cible_id AS institution_id
     FROM institution_relation
     WHERE institution_source_id = ? AND type_relation = 'RATTACHEMENT_CONSTITUTIONNEL' AND actif = TRUE
   `, [institutionId]);
-
   const ensemble = new Set([...tutelle.map(r => r.institution_id), ...rattachements.map(r => r.institution_id)]);
   return [...ensemble];
 }
-
 module.exports = { getInstitutionsDescendantes };

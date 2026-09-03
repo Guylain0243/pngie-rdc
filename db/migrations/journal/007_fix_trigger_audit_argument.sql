@@ -1,7 +1,7 @@
-﻿-- 007_fix_trigger_audit_argument.sql
+-- 007_fix_trigger_audit_argument.sql
 -- Le trigger 005 utilisait fn_audit_generique('id') sur les 3 tables,
 -- ce qui est correct pour le nom de colonne (id est bien la PK des 3
--- tables acte_*). Recreation propre pour eliminer toute ambiguite
+-- tables actes_*). Recreation propre pour eliminer toute ambiguite
 -- residuelle de definition.
 BEGIN;
 

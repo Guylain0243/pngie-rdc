@@ -25,3 +25,59 @@ current_objects.txt
 scripts/diagnostic/*_report.json
 
 scripts/diagnostic/*_report.json
+# --- Bruit de diagnostic session e2e (2026-09) ---
+diag*.txt
+diag*.js
+*_out.txt
+*_output.txt
+*_output2.txt
+*_output3.txt
+test*_final*.txt
+test005_*.txt
+test006_*.txt
+test_*.txt
+resultat_*.txt
+recherche_*.txt
+perm_agent*.txt
+meta_perm*.txt
+role_lecture_nat.txt
+scope_engine.txt
+scope_resolver_full.txt
+service_full.txt
+repository_full.txt
+resoudre_role.txt
+unite_min.txt
+unite_schema.txt
+poste_min*.txt
+inst_check.txt
+jest_output.txt
+seed_test.sql
+update_pr.txt
+verif_*.txt
+collecte_*.txt
+collecte_sources.ps1
+add_perm_affect.txt
+ajout_perm_out.txt
+affectation_routes.txt
+agent_fixture.txt
+agent_routes.txt
+agent_schema.txt
+comptes_test.txt
+fixtures*_out.txt
+fixtures_scripts.txt
+node_test_output*.txt
+diagnostic_jwt.txt
+diag.ps1
+
+# --- Scripts temporaires ---
+_tmp_*.js
+apply-test-scopes-temp.js
+
+# --- Backups ---
+*.backup
+
+# --- Dossiers de travail non versionnés ---
+docs/sessions/
+tests/fixtures/
+server_err.txt
+_tmp_008_committed.sql

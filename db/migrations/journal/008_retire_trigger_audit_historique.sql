@@ -1,4 +1,4 @@
-﻿-- 008_retire_trigger_audit_historique.sql
+-- 008_retire_trigger_audit_historique.sql
 -- acte_historique.id est BIGSERIAL, pas UUID : fn_audit_generique() ne peut
 -- pas caster cette valeur en UUID pour entite_ref_id, d'ou l'echec systematique.
 -- Decision : acte_historique EST deja la table d'historique fonctionnel du

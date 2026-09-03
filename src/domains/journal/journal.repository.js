@@ -74,6 +74,7 @@ async function changerDiffusion(id, diffusion) {
 }
 
 async function ajouterSignature(tx, { acteId, signataireId, roleSignataire, hashDocument, certificatRef }) {
+  console.log('DEBUG ajouterSignature APPELEE avec:', { acteId, signataireId, roleSignataire, hashDocument, certificatRef });
   return tx.get(
     `INSERT INTO acte_signature (acte_id, signataire_id, role_signataire, hash_document, certificat_ref)
      VALUES (?, ?, ?, ?, ?)

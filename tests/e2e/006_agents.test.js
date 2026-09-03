@@ -1,10 +1,10 @@
-const { test } = require("node:test");
+﻿const { test } = require("node:test");
 const assert = require("node:assert");
 const { login, apiRequest } = require("./helpers");
 
 const AGENT_ID = "6660d7d9-b855-4ca6-966a-4e622c8de64b"; // TestScope Agent, MIN_9
-const INSTITUTION_MIN9_ID = "8d3c813c-9d17-4da3-8dbc-95eaba52d94c"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
-const INSTITUTION_MIN2_ID = "8f34340e-cc80-4954-b719-b9bb795c88ed"; // Affaires Etrangeres
+const INSTITUTION_MIN9_ID = "1ed01a6a-2086-44f8-9659-c781242c9b97"; // MIN_0 (Interieur), corrige le 02/09/2026 apres reseed
+const INSTITUTION_MIN2_ID = "b2beae6e-4a89-48ea-b7cc-776841c2dc8e"; // Affaires Etrangeres, corrige le 02/09/2026 apres reseed
 const AGENT_INEXISTANT_ID = "00000000-0000-0000-0000-000000000000";
 
 let createdAgentId = null;

@@ -1,4 +1,4 @@
-﻿// src/security/scope-resolver.js
+// src/security/scope-resolver.js
 // Resout le perimetre institutionnel d une personne :
 // personne -> affectation active -> poste -> unite -> institution
 const db = require("../db");
@@ -38,9 +38,9 @@ async function resoudreInstitutionPersonne(personneId) {
 async function possedeLectureNationale(personneId) {
   const row = await db.get(`
     SELECT 1
-    FROM person_role pr
+    FROM personne_role pr
     JOIN role r ON r.role_id = pr.role_id
-    WHERE pr.person_id = ? AND LOWER(pr.statut) = 'actif' AND r.code = 'PR'
+    WHERE pr.personne_id = ? AND LOWER(pr.statut) = 'actif' AND r.lecture_nationale = true
     LIMIT 1
   `, [personneId]);
   return !!row;

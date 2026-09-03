@@ -25,7 +25,7 @@ async function startTestServer() {
 
   serverProcess = spawn('node', ['src/server.js'], {
     cwd: ROOT,
-    env: { ...process.env, DB_PATH: TEST_DB, PORT: String(TEST_PORT), JWT_SECRET: 'test-secret-not-for-production' },
+    env: { ...process.env, DB_PATH: TEST_DB, PORT: String(TEST_PORT), JWT_SECRET: 'test-secret-not-for-production-32chars' },
     stdio: 'pipe',
   });
 

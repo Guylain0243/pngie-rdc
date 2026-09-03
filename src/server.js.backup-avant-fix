@@ -74,7 +74,7 @@ async function apiRequest(token, method, path, body) {
     headers: {
       "Content-Type": "application/json",
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(GATE_AUTH ? { "X-Gate-Authorization": GATE_AUTH } : {}),
+      ...(GATE_AUTH ? { "x-gate-auth": GATE_AUTH } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
   });
@@ -82,4 +82,12 @@ async function apiRequest(token, method, path, body) {
   try { json = await res.json(); } catch {}
   return { status: res.status, body: json };
 }
-module.exports = { BASE_URL, TEST_ACCOUNTS, TEST_PASSWORD, LOGIN_PATH, login, apiRequest, clearTokenCache };
+module.exports = { BASE_URL, TEST_ACCOUNTS, TEST_PASSWORD, LOGIN_PATH, login, apiRequest, clearTokenCache };l National
+// (permission/personne_role). L'ancienne route (../routes-generated/
+// decision_gouvernementale.routes, prefixe /decisions) reste montee
+// volontairement le temps de valider le nouveau chemin (prefixe
+// /governance/decisions) par les tests E2E -- a retirer une fois
+// confirme, PAS avant (cf. decision d'architecture du 09/08/2026).
+app.use('/api', require('./domains/governance/decision.routes'));
+app.use('/api', require('./domains/governance/cockpit.routes'));
+

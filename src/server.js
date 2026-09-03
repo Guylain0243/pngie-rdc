@@ -1,3 +1,10 @@
+process.on('unhandledRejection', (e) => {
+  require('fs').appendFileSync('erreur-500.log', '\n[unhandledRejection] ' + new Date().toISOString() + '\n' + e.stack + '\n');
+});
+process.on('uncaughtException', (e) => {
+  require('fs').appendFileSync('erreur-500.log', '\n[uncaughtException] ' + new Date().toISOString() + '\n' + e.stack + '\n');
+});
+
 // PNGIE-RDC — Backend fonctionnel
 // Authentification réelle (bcrypt async + JWT), RBAC vérifié côté serveur,
 // journal d'audit chaîné par hash, moteur de base de données double
@@ -353,18 +360,13 @@ app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
   res.json({ ok: true, submission_id: instanceId });
 }));
 
-// ─── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ───
-app.use((err, req, res, next) => {
-  console.error('Erreur non gérée:', err);
-  if (res.headersSent) return next(err);
-  res.status(500).json({ error: 'Erreur interne du serveur.' });
-});
-
 const PORT = process.env.PORT || 4000;
 if (require.main === module) {
   app.listen(PORT, () => console.log(`✓ PNGIE-RDC backend démarré sur http://localhost:${PORT} (BDD: ${db.driver})`));
 }
-module.exports = app;// ── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ── // ── Government Meta Platform : branchement du routeur genere (Facture) ──
+module.exports = app;
+
+// ── Government Meta Platform : branchement du routeur genere (Facture) ──
 // Resolution du role depuis le JWT, montee UNE SEULE FOIS pour toutes les routes /api protegees.
 // Remplace progressivement les blocs inline dupliques ci-dessous (en cours de nettoyage).
 app.use('/api', resoudreRoleDepuisJWT);
@@ -381,6 +383,7 @@ app.use('/api', require('../routes-generated/certificat_pki.routes'));
 
 app.use('/api', require('../routes-generated/ref_tribunal_paix.routes'));
 
+app.use('/api', require('../routes-generated/rnso_affectation.routes'));
 app.use('/api', require('../routes-generated/dossier_recouvrement.routes'));
 
 
@@ -472,7 +475,7 @@ app.use('/api', rniCommandementRouter);
 
 // Cockpit Gouvernemental V1 (09/08/2026) -- src/domains/governance/.
 // Migration PROGRESSIVE de decision_gouvernementale/decision_action hors de
-// routes-generated (meta_permission) vers le patron Journal National
+// routes-generated (meta_permission) vers le patron Journal
 // (permission/personne_role). L'ancienne route (../routes-generated/
 // decision_gouvernementale.routes, prefixe /decisions) reste montee
 // volontairement le temps de valider le nouveau chemin (prefixe
@@ -480,3 +483,10 @@ app.use('/api', rniCommandementRouter);
 // confirme, PAS avant (cf. decision d'architecture du 09/08/2026).
 app.use('/api', require('./domains/governance/decision.routes'));
 app.use('/api', require('./domains/governance/cockpit.routes'));
+
+// ─── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ───
+app.use((err, req, res, next) => {
+  console.error('Erreur non gérée:', err);
+  if (res.headersSent) return next(err);
+  res.status(500).json({ error: 'Erreur interne du serveur.' });
+});

@@ -1,4 +1,4 @@
-﻿-- Migration : ajout de la permission unite_organisationnelle/READ, manquante pour tous les roles.
+-- Migration : ajout de la permission unite_organisationnelle/READ, manquante pour tous les roles.
 -- Cause : les routes /postes/arborescence et /postes/:id/environnement exigent
 -- exigerPermission("unite_organisationnelle", "READ"), mais aucune ligne n existait
 -- dans permission pour cette entite. Matrice deduite de tests/e2e/004_postes.test.js :

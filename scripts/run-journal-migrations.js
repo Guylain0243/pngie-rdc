@@ -18,11 +18,16 @@ function loadEnvAdmin() {
 
 const MIGRATIONS_DIR = path.join(__dirname, "..", "db", "migrations", "journal");
 const FICHIERS = [
-  "001_create_journal_schema.sql",
-  "002_seed_type_acte.sql",
   "003_permissions_journal.sql",
-  "004_rls_journal.sql",
-  "005_triggers_journal.sql",
+  "006_fix_rls_journal_scope_national.sql",
+  "007_fix_trigger_audit_argument.sql",
+  "008_retire_trigger_audit_historique.sql",
+  "009_grant_mi_journal_creer.sql",
+  "010_test_fixture_institution_mi.sql",
+  "011_fix_rls_acte_officiel_insert_national.sql",
+  "012_grant_pm_journal_creer.sql",
+  "013_fix_role_lecture_nationale.sql",
+  "014_seed_permissions_workflow_journal.sql",
 ];
 
 async function main() {
@@ -54,3 +59,4 @@ async function main() {
 }
 
 main().catch(e => { console.error("ERREUR :", e.message); process.exit(1); });
+

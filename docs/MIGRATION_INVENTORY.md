@@ -8,6 +8,17 @@
 
 ---
 
+## Note post-clôture
+
+Le présent document décrit l'inventaire réalisé et clôturé lors du Sprint 1
+(Baseline V2).
+
+Les développements intervenus après cette clôture ne modifient pas les constats
+de l'inventaire. Lorsqu'ils apportent un contexte utile à sa lecture, ils sont
+référencés en fin de document, à titre historique, sans remettre en cause le
+statut « Terminé » du document.
+
+---
 ## 1. Chronologie générale
 
 La plateforme s'est construite en six vagues successives, réparties sur six emplacements physiques distincts dans le dépôt :
@@ -246,3 +257,17 @@ Aucune modification du code tant que deux points ne sont pas clarifiés :
 ---
 
 *Document produit dans le cadre du Sprint 1 — Baseline V2 (audit, lecture seule). Prochaine étape : `SEED_INVENTORY.md`.*
+
+## Références post-clôture
+
+### 2026-08-30 — Corrections E2E Journal National
+
+Voir :
+docs/sessions/SESSION_2026-08-30_JOURNAL_NATIONAL.md
+
+Migrations associées :
+- 009_grant_mi_journal_creer.sql
+- 010_test_fixture_institution_mi.sql
+- 011_fix_rls_acte_officiel_insert_national.sql
+  (créé initialement sous 008, renommé pour éviter une collision avec
+  008_retire_trigger_audit_historique.sql — voir le journal de session pour détail)

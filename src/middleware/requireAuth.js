@@ -1,4 +1,4 @@
-﻿// ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
 // PNGIE-RDC - Middleware d'authentification unique
 // Patron "PNGIE Secure API v1"
 //
@@ -52,7 +52,7 @@ async function requireAuth(req, res, next) {
     resolved = await requestContext.run({ bypassRls: true }, async () => {
       try {
       const scope = await db.get(
-          'SELECT scope_org_id AS scope_institution_id FROM person_role WHERE person_id = ?::uuid AND scope_org_id IS NOT NULL LIMIT 1',
+          'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
           [req.user.sub]
         );
         const national = await possedeLectureNationale(req.user.sub);
