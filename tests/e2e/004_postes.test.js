@@ -1,15 +1,18 @@
-const { test } = require("node:test");
+﻿const { test } = require("node:test");
 const assert = require("node:assert");
-const { login, apiRequest } = require("./helpers");
+const { login, apiRequest, resolvePosteByCode } = require("./helpers");
 
 // Poste "Ministre" - unite_id de MIN_9 (Transports), institution de MI
-const POSTE_MIN9_ID = "51f7f699-0a2a-42e0-9a5e-a295d64c2447"; // MIN_0 (Interieur), corrige le 08/08/2026 pour MI
+let POSTE_MIN9_ID;
 // Poste "Directeur General des Organisations Internationales" - institution MIN_2 (Affaires Etrangeres)
 // Hors du perimetre de tous les comptes de test sauf PR (national)
-const POSTE_MIN2_ID = "04b42a20-327a-4a88-b99b-a409e413402e";
+let POSTE_MIN2_ID;
 const POSTE_INEXISTANT_ID = "00000000-0000-0000-0000-000000000000";
 
 test("004 - Postes (arborescence + environnement)", async (t) => {
+  POSTE_MIN9_ID = await resolvePosteByCode("POSTE-POURVU");
+  POSTE_MIN2_ID = await resolvePosteByCode("POSTE-MIN2-A");
+
 
   // --- /postes/arborescence : tous les roles ont READ sur unite_organisationnelle ---
   await t.test("MI voit l'arborescence (200)", async () => {

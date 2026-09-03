@@ -83,3 +83,102 @@ async function apiRequest(token, method, path, body) {
   return { status: res.status, body: json };
 }
 module.exports = { BASE_URL, TEST_ACCOUNTS, TEST_PASSWORD, LOGIN_PATH, login, apiRequest, clearTokenCache };
+
+// ─── Resolution dynamique par code metier (evite les UUID codes en dur) ───
+// Se connecte en tant que superuser Postgres pour contourner le RLS,
+// exactement comme connexionAdmin() dans 007_journal_national.test.js.
+function chargerEnvAdmin() {
+  const envPath = path.join(__dirname, "..", "..", ".env.admin.local");
+  const lines = fs.readFileSync(envPath, "utf8").split("\n");
+  const env = {};
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t || t.startsWith("#")) continue;
+    const idx = t.indexOf("=");
+    if (idx === -1) continue;
+    env[t.slice(0, idx).trim()] = t.slice(idx + 1).trim();
+  }
+  return env;
+}
+
+async function connexionAdmin() {
+  const { Client } = require("pg");
+  const env = chargerEnvAdmin();
+  const client = new Client({
+    host: "localhost",
+    port: 5432,
+    user: env.PGSUPERUSER,
+    password: env.PGSUPERUSER_PASSWORD,
+    database: "pngie_rdc_rls_test",
+  });
+  await client.connect();
+  return client;
+}
+
+async function resolveInstitutionByCode(code) {
+  const client = await connexionAdmin();
+  try {
+    const r = await client.query("SELECT institution_id FROM institution WHERE code = $1", [code]);
+    if (r.rowCount === 0) throw new Error(`Institution introuvable pour le code : ${code}`);
+    return r.rows[0].institution_id;
+  } finally {
+    await client.end();
+  }
+}
+
+async function resolvePosteByCode(code) {
+  const client = await connexionAdmin();
+  try {
+    const r = await client.query("SELECT poste_id FROM poste WHERE code = $1", [code]);
+    if (r.rowCount === 0) throw new Error(`Poste introuvable pour le code : ${code}`);
+    return r.rows[0].poste_id;
+  } finally {
+    await client.end();
+  }
+}
+
+async function resolveAgentByMatricule(matricule) {
+  const client = await connexionAdmin();
+  try {
+    const r = await client.query("SELECT agent_id FROM agent WHERE matricule = $1", [matricule]);
+    if (r.rowCount === 0) throw new Error(`Agent introuvable pour le matricule : ${matricule}`);
+    return r.rows[0].agent_id;
+  } finally {
+    await client.end();
+  }
+}
+
+async function resolvePersonneByMatricule(matricule) {
+  const client = await connexionAdmin();
+  try {
+    const r = await client.query("SELECT personne_id FROM personne WHERE matricule = $1", [matricule]);
+    if (r.rowCount === 0) throw new Error(`Personne introuvable pour le matricule : ${matricule}`);
+    return r.rows[0].personne_id;
+  } finally {
+    await client.end();
+  }
+}
+
+async function resolveAffectationByPosteCode(posteCode) {
+  const client = await connexionAdmin();
+  try {
+    const r = await client.query(
+      `SELECT a.affectation_id
+       FROM affectation a
+       JOIN poste p ON p.poste_id = a.poste_id
+       WHERE p.code = $1`,
+      [posteCode]
+    );
+    if (r.rowCount === 0) throw new Error(`Affectation introuvable pour le poste : ${posteCode}`);
+    return r.rows[0].affectation_id;
+  } finally {
+    await client.end();
+  }
+}
+
+module.exports.connexionAdmin = connexionAdmin;
+module.exports.resolveInstitutionByCode = resolveInstitutionByCode;
+module.exports.resolvePosteByCode = resolvePosteByCode;
+module.exports.resolveAgentByMatricule = resolveAgentByMatricule;
+module.exports.resolvePersonneByMatricule = resolvePersonneByMatricule;
+module.exports.resolveAffectationByPosteCode = resolveAffectationByPosteCode;

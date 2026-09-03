@@ -1,10 +1,12 @@
 ﻿const { test } = require("node:test");
 const assert = require("node:assert");
-const { login, apiRequest } = require("./helpers");
+const { login, apiRequest, resolveAgentByMatricule } = require("./helpers");
 
-const AGENT_ID = "6660d7d9-b855-4ca6-966a-4e622c8de64b";
+let AGENT_ID;
 
 test("003 - ScopeResolver agent", async (t) => {
+  AGENT_ID = await resolveAgentByMatricule("TESTSCOPE-006");
+
   await t.test("MI voit l'agent de son perimetre (200)", async () => {
     const token = await login("MI");
     const res = await apiRequest(token, "GET", `/api/agents-rh/${AGENT_ID}`);
@@ -39,3 +41,4 @@ test("003 - ScopeResolver agent", async (t) => {
     assert.ok(ids.includes(AGENT_ID), "PR devrait voir l'agent de MI (perimetre national)");
   });
 });
+

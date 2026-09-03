@@ -1,15 +1,19 @@
 ﻿const { test } = require("node:test");
 const assert = require("node:assert");
-const { login, apiRequest } = require("./helpers");
+const { login, apiRequest, resolveAgentByMatricule, resolveInstitutionByCode } = require("./helpers");
 
-const AGENT_ID = "6660d7d9-b855-4ca6-966a-4e622c8de64b"; // TestScope Agent, MIN_9
-const INSTITUTION_MIN9_ID = "1ed01a6a-2086-44f8-9659-c781242c9b97"; // MIN_0 (Interieur), corrige le 02/09/2026 apres reseed
-const INSTITUTION_MIN2_ID = "b2beae6e-4a89-48ea-b7cc-776841c2dc8e"; // Affaires Etrangeres, corrige le 02/09/2026 apres reseed
+let AGENT_ID;
+let INSTITUTION_MIN9_ID;
+let INSTITUTION_MIN2_ID;
 const AGENT_INEXISTANT_ID = "00000000-0000-0000-0000-000000000000";
 
 let createdAgentId = null;
 
 test("006 - Agents RH", async (t) => {
+  AGENT_ID = await resolveAgentByMatricule("TESTSCOPE-006");
+  INSTITUTION_MIN9_ID = await resolveInstitutionByCode("MIN_0");
+  INSTITUTION_MIN2_ID = await resolveInstitutionByCode("MIN_2");
+
 
   t.after(async () => {
     if (createdAgentId) {
@@ -191,3 +195,5 @@ test("006 - Agents RH", async (t) => {
     assert.strictEqual(res.status, 404);
   });
 });
+
+
