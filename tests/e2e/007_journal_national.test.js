@@ -22,40 +22,12 @@ function chargerEnvForce(nomFichier) {
 chargerEnvForce(".env.test");
 
 const { Client } = require("pg");
-const { login, apiRequest, clearTokenCache } = require("./helpers");
+const { login, apiRequest, clearTokenCache, connexionAdmin, resolveInstitutionByCode } = require("./helpers");
 // Institutions confirmees le 08/08/2026 (voir personne_role.scope_institution_id
 // corrige pour les comptes de test) :
 //   MI -> Interieur, Securite, Decentralisation et Affaires coutumieres (MIN_0)
 //   SN -> Senat (SENAT)
-const INSTITUTION_MI = "1ed01a6a-2086-44f8-9659-c781242c9b97";
-const INSTITUTION_SN = "5940a400-82a7-4e1e-9c3c-71a13df4c459";
-
-function chargerEnvAdmin() {
-  const p = path.join(__dirname, "..", "..", ".env.admin.local");
-  const lines = fs.readFileSync(p, "utf8").split("\n");
-  const env = {};
-  for (const line of lines) {
-    const t = line.trim();
-    if (!t || t.startsWith("#")) continue;
-    const idx = t.indexOf("=");
-    if (idx === -1) continue;
-    env[t.slice(0, idx).trim()] = t.slice(idx + 1).trim();
-  }
-  return env;
-}
-
-async function connexionAdmin() {
-  const env = chargerEnvAdmin();
-  const client = new Client({
-    host: "localhost",
-    port: 5432,
-    user: env.PGSUPERUSER,
-    password: env.PGSUPERUSER_PASSWORD,
-    database: "pngie_rdc_rls_test",
-  });
-  await client.connect();
-  return client;
-}
+let INSTITUTION_MI;
 
 // Prï¿½-requis : scripts/prepare-cycle-test.js doit avoir ï¿½tï¿½ exï¿½cutï¿½ au moins une
 // fois pour gï¿½nï¿½rer scripts/donnees-test-cycle.json (institutionId + typeActeId
@@ -170,6 +142,7 @@ test("007b - Journal National - RBAC refus permission manquante", async (t) => {
 test("007c - Journal National - RLS institution vs national", async (t) => {
   const { typeActeId } = chargerDonneesTest();
   const tokenMI = await login("MI");
+  INSTITUTION_MI = await resolveInstitutionByCode("MIN_0");
   let acteId;
 
   await t.test("Creation d'un acte scope institution MI -> 201", async () => {
@@ -258,4 +231,5 @@ test("007d - Journal National - trace dans journal_audit", async (t) => {
     }
   });
 });
+
 

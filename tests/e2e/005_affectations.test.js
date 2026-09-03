@@ -1,6 +1,6 @@
 const { test } = require("node:test");
 const assert = require("node:assert");
-const { login, apiRequest } = require("./helpers");
+const { login, apiRequest, resolveAffectationByPosteCode } = require("./helpers");
 
 // Poste libre MIN_9 (aucune affectation active) - utilise pour creation/suppression
 const POSTE_LIBRE_MIN9_ID = "fd7fdec6-553b-4322-af16-305a83f3ca5f"; // MIN_0 (Interieur), libre, corrige le 08/08/2026
@@ -8,14 +8,16 @@ const POSTE_LIBRE_MIN9_ID = "fd7fdec6-553b-4322-af16-305a83f3ca5f"; // MIN_0 (In
 const PERSONNE_NEUTRE_ID = "edbf2003-d3ac-4102-aa18-ef0488a70018";
 
 // Affectations existantes
-const AFFECTATION_MIN9_ID = "28a9e73f-2c02-406c-be82-5c2c574e87e8"; // MIN_0 (Interieur), Ministre MI, corrige le 08/08/2026
-const AFFECTATION_MIN2_ID = "f59cee7f-2065-4e91-8603-d2dd65355a14"; // Ministre, MIN_2, TITULAIRE
+let AFFECTATION_MIN9_ID;
+let AFFECTATION_MIN2_ID;
 const POSTE_MIN9_DEJA_POURVU_ID = "51f7f699-0a2a-42e0-9a5e-a295d64c2447"; // MIN_0 (Interieur), corrige le 08/08/2026
 const AFFECTATION_INEXISTANTE_ID = "00000000-0000-0000-0000-000000000000";
 
 let createdAffectationId = null;
 
 test("005 - Affectations", async (t) => {
+  AFFECTATION_MIN9_ID = await resolveAffectationByPosteCode("POSTE-POURVU");
+  AFFECTATION_MIN2_ID = await resolveAffectationByPosteCode("POSTE-MIN2-B");
 
   t.after(async () => {
     if (createdAffectationId) {
