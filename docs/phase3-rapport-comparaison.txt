@@ -103,8 +103,7 @@
   - unite_organisationnelle
   - validation
   - verification
-  - ﻿accord_cooperation
-(105 tables)
+(104 tables)
 
 === TABLES PRESENTES DANS SQLITE MAIS ABSENTES DE POSTGRES ===
   - activite
@@ -172,9 +171,6 @@
 (62 tables)
 
 === DIFFERENCES DE COLONNES SUR TABLES COMMUNES ===
-
---- accord_cooperation ---
-  En trop dans SQLite: accord_cooperation_id
 
 --- appel_offres ---
   Manquantes dans SQLite: institution_id
@@ -337,4 +333,4 @@
 --- signalement_sanitaire ---
   Manquantes dans SQLite: institution_id
 
-(49 tables communes avec des differences de colonnes sur 60 tables communes)
+(48 tables communes avec des differences de colonnes sur 60 tables communes)
