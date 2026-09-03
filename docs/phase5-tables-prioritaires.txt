@@ -17,7 +17,6 @@ institution
 institution_relation
 instruction_historique
 meta_notification_rule
-meta_permission
 meta_rule
 meta_workflow_transition
 nocode_formulaire
