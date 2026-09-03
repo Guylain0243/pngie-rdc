@@ -1,0 +1,314 @@
+﻿acte_historique|id|bigint|NO|nextval('acte_historique_id_seq'::regclass)|1
+acte_historique|acte_id|uuid|NO||2
+acte_historique|type_evenement|character varying|NO||3
+acte_historique|valeur_avant|jsonb|YES||4
+acte_historique|valeur_apres|jsonb|YES||5
+acte_historique|modifie_par|uuid|YES||6
+acte_historique|created_at|timestamp with time zone|NO|now()|7
+acte_officiel|id|uuid|NO|gen_random_uuid()|1
+acte_officiel|numero_officiel|character varying|YES||2
+acte_officiel|type_acte_id|integer|NO||3
+acte_officiel|institution_emettrice_id|uuid|NO||4
+acte_officiel|titre|character varying|NO||5
+acte_officiel|resume|text|YES||6
+acte_officiel|contenu_texte|text|YES||7
+acte_officiel|document_pdf_id|uuid|YES||8
+acte_officiel|statut|character varying|NO|'brouillon'::character varying|9
+acte_officiel|diffusion|character varying|NO|'restreint'::character varying|10
+acte_officiel|acte_reference_id|uuid|YES||11
+acte_officiel|date_signature|timestamp with time zone|YES||12
+acte_officiel|date_publication|timestamp with time zone|YES||13
+acte_officiel|date_entree_vigueur|timestamp with time zone|YES||14
+acte_officiel|cree_par|uuid|NO||15
+acte_officiel|created_at|timestamp with time zone|NO|now()|16
+acte_officiel|updated_at|timestamp with time zone|NO|now()|17
+acte_officiel|recherche_tsv|tsvector|YES||18
+acte_signature|id|uuid|NO|gen_random_uuid()|1
+acte_signature|acte_id|uuid|NO||2
+acte_signature|signataire_id|uuid|NO||3
+acte_signature|role_signataire|character varying|YES||4
+acte_signature|date_signature|timestamp with time zone|NO|now()|5
+acte_signature|hash_document|character varying|NO||6
+acte_signature|certificat_ref|character varying|YES||7
+acte_signature|created_at|timestamp with time zone|NO|now()|8
+acte_workflow_transition|id|integer|NO|nextval('acte_workflow_transition_id_seq'::regclass)|1
+acte_workflow_transition|type_acte_id|integer|NO||2
+acte_workflow_transition|statut_origine|character varying|NO||3
+acte_workflow_transition|statut_cible|character varying|NO||4
+acte_workflow_transition|permission_requise|character varying|NO||5
+affectation|affectation_id|uuid|NO|uuid_generate_v4()|1
+affectation|personne_id|uuid|NO||2
+affectation|poste_id|uuid|NO||3
+affectation|type_affectation|character varying|NO|'TITULAIRE'::character varying|4
+affectation|date_debut|date|NO||5
+affectation|date_fin|date|YES||6
+affectation|texte_nomination|character varying|YES||7
+affectation|statut|character varying|NO|'ACTIF'::character varying|8
+affectation|created_at|timestamp with time zone|NO|now()|9
+affectation|updated_at|timestamp with time zone|NO|now()|10
+agent|agent_id|uuid|NO||1
+agent|nom|character varying|NO||2
+agent|prenom|character varying|NO||3
+agent|date_naissance|date|NO||4
+agent|matricule|character varying|NO||5
+agent|numero_identite_nationale|character varying|YES||6
+agent|sexe|character varying|NO||7
+agent|email|character varying|YES||8
+agent|telephone|character varying|YES||9
+agent|institution_id|uuid|NO||10
+agent|grade_id|uuid|YES||11
+agent|corps_id|uuid|YES||12
+agent|personne_id|uuid|YES||13
+agent|statut|character varying|NO|'ACTIF'::character varying|14
+agent|created_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|15
+agent|updated_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|16
+agent_ia|agent_id|uuid|NO|uuid_generate_v4()|1
+agent_ia|code|character varying|NO||2
+agent_ia|nom|character varying|NO||3
+agent_ia|type_agent|character varying|NO||4
+agent_ia|institution_id|uuid|YES||5
+agent_ia|modele_reference|character varying|YES||6
+agent_ia|perimetre_donnees|text|YES||7
+agent_ia|statut|character varying|NO|'ACTIF'::character varying|8
+agent_ia|created_at|timestamp with time zone|NO|now()|9
+agent_ia_interaction|interaction_id|uuid|NO|uuid_generate_v4()|1
+agent_ia_interaction|agent_id|uuid|NO||2
+agent_ia_interaction|personne_id|uuid|YES||3
+agent_ia_interaction|requete|text|NO||4
+agent_ia_interaction|reponse|text|YES||5
+agent_ia_interaction|entite_liee|character varying|YES||6
+agent_ia_interaction|entite_liee_ref_id|uuid|YES||7
+agent_ia_interaction|created_at|timestamp with time zone|NO|now()|8
+decision_action|action_id|uuid|NO||1
+decision_action|decision_id|uuid|NO||2
+decision_action|institution_id|uuid|NO||3
+decision_action|statut|character varying|NO|'NON_DEMARREE'::character varying|4
+decision_action|taux_execution|integer|NO|0|5
+decision_action|commentaire|text|YES||6
+decision_action|date_echeance|date|YES||7
+decision_action|created_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|8
+decision_action|updated_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|9
+decision_gouvernementale|decision_id|uuid|NO||1
+decision_gouvernementale|emetteur_institution_id|uuid|NO||2
+decision_gouvernementale|titre|character varying|NO||3
+decision_gouvernementale|description|text|YES||4
+decision_gouvernementale|date_emission|date|NO||5
+decision_gouvernementale|statut|character varying|NO|'EN_COURS'::character varying|6
+decision_gouvernementale|created_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|7
+decision_gouvernementale|updated_at|timestamp with time zone|YES|CURRENT_TIMESTAMP|8
+decision_gouvernementale|cree_par|uuid|YES||9
+decision_gouvernementale|date_publication|timestamp with time zone|YES||10
+decision_gouvernementale|publie_par|uuid|YES||11
+decision_gouvernementale|date_archivage|timestamp with time zone|YES||12
+decision_gouvernementale|archive_par|uuid|YES||13
+decision_workflow_transition|id|integer|NO|nextval('decision_workflow_transition_id_seq'::regclass)|1
+decision_workflow_transition|statut_origine|character varying|NO||2
+decision_workflow_transition|statut_cible|character varying|NO||3
+decision_workflow_transition|permission_requise|character varying|NO||4
+delegation_perimetre|delegation_perimetre_id|uuid|NO|gen_random_uuid()|1
+delegation_perimetre|delegation_id|uuid|NO||2
+delegation_perimetre|institution_id|uuid|NO||3
+delegation_perimetre|entity|character varying|NO||4
+delegation_perimetre|action|character varying|NO||5
+delegation_perimetre|actif|boolean|NO|true|6
+delegation_perimetre|created_at|timestamp with time zone|NO|now()|7
+delegation_pouvoir|delegation_id|uuid|NO|uuid_generate_v4()|1
+delegation_pouvoir|delegant_id|uuid|NO||2
+delegation_pouvoir|delegataire_id|uuid|NO||3
+delegation_pouvoir|perimetre|text|NO||4
+delegation_pouvoir|date_debut|timestamp with time zone|NO||5
+delegation_pouvoir|date_fin|timestamp with time zone|NO||6
+delegation_pouvoir|texte_reference|character varying|YES||7
+delegation_pouvoir|statut|character varying|NO|'ACTIF'::character varying|8
+delegation_pouvoir|created_at|timestamp with time zone|NO|now()|9
+entity_event|event_id|uuid|NO||1
+entity_event|entity|character varying|NO||2
+entity_event|entity_id|text|NO||3
+entity_event|evenement|character varying|NO||4
+entity_event|donnees_avant|jsonb|YES||5
+entity_event|donnees_apres|jsonb|YES||6
+entity_event|utilisateur_id|uuid|YES||7
+entity_event|created_at|timestamp with time zone|NO|now()|8
+execution_rapport|rapport_id|uuid|NO||1
+execution_rapport|instruction_id|uuid|NO||2
+execution_rapport|institution_id|uuid|NO||3
+execution_rapport|redacteur_person_id|uuid|YES||4
+execution_rapport|contenu|text|NO||5
+execution_rapport|taux_avancement|integer|NO|0|6
+execution_rapport|statut|text|NO|'SOUMIS'::text|7
+execution_rapport|date_rapport|timestamp with time zone|NO|now()|8
+execution_rapport|created_at|timestamp with time zone|NO|now()|9
+institution|institution_id|uuid|NO|uuid_generate_v4()|1
+institution|code|character varying|NO||2
+institution|nom|character varying|NO||3
+institution|sigle|character varying|YES||4
+institution|type_institution|character varying|NO||5
+institution|institution_parent_id|uuid|YES||6
+institution|niveau_hierarchique|integer|NO|0|7
+institution|description|text|YES||8
+institution|adresse|text|YES||9
+institution|latitude|numeric|YES||10
+institution|longitude|numeric|YES||11
+institution|telephone|character varying|YES||12
+institution|email|character varying|YES||13
+institution|site_web|character varying|YES||14
+institution|statut|character varying|NO|'ACTIF'::character varying|15
+institution|date_creation_legale|date|YES||16
+institution|texte_creation|character varying|YES||17
+institution|created_at|timestamp with time zone|NO|now()|18
+institution|updated_at|timestamp with time zone|NO|now()|19
+institution_relation|institution_relation_id|uuid|NO||1
+institution_relation|institution_source_id|uuid|NO||2
+institution_relation|institution_cible_id|uuid|NO||3
+institution_relation|type_relation|character varying|NO||4
+institution_relation|priorite|integer|YES|0|5
+institution_relation|date_debut|date|YES|CURRENT_DATE|6
+institution_relation|date_fin|date|YES||7
+institution_relation|actif|boolean|YES|true|8
+institution_relation|created_at|timestamp with time zone|YES|now()|9
+institution_relation|updated_at|timestamp with time zone|YES|now()|10
+instruction_historique|historique_id|uuid|NO||1
+instruction_historique|instruction_id|uuid|NO||2
+instruction_historique|ancien_statut|text|YES||3
+instruction_historique|nouveau_statut|text|NO||4
+instruction_historique|person_id|uuid|YES||5
+instruction_historique|commentaire|text|YES||6
+instruction_historique|date_changement|timestamp with time zone|NO|now()|7
+meta_notification_rule|rule_id|uuid|NO|uuid_generate_v4()|1
+meta_notification_rule|entite|character varying|NO||2
+meta_notification_rule|evenement|character varying|NO||3
+meta_notification_rule|condition_json|jsonb|NO||4
+meta_notification_rule|message_template|text|NO||5
+meta_notification_rule|canal|character varying|NO|'INTERNE'::character varying|6
+meta_notification_rule|destinataire_role_code|character varying|NO||7
+meta_notification_rule|statut|character varying|NO|'ACTIF'::character varying|8
+meta_notification_rule|created_at|timestamp with time zone|NO|now()|9
+meta_rule|rule_id|uuid|NO|uuid_generate_v4()|1
+meta_rule|entite|character varying|NO||2
+meta_rule|nom|character varying|NO||3
+meta_rule|description|text|YES||4
+meta_rule|evenement|character varying|NO||5
+meta_rule|condition_json|jsonb|NO||6
+meta_rule|message_erreur|text|NO||7
+meta_rule|statut|character varying|NO|'ACTIF'::character varying|8
+meta_rule|created_at|timestamp with time zone|NO|now()|9
+meta_workflow_transition|transition_id|uuid|NO|uuid_generate_v4()|1
+meta_workflow_transition|entite|character varying|NO||2
+meta_workflow_transition|from_statut|character varying|NO||3
+meta_workflow_transition|to_statut|character varying|NO||4
+meta_workflow_transition|role_code_requis|character varying|YES||5
+meta_workflow_transition|condition_json|jsonb|YES||6
+meta_workflow_transition|statut|character varying|NO|'ACTIF'::character varying|7
+meta_workflow_transition|created_at|timestamp with time zone|NO|now()|8
+nocode_formulaire|formulaire_id|uuid|NO|uuid_generate_v4()|1
+nocode_formulaire|code|character varying|NO||2
+nocode_formulaire|nom|character varying|NO||3
+nocode_formulaire|workflow_id|uuid|YES||4
+nocode_formulaire|schema_champs|jsonb|NO|'[]'::jsonb|5
+nocode_formulaire|statut|character varying|NO|'ACTIF'::character varying|6
+nocode_formulaire|created_at|timestamp with time zone|NO|now()|7
+nocode_workflow|workflow_id|uuid|NO|uuid_generate_v4()|1
+nocode_workflow|code|character varying|NO||2
+nocode_workflow|nom|character varying|NO||3
+nocode_workflow|institution_id|uuid|YES||4
+nocode_workflow|description|text|YES||5
+nocode_workflow|statut|character varying|NO|'BROUILLON'::character varying|6
+nocode_workflow|created_at|timestamp with time zone|NO|now()|7
+nocode_workflow_etape|etape_id|uuid|NO|uuid_generate_v4()|1
+nocode_workflow_etape|workflow_id|uuid|NO||2
+nocode_workflow_etape|code|character varying|NO||3
+nocode_workflow_etape|nom|character varying|NO||4
+nocode_workflow_etape|ordre|integer|NO||5
+nocode_workflow_etape|role_metier_id|uuid|YES||6
+nocode_workflow_etape|type_etape|character varying|NO|'VALIDATION'::character varying|7
+nocode_workflow_etape|created_at|timestamp with time zone|NO|now()|8
+nocode_workflow_instance|instance_id|uuid|NO|uuid_generate_v4()|1
+nocode_workflow_instance|workflow_id|uuid|NO||2
+nocode_workflow_instance|etape_courante_id|uuid|YES||3
+nocode_workflow_instance|donnees|jsonb|NO|'{}'::jsonb|4
+nocode_workflow_instance|statut|character varying|NO|'EN_COURS'::character varying|5
+nocode_workflow_instance|created_at|timestamp with time zone|NO|now()|6
+nocode_workflow_instance|updated_at|timestamp with time zone|NO|now()|7
+notification|notification_id|uuid|NO|uuid_generate_v4()|1
+notification|destinataire_id|uuid|NO||2
+notification|type_notification|character varying|NO||3
+notification|canal|character varying|NO|'IN_APP'::character varying|4
+notification|titre|character varying|NO||5
+notification|contenu|text|YES||6
+notification|entite_liee|character varying|YES||7
+notification|entite_liee_ref_id|uuid|YES||8
+notification|lu|boolean|NO|false|9
+notification|date_envoi|timestamp with time zone|YES||10
+notification|date_lecture|timestamp with time zone|YES||11
+notification|created_at|timestamp with time zone|NO|now()|12
+personne_role|personne_role_id|uuid|NO|uuid_generate_v4()|1
+personne_role|personne_id|uuid|NO||2
+personne_role|role_id|uuid|NO||3
+personne_role|scope_institution_id|uuid|YES||4
+personne_role|date_attribution|timestamp with time zone|NO|now()|5
+personne_role|date_expiration|timestamp with time zone|YES||6
+personne_role|statut|character varying|NO|'ACTIF'::character varying|7
+poste|poste_id|uuid|NO|uuid_generate_v4()|1
+poste|unite_id|uuid|NO||2
+poste|code|character varying|NO||3
+poste|intitule|character varying|NO||4
+poste|poste_hierarchique_id|uuid|YES||5
+poste|niveau_hierarchique|integer|NO|0|6
+poste|categorie|character varying|YES||7
+poste|missions|text|YES||8
+poste|attributions|text|YES||9
+poste|responsabilites|text|YES||10
+poste|competences_requises|text|YES||11
+poste|nombre_postes_autorises|integer|NO|1|12
+poste|statut|character varying|NO|'ACTIF'::character varying|13
+poste|created_at|timestamp with time zone|NO|now()|14
+poste|updated_at|timestamp with time zone|NO|now()|15
+poste|niveau_confiance|character varying|NO|'A_VALIDER'::character varying|16
+poste|pourcentage_confiance|integer|YES||17
+poste|participe_calculs|boolean|YES||18
+rni_lien_hierarchique|lien_id|uuid|NO||1
+rni_lien_hierarchique|institution_id|uuid|NO||2
+rni_lien_hierarchique|institution_parent_id|uuid|NO||3
+rni_lien_hierarchique|type_lien|text|NO||4
+rni_lien_hierarchique|reference_juridique|text|YES||5
+rni_lien_hierarchique|date_debut|date|NO|CURRENT_DATE|6
+rni_lien_hierarchique|date_fin|date|YES||7
+rni_lien_hierarchique|statut|text|NO|'ACTIF'::text|8
+rni_lien_hierarchique|created_at|timestamp with time zone|NO|now()|9
+session_utilisateur|session_id|uuid|NO|uuid_generate_v4()|1
+session_utilisateur|personne_id|uuid|NO||2
+session_utilisateur|token_hash|text|NO||3
+session_utilisateur|adresse_ip|inet|YES||4
+session_utilisateur|user_agent|text|YES||5
+session_utilisateur|date_debut|timestamp with time zone|NO|now()|6
+session_utilisateur|date_expiration|timestamp with time zone|NO||7
+session_utilisateur|date_revocation|timestamp with time zone|YES||8
+session_utilisateur|statut|character varying|NO|'ACTIF'::character varying|9
+type_acte_ref|id|integer|NO|nextval('type_acte_ref_id_seq'::regclass)|1
+type_acte_ref|code|character varying|NO||2
+type_acte_ref|libelle|character varying|NO||3
+type_acte_ref|ordre_affichage|smallint|NO|0|4
+type_acte_ref|actif|boolean|NO|true|5
+type_acte_ref|created_at|timestamp with time zone|NO|now()|6
+unite_organisationnelle|unite_id|uuid|NO|uuid_generate_v4()|1
+unite_organisationnelle|institution_id|uuid|NO||2
+unite_organisationnelle|unite_parent_id|uuid|YES||3
+unite_organisationnelle|code|character varying|NO||4
+unite_organisationnelle|nom|character varying|NO||5
+unite_organisationnelle|type_unite|character varying|NO||6
+unite_organisationnelle|niveau_hierarchique|integer|NO|0|7
+unite_organisationnelle|mission|text|YES||8
+unite_organisationnelle|statut|character varying|NO|'ACTIF'::character varying|9
+unite_organisationnelle|created_at|timestamp with time zone|NO|now()|10
+unite_organisationnelle|updated_at|timestamp with time zone|NO|now()|11
+unite_organisationnelle|niveau_confiance|character varying|NO|'A_VALIDER'::character varying|12
+unite_organisationnelle|pourcentage_confiance|integer|YES||13
+unite_organisationnelle|participe_calculs|boolean|YES||14
+verification|verification_id|uuid|NO||1
+verification|rapport_id|uuid|NO||2
+verification|verificateur_person_id|uuid|YES||3
+verification|verificateur_institution_id|uuid|NO||4
+verification|decision|text|NO||5
+verification|commentaire|text|YES||6
+verification|date_verification|timestamp with time zone|NO|now()|7
+verification|created_at|timestamp with time zone|NO|now()|8
