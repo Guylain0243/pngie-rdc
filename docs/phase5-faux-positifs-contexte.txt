@@ -1,0 +1,35 @@
+--- decision ---
+src\server.js:233: FROM decision dec JOIN organization o ON o.organization_id = dec.organization_id`),
+
+--- controle ---
+src\aiAgent.js:45: FROM controle c LEFT JOIN audit_mission am ON am.controle_id = c.controle_id`);
+src\server.js:225: FROM controle c
+
+--- rapport ---
+src\server.js:220: FROM rapport r
+
+--- suivi ---
+src\server.js:234: db.all(`SELECT suivi_id,statut,commentaire,updated_at FROM suivi`),
+
+--- descendants ---
+src\security\hierarchy-service.js:20: JOIN descendants d ON d.institution_id = ir.institution_source_id
+src\security\hierarchy-service.js:23: SELECT institution_id FROM descendants
+
+--- remontee ---
+src\domains\governance\cockpit.repository.js:162: JOIN remontee r ON i.institution_id = r.institution_parent_id
+src\domains\governance\cockpit.repository.js:164: SELECT institution_id, nom FROM remontee
+
+--- audit_mission ---
+src\aiAgent.js:45: FROM controle c LEFT JOIN audit_mission am ON am.controle_id = c.controle_id`);
+src\server.js:228: LEFT JOIN audit_mission am ON am.controle_id = c.controle_id`),
+
+--- integration_flux ---
+src\server.js:245: FROM integration_flux f JOIN systeme_externe s ON s.systeme_id = f.systeme_id`),
+
+--- recommandation ---
+src\server.js:230: FROM recommandation rec
+
+--- systeme_externe ---
+src\server.js:242: FROM systeme_externe s LEFT JOIN organization o ON o.organization_id = s.organization_id
+src\server.js:245: FROM integration_flux f JOIN systeme_externe s ON s.systeme_id = f.systeme_id`),
+
