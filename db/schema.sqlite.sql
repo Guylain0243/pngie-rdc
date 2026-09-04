@@ -614,3 +614,519 @@ CREATE TABLE pki_signature (
 CREATE INDEX idx_pki_sig_cert ON pki_signature(certificate_id);
 
 -- ═══ FIN DE L'EXTENSION — 18 nouvelles tables (4 Justice, 4 Santé, 6 Économie, 4 Sécurité) ═══
+
+-- ============================================
+-- Sprint 2C - 31 tables ajoutees (motifs A-D)
+-- Generees automatiquement, voir docs/sprint-2c/
+-- ============================================
+
+
+-- Table: acte_historique
+CREATE TABLE acte_historique (
+  id INTEGER PRIMARY KEY,
+  acte_id TEXT NOT NULL REFERENCES acte_officiel(id),
+  type_evenement TEXT NOT NULL,
+  valeur_avant TEXT,
+  valeur_apres TEXT,
+  modifie_par TEXT REFERENCES personne(personne_id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_acte_historique_acte ON acte_historique(acte_id);
+CREATE INDEX idx_acte_historique_modifie_par ON acte_historique(modifie_par);
+
+
+-- Table: acte_officiel
+CREATE TABLE acte_officiel (
+  id TEXT PRIMARY KEY,
+  numero_officiel TEXT,
+  type_acte_id INTEGER NOT NULL REFERENCES type_acte_ref(id),
+  institution_emettrice_id TEXT NOT NULL REFERENCES institution(institution_id),
+  titre TEXT NOT NULL,
+  resume TEXT,
+  contenu_texte TEXT,
+  document_pdf_id TEXT REFERENCES document(document_id),
+  statut TEXT NOT NULL DEFAULT 'brouillon',
+  diffusion TEXT NOT NULL DEFAULT 'restreint',
+  acte_reference_id TEXT REFERENCES acte_officiel(id),
+  date_signature TEXT,
+  date_publication TEXT,
+  date_entree_vigueur TEXT,
+  cree_par TEXT NOT NULL REFERENCES personne(personne_id),
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  recherche_tsv TEXT
+);
+CREATE INDEX idx_acte_officiel_type_acte ON acte_officiel(type_acte_id);
+CREATE INDEX idx_acte_officiel_institution_emettrice ON acte_officiel(institution_emettrice_id);
+CREATE INDEX idx_acte_officiel_document_pdf ON acte_officiel(document_pdf_id);
+CREATE INDEX idx_acte_officiel_acte_reference ON acte_officiel(acte_reference_id);
+CREATE INDEX idx_acte_officiel_cree_par ON acte_officiel(cree_par);
+
+
+-- Table: acte_signature
+CREATE TABLE acte_signature (
+  id TEXT PRIMARY KEY,
+  acte_id TEXT NOT NULL REFERENCES acte_officiel(id),
+  signataire_id TEXT NOT NULL REFERENCES personne(personne_id),
+  role_signataire TEXT,
+  date_signature TEXT NOT NULL DEFAULT (datetime('now')),
+  hash_document TEXT NOT NULL,
+  certificat_ref TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_acte_signature_acte ON acte_signature(acte_id);
+CREATE INDEX idx_acte_signature_signataire ON acte_signature(signataire_id);
+
+
+-- Table: affectation
+CREATE TABLE affectation (
+  affectation_id TEXT PRIMARY KEY,
+  personne_id TEXT NOT NULL REFERENCES personne(personne_id),
+  poste_id TEXT NOT NULL REFERENCES poste(poste_id),
+  type_affectation TEXT NOT NULL DEFAULT 'TITULAIRE',
+  date_debut TEXT NOT NULL,
+  date_fin TEXT,
+  texte_nomination TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_affectation_personne ON affectation(personne_id);
+CREATE INDEX idx_affectation_poste ON affectation(poste_id);
+
+
+-- Table: agent
+CREATE TABLE agent (
+  agent_id TEXT PRIMARY KEY,
+  nom TEXT NOT NULL,
+  prenom TEXT NOT NULL,
+  date_naissance TEXT NOT NULL,
+  matricule TEXT NOT NULL,
+  numero_identite_nationale TEXT,
+  sexe TEXT NOT NULL,
+  email TEXT,
+  telephone TEXT,
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  grade_id TEXT,
+  corps_id TEXT,
+  personne_id TEXT REFERENCES personne(personne_id),
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_agent_institution ON agent(institution_id);
+CREATE INDEX idx_agent_personne ON agent(personne_id);
+
+
+-- Table: agent_ia
+CREATE TABLE agent_ia (
+  agent_id TEXT PRIMARY KEY,
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  type_agent TEXT NOT NULL,
+  institution_id TEXT REFERENCES institution(institution_id),
+  modele_reference TEXT,
+  perimetre_donnees TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_agent_ia_institution ON agent_ia(institution_id);
+
+
+-- Table: agent_ia_interaction
+CREATE TABLE agent_ia_interaction (
+  interaction_id TEXT PRIMARY KEY,
+  agent_id TEXT NOT NULL REFERENCES agent_ia(agent_id),
+  personne_id TEXT REFERENCES personne(personne_id),
+  requete TEXT NOT NULL,
+  reponse TEXT,
+  entite_liee TEXT,
+  entite_liee_ref_id TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_agent_ia_interaction_agent ON agent_ia_interaction(agent_id);
+CREATE INDEX idx_agent_ia_interaction_personne ON agent_ia_interaction(personne_id);
+
+
+-- Table: decision_action
+CREATE TABLE decision_action (
+  action_id TEXT PRIMARY KEY,
+  decision_id TEXT NOT NULL REFERENCES decision_gouvernementale(decision_id),
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  statut TEXT NOT NULL DEFAULT 'NON_DEMARREE',
+  taux_execution INTEGER NOT NULL DEFAULT 0,
+  commentaire TEXT,
+  date_echeance TEXT,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_decision_action_decision ON decision_action(decision_id);
+CREATE INDEX idx_decision_action_institution ON decision_action(institution_id);
+
+
+-- Table: decision_gouvernementale
+CREATE TABLE decision_gouvernementale (
+  decision_id TEXT PRIMARY KEY,
+  emetteur_institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  titre TEXT NOT NULL,
+  description TEXT,
+  date_emission TEXT NOT NULL,
+  statut TEXT NOT NULL DEFAULT 'EN_COURS',
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now')),
+  cree_par TEXT,
+  date_publication TEXT,
+  publie_par TEXT,
+  date_archivage TEXT,
+  archive_par TEXT
+);
+CREATE INDEX idx_decision_gouvernementale_emetteur_institution ON decision_gouvernementale(emetteur_institution_id);
+
+
+-- Table: delegation_perimetre
+CREATE TABLE delegation_perimetre (
+  delegation_perimetre_id TEXT PRIMARY KEY,
+  delegation_id TEXT NOT NULL REFERENCES delegation_pouvoir(delegation_id),
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  entity TEXT NOT NULL,
+  action TEXT NOT NULL,
+  actif BOOLEAN NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_delegation_perimetre_delegation ON delegation_perimetre(delegation_id);
+CREATE INDEX idx_delegation_perimetre_institution ON delegation_perimetre(institution_id);
+
+
+-- Table: delegation_pouvoir
+CREATE TABLE delegation_pouvoir (
+  delegation_id TEXT PRIMARY KEY,
+  delegant_id TEXT NOT NULL REFERENCES personne(personne_id),
+  delegataire_id TEXT NOT NULL REFERENCES personne(personne_id),
+  perimetre TEXT NOT NULL,
+  date_debut TEXT NOT NULL,
+  date_fin TEXT NOT NULL,
+  texte_reference TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_delegation_pouvoir_delegant ON delegation_pouvoir(delegant_id);
+CREATE INDEX idx_delegation_pouvoir_delegataire ON delegation_pouvoir(delegataire_id);
+
+
+-- Table: entity_event
+CREATE TABLE entity_event (
+  event_id TEXT PRIMARY KEY,
+  entity TEXT NOT NULL,
+  entity_id TEXT NOT NULL,
+  evenement TEXT NOT NULL,
+  donnees_avant TEXT,
+  donnees_apres TEXT,
+  utilisateur_id TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+
+-- Table: execution_rapport
+CREATE TABLE execution_rapport (
+  rapport_id TEXT PRIMARY KEY,
+  instruction_id TEXT NOT NULL REFERENCES instruction(instruction_id),
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  redacteur_person_id TEXT,
+  contenu TEXT NOT NULL,
+  taux_avancement INTEGER NOT NULL DEFAULT 0,
+  statut TEXT NOT NULL DEFAULT 'SOUMIS',
+  date_rapport TEXT NOT NULL DEFAULT (datetime('now')),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_execution_rapport_instruction ON execution_rapport(instruction_id);
+CREATE INDEX idx_execution_rapport_institution ON execution_rapport(institution_id);
+
+
+-- Table: institution
+CREATE TABLE institution (
+  institution_id TEXT PRIMARY KEY,
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  sigle TEXT,
+  type_institution TEXT NOT NULL,
+  institution_parent_id TEXT REFERENCES institution(institution_id),
+  niveau_hierarchique INTEGER NOT NULL DEFAULT 0,
+  description TEXT,
+  adresse TEXT,
+  latitude REAL,
+  longitude REAL,
+  telephone TEXT,
+  email TEXT,
+  site_web TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  date_creation_legale TEXT,
+  texte_creation TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_institution_parent ON institution(institution_parent_id);
+
+
+-- Table: institution_relation
+CREATE TABLE institution_relation (
+  institution_relation_id TEXT PRIMARY KEY,
+  institution_source_id TEXT NOT NULL REFERENCES institution(institution_id),
+  institution_cible_id TEXT NOT NULL REFERENCES institution(institution_id),
+  type_relation TEXT NOT NULL REFERENCES relation_type(code),
+  priorite INTEGER DEFAULT 0,
+  date_debut TEXT DEFAULT (date('now')),
+  date_fin TEXT,
+  actif BOOLEAN DEFAULT 1,
+  created_at TEXT DEFAULT (datetime('now')),
+  updated_at TEXT DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_institution_relation_institution_source ON institution_relation(institution_source_id);
+CREATE INDEX idx_institution_relation_institution_cible ON institution_relation(institution_cible_id);
+CREATE INDEX idx_institution_relation_type_relation ON institution_relation(type_relation);
+
+
+-- Table: instruction_historique
+CREATE TABLE instruction_historique (
+  historique_id TEXT PRIMARY KEY,
+  instruction_id TEXT NOT NULL REFERENCES instruction(instruction_id),
+  ancien_statut TEXT,
+  nouveau_statut TEXT NOT NULL,
+  person_id TEXT,
+  commentaire TEXT,
+  date_changement TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_instruction_historique_instruction ON instruction_historique(instruction_id);
+
+
+-- Table: meta_notification_rule
+CREATE TABLE meta_notification_rule (
+  rule_id TEXT PRIMARY KEY,
+  entite TEXT NOT NULL,
+  evenement TEXT NOT NULL,
+  condition_json TEXT NOT NULL,
+  message_template TEXT NOT NULL,
+  canal TEXT NOT NULL DEFAULT 'INTERNE',
+  destinataire_role_code TEXT NOT NULL,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+
+-- Table: meta_rule
+CREATE TABLE meta_rule (
+  rule_id TEXT PRIMARY KEY,
+  entite TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  description TEXT,
+  evenement TEXT NOT NULL,
+  condition_json TEXT NOT NULL,
+  message_erreur TEXT NOT NULL,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+
+-- Table: meta_workflow_transition
+CREATE TABLE meta_workflow_transition (
+  transition_id TEXT PRIMARY KEY,
+  entite TEXT NOT NULL,
+  from_statut TEXT NOT NULL,
+  to_statut TEXT NOT NULL,
+  role_code_requis TEXT REFERENCES role(code),
+  condition_json TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_meta_workflow_transition_role_code_requis ON meta_workflow_transition(role_code_requis);
+
+
+-- Table: nocode_formulaire
+CREATE TABLE nocode_formulaire (
+  formulaire_id TEXT PRIMARY KEY,
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  workflow_id TEXT REFERENCES nocode_workflow(workflow_id),
+  schema_champs TEXT NOT NULL DEFAULT '[]',
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_nocode_formulaire_workflow ON nocode_formulaire(workflow_id);
+
+
+-- Table: nocode_workflow
+CREATE TABLE nocode_workflow (
+  workflow_id TEXT PRIMARY KEY,
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  institution_id TEXT REFERENCES institution(institution_id),
+  description TEXT,
+  statut TEXT NOT NULL DEFAULT 'BROUILLON',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_nocode_workflow_institution ON nocode_workflow(institution_id);
+
+
+-- Table: nocode_workflow_etape
+CREATE TABLE nocode_workflow_etape (
+  etape_id TEXT PRIMARY KEY,
+  workflow_id TEXT NOT NULL REFERENCES nocode_workflow(workflow_id),
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  ordre INTEGER NOT NULL,
+  role_metier_id TEXT REFERENCES role_metier(role_metier_id),
+  type_etape TEXT NOT NULL DEFAULT 'VALIDATION',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_nocode_workflow_etape_workflow ON nocode_workflow_etape(workflow_id);
+CREATE INDEX idx_nocode_workflow_etape_role_metier ON nocode_workflow_etape(role_metier_id);
+
+
+-- Table: nocode_workflow_instance
+CREATE TABLE nocode_workflow_instance (
+  instance_id TEXT PRIMARY KEY,
+  workflow_id TEXT NOT NULL REFERENCES nocode_workflow(workflow_id),
+  etape_courante_id TEXT REFERENCES nocode_workflow_etape(etape_id),
+  donnees TEXT NOT NULL DEFAULT '{}',
+  statut TEXT NOT NULL DEFAULT 'EN_COURS',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_nocode_workflow_instance_workflow ON nocode_workflow_instance(workflow_id);
+CREATE INDEX idx_nocode_workflow_instance_etape_courante ON nocode_workflow_instance(etape_courante_id);
+
+
+-- Table: notification
+CREATE TABLE notification (
+  notification_id TEXT PRIMARY KEY,
+  destinataire_id TEXT NOT NULL REFERENCES personne(personne_id),
+  type_notification TEXT NOT NULL,
+  canal TEXT NOT NULL DEFAULT 'IN_APP',
+  titre TEXT NOT NULL,
+  contenu TEXT,
+  entite_liee TEXT,
+  entite_liee_ref_id TEXT,
+  lu BOOLEAN NOT NULL DEFAULT 0,
+  date_envoi TEXT,
+  date_lecture TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_notification_destinataire ON notification(destinataire_id);
+
+
+-- Table: personne_role
+CREATE TABLE personne_role (
+  personne_role_id TEXT PRIMARY KEY,
+  personne_id TEXT NOT NULL REFERENCES personne(personne_id),
+  role_id TEXT NOT NULL REFERENCES role(role_id),
+  scope_institution_id TEXT REFERENCES institution(institution_id),
+  date_attribution TEXT NOT NULL DEFAULT (datetime('now')),
+  date_expiration TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF'
+);
+CREATE INDEX idx_personne_role_personne ON personne_role(personne_id);
+CREATE INDEX idx_personne_role_role ON personne_role(role_id);
+CREATE INDEX idx_personne_role_scope_institution ON personne_role(scope_institution_id);
+
+
+-- Table: poste
+CREATE TABLE poste (
+  poste_id TEXT PRIMARY KEY,
+  unite_id TEXT NOT NULL REFERENCES unite_organisationnelle(unite_id),
+  code TEXT NOT NULL,
+  intitule TEXT NOT NULL,
+  poste_hierarchique_id TEXT REFERENCES poste(poste_id),
+  niveau_hierarchique INTEGER NOT NULL DEFAULT 0,
+  categorie TEXT,
+  missions TEXT,
+  attributions TEXT,
+  responsabilites TEXT,
+  competences_requises TEXT,
+  nombre_postes_autorises INTEGER NOT NULL DEFAULT 1,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  niveau_confiance TEXT NOT NULL DEFAULT 'A_VALIDER',
+  pourcentage_confiance INTEGER,
+  participe_calculs BOOLEAN
+);
+CREATE INDEX idx_poste_unite ON poste(unite_id);
+CREATE INDEX idx_poste_hierarchique ON poste(poste_hierarchique_id);
+
+
+-- Table: rni_lien_hierarchique
+CREATE TABLE rni_lien_hierarchique (
+  lien_id TEXT PRIMARY KEY,
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  institution_parent_id TEXT NOT NULL REFERENCES institution(institution_id),
+  type_lien TEXT NOT NULL,
+  reference_juridique TEXT,
+  date_debut TEXT NOT NULL DEFAULT (date('now')),
+  date_fin TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_rni_lien_hierarchique_institution ON rni_lien_hierarchique(institution_id);
+CREATE INDEX idx_rni_lien_hierarchique_institution_parent ON rni_lien_hierarchique(institution_parent_id);
+
+
+-- Table: session_utilisateur
+CREATE TABLE session_utilisateur (
+  session_id TEXT PRIMARY KEY,
+  personne_id TEXT NOT NULL REFERENCES personne(personne_id),
+  token_hash TEXT NOT NULL,
+  adresse_ip TEXT,
+  user_agent TEXT,
+  date_debut TEXT NOT NULL DEFAULT (datetime('now')),
+  date_expiration TEXT NOT NULL,
+  date_revocation TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF'
+);
+CREATE INDEX idx_session_utilisateur_personne ON session_utilisateur(personne_id);
+
+
+-- Table: type_acte_ref
+CREATE TABLE type_acte_ref (
+  id INTEGER PRIMARY KEY,
+  code TEXT NOT NULL,
+  libelle TEXT NOT NULL,
+  ordre_affichage INTEGER NOT NULL DEFAULT 0,
+  actif BOOLEAN NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+
+-- Table: unite_organisationnelle
+CREATE TABLE unite_organisationnelle (
+  unite_id TEXT PRIMARY KEY,
+  institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  unite_parent_id TEXT REFERENCES unite_organisationnelle(unite_id),
+  code TEXT NOT NULL,
+  nom TEXT NOT NULL,
+  type_unite TEXT NOT NULL,
+  niveau_hierarchique INTEGER NOT NULL DEFAULT 0,
+  mission TEXT,
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  niveau_confiance TEXT NOT NULL DEFAULT 'A_VALIDER',
+  pourcentage_confiance INTEGER,
+  participe_calculs BOOLEAN
+);
+CREATE INDEX idx_unite_organisationnelle_institution ON unite_organisationnelle(institution_id);
+CREATE INDEX idx_unite_organisationnelle_unite_parent ON unite_organisationnelle(unite_parent_id);
+
+
+-- Table: verification
+CREATE TABLE verification (
+  verification_id TEXT PRIMARY KEY,
+  rapport_id TEXT NOT NULL REFERENCES execution_rapport(rapport_id),
+  verificateur_person_id TEXT,
+  verificateur_institution_id TEXT NOT NULL REFERENCES institution(institution_id),
+  decision TEXT NOT NULL,
+  commentaire TEXT,
+  date_verification TEXT NOT NULL DEFAULT (datetime('now')),
+  created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX idx_verification_rapport ON verification(rapport_id);
+CREATE INDEX idx_verification_verificateur_institution ON verification(verificateur_institution_id);
+
