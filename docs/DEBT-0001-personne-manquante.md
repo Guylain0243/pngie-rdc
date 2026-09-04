@@ -89,3 +89,21 @@ Aucune correction n'est appliquée dans le cadre du Sprint 2D. Le diagnostic s'a
 ## Méthode de diagnostic (pour référence)
 
 Cette anomalie a été mise en évidence en suivant la même discipline que pour les découvertes précédentes de ce Sprint (`institution`/`organization`, `ai_agent`/`agent_ia`) : preuve avant hypothèse, isolation de la cause avant correction, vérification de l'ampleur (comptage des FK, recherche exhaustive) avant toute décision d'architecture. Voir également : `docs/seed-critical-fk.txt`, `docs/seed-missing-fk-tables.txt`, et le patch appliqué sur `institution` dans `db/seed.js` (Sprint 2D, résolu).
+## Statut mis a jour (correctif de suivi)
+
+**Statut :** Resolved
+
+Le message du commit 1df4254 contenait une inexactitude : il indiquait a tort
+que le seed n'ecrivait plus que dans 'personne'/'personne_role'. En realite,
+db/seed.js continue d'ecrire dans les 4 tables (person, personne, person_role,
+personne_role) - verifie par compteurs reels : person=6, personne=6,
+person_role=6, personne_role=6. Le login (src/server.js) depend toujours de
+'person' et continue de fonctionner normalement. Aucune regression fonctionnelle.
+
+Ce correctif documente uniquement la description, sans modification de code.
+
+## Validation
+
+- 37 tests executes, 23 reussis, 14 echecs metier connus (pre-existants)
+- 0 occurrence EBUSY
+- Login verifie fonctionnel via tests\helpers.js (utilise par tous les tests)
