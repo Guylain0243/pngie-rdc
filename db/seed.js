@@ -1,4 +1,4 @@
-// Initialise la base (SQLite ou PostgreSQL, selon DATABASE_URL) + insère des
+﻿// Initialise la base (SQLite ou PostgreSQL, selon DATABASE_URL) + insère des
 // données réelles : institutions (Présidence, Primature, Sénat, AN, 42 ministères,
 // 26 provinces), rôles/permissions RBAC, cycle de gouvernance complet, registre
 // d'intégration logicielle, référentiels transversaux, et un utilisateur de
@@ -73,6 +73,8 @@ async function main() {
     const personId = uuid();
     const pwdHash = await bcrypt.hash(DEMO_PASSWORD, 12);
     const email = `${slugify(nomOrg).slice(0, 30)}@rdc.gouv.cd`;
+    await db.run(`INSERT INTO personne (personne_id,nom,prenom,email,password_hash) VALUES (?,?,?,?,?)`,
+      [personId, `Démo ${nomOrg}`, 'Démo', email, pwdHash]);
     await db.run(`INSERT INTO person (person_id,nom,email,password_hash) VALUES (?,?,?,?)`,
       [personId, `Démo ${nomOrg}`, email, pwdHash]);
     await db.run(`INSERT INTO person_role (person_role_id,person_id,role_id,scope_org_id) VALUES (?,?,?,?)`,
@@ -244,6 +246,9 @@ for (const [roleCode, pages] of Object.entries(ROLE_PAGES)) {
   const hash = await bcrypt.hash(DEMO_PASSWORD, 12);
   for (const [code, nom] of ROLES) {
     const pid = uuid();
+    await db.run(`INSERT INTO personne (personne_id,matricule,nom,prenom,email,password_hash) VALUES (?,?,?,?,?,?)`,
+      [pid, 'AG-'+code, nom, 'Démo', code.toLowerCase()+'@rdc.gouv.cd', hash]);
+    await db.run(`INSERT INTO personne_role (personne_role_id,personne_id,role_id,scope_institution_id) VALUES (?,?,?,?)`, [uuid(), pid, roleIds[code], null]);
     await db.run(`INSERT INTO person (person_id,matricule,nom,prenom,email,password_hash) VALUES (?,?,?,?,?,?)`,
       [pid, 'AG-'+code, nom, 'Démo', code.toLowerCase()+'@rdc.gouv.cd', hash]);
     await db.run('INSERT INTO person_role (person_role_id,person_id,role_id,scope_org_id) VALUES (?,?,?,?)', [uuid(), pid, roleIds[code], null]);

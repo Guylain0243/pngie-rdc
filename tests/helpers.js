@@ -1,6 +1,6 @@
-// Utilitaires de test : lance un VRAI serveur (sous-processus, port dédié,
-// base SQLite isolée) plutôt que de mocker quoi que ce soit. Les tests
-// parlent HTTP au serveur exactement comme un client réel le ferait.
+﻿// Utilitaires de test : lance un VRAI serveur (sous-processus, port dÃ©diÃ©,
+// base SQLite isolÃ©e) plutÃ´t que de mocker quoi que ce soit. Les tests
+// parlent HTTP au serveur exactement comme un client rÃ©el le ferait.
 const { spawn, execFileSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
@@ -29,8 +29,8 @@ let serverProcess = null;
 async function startTestServer() {
   if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
 
-  // Seed la base de test — échoue bruyamment (throw) si le seed plante,
-  // pour ne jamais faire tourner des tests contre une base à moitié vide.
+  // Seed la base de test â€” Ã©choue bruyamment (throw) si le seed plante,
+  // pour ne jamais faire tourner des tests contre une base Ã  moitiÃ© vide.
   execFileSync('node', ['db/seed.js'], {
     cwd: ROOT,
     env: { ...testEnv, DB_PATH: TEST_DB },
@@ -46,21 +46,39 @@ async function startTestServer() {
   let stderrBuf = '';
   serverProcess.stderr.on('data', (d) => { stderrBuf += d.toString(); });
 
-  // Attend que /api/health réponde (jusqu'à 5s), plutôt qu'un sleep arbitraire fragile
+  // Attend que /api/health rÃ©ponde (jusqu'Ã  5s), plutÃ´t qu'un sleep arbitraire fragile
   const deadline = Date.now() + 5000;
   while (Date.now() < deadline) {
     try {
       const res = await fetch(`${BASE_URL}/api/health`);
       if (res.ok) return;
-    } catch { /* pas encore prêt */ }
+    } catch { /* pas encore prÃªt */ }
     await new Promise(r => setTimeout(r, 100));
   }
-  throw new Error('Le serveur de test ne répond pas après 5s. Stderr:\n' + stderrBuf);
+  throw new Error('Le serveur de test ne rÃ©pond pas aprÃ¨s 5s. Stderr:\n' + stderrBuf);
 }
 
-function stopTestServer() {
-  if (serverProcess) { serverProcess.kill(); serverProcess = null; }
-  if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
+async function stopTestServer() {
+  if (serverProcess) {
+    const proc = serverProcess;
+    serverProcess = null;
+    await new Promise((resolve) => {
+      let done = false;
+      proc.once('exit', () => { if (!done) { done = true; resolve(); } });
+      proc.kill();
+      setTimeout(() => { if (!done) { done = true; resolve(); } }, 2000);
+    });
+  }
+  for (let attempt = 0; attempt < 10; attempt++) {
+    try {
+      if (fs.existsSync(TEST_DB)) fs.unlinkSync(TEST_DB);
+      return;
+    } catch (e) {
+      if (e.code !== 'EBUSY' || attempt === 9) throw e;
+      const wait = Date.now() + 150;
+      while (Date.now() < wait) { /* pause synchrone courte */ }
+    }
+  }
 }
 
 async function login(email, password) {

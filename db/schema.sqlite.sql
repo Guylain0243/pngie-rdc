@@ -1,5 +1,5 @@
--- Équivalent SQLite du schéma PostgreSQL (db/schema.sql) — pour démo locale exécutable.
--- En production réelle : utiliser schema.sql sur PostgreSQL.
+﻿-- Ã‰quivalent SQLite du schÃ©ma PostgreSQL (db/schema.sql) â€” pour dÃ©mo locale exÃ©cutable.
+-- En production rÃ©elle : utiliser schema.sql sur PostgreSQL.
 PRAGMA foreign_keys = ON;
 
 CREATE TABLE pouvoir (
@@ -145,10 +145,10 @@ CREATE TABLE kpi_valeur (
 CREATE TABLE role (
   role_id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, nom TEXT NOT NULL, categorie TEXT
 );
-
 CREATE TABLE permission (
-  permission_id TEXT PRIMARY KEY, code TEXT UNIQUE NOT NULL, nom TEXT NOT NULL
+  permission_id TEXT PRIMARY KEY, role_id TEXT NOT NULL REFERENCES role(role_id), entite TEXT NOT NULL, action TEXT NOT NULL
 );
+CREATE INDEX idx_permission_role ON permission(role_id);
 
 CREATE TABLE role_permission (
   role_id TEXT REFERENCES role(role_id),
@@ -250,7 +250,7 @@ CREATE TABLE audit_log (
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ── Cycle de gouvernance : instruction → exécution → rapport → contrôle → décision ──
+-- â”€â”€ Cycle de gouvernance : instruction â†’ exÃ©cution â†’ rapport â†’ contrÃ´le â†’ dÃ©cision â”€â”€
 CREATE TABLE instruction (
   instruction_id TEXT PRIMARY KEY,
   emetteur_org_id TEXT NOT NULL REFERENCES organization(organization_id),
@@ -337,7 +337,7 @@ CREATE TABLE suivi (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- ── Registre des logiciels externes intégrés via API/ESB ──
+-- â”€â”€ Registre des logiciels externes intÃ©grÃ©s via API/ESB â”€â”€
 CREATE TABLE systeme_externe (
   systeme_id TEXT PRIMARY KEY,
   nom TEXT NOT NULL,
@@ -356,7 +356,7 @@ CREATE TABLE integration_flux (
   frequence TEXT
 );
 
--- ── Référentiels transversaux ──
+-- â”€â”€ RÃ©fÃ©rentiels transversaux â”€â”€
 CREATE TABLE lieu (
   lieu_id TEXT PRIMARY KEY,
   parent_lieu_id TEXT REFERENCES lieu(lieu_id),
@@ -409,14 +409,14 @@ CREATE TABLE service_numerique (
   url TEXT,
   statut TEXT DEFAULT 'ACTIF'
 );
--- ════════════════════════════════════════════════════════════════
--- Équivalent SQLite — EXTENSION DU SCHÉMA — Domaines sectoriels + Sécurité renforcée
--- À charger après schema.sql (référence organization, lieu, person, document, decision)
--- ════════════════════════════════════════════════════════════════
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+-- Ã‰quivalent SQLite â€” EXTENSION DU SCHÃ‰MA â€” Domaines sectoriels + SÃ©curitÃ© renforcÃ©e
+-- Ã€ charger aprÃ¨s schema.sql (rÃ©fÃ©rence organization, lieu, person, document, decision)
+-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
--- ───────────────────────────────────────────────
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 -- 10. DOMAINE JUSTICE
--- ───────────────────────────────────────────────
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 CREATE TABLE tribunal (
   tribunal_id     TEXT PRIMARY KEY,
@@ -431,7 +431,7 @@ CREATE TABLE magistrat (
   magistrat_id  TEXT PRIMARY KEY,
   person_id     TEXT NOT NULL REFERENCES person(person_id),
   tribunal_id   TEXT NOT NULL REFERENCES tribunal(tribunal_id),
-  fonction      VARCHAR(60) NOT NULL, -- Président, Juge, Procureur, Substitut, Greffier
+  fonction      VARCHAR(60) NOT NULL, -- PrÃ©sident, Juge, Procureur, Substitut, Greffier
   date_nomination DATE
 );
 
@@ -442,7 +442,7 @@ CREATE TABLE dossier_judiciaire (
   nature          VARCHAR(30) NOT NULL CHECK (nature IN ('CIVIL','PENAL','COMMERCIAL','ADMINISTRATIF','SOCIAL')),
   statut          VARCHAR(20) NOT NULL DEFAULT 'OUVERT' CHECK (statut IN ('OUVERT','EN_COURS','JUGE','ARCHIVE','TRANSMIS')),
   date_ouverture  DATE NOT NULL DEFAULT current_date,
-  ref_police_rdc  VARCHAR(50) -- lien vers une enquête d'origine, si transmise par la Police
+  ref_police_rdc  VARCHAR(50) -- lien vers une enquÃªte d'origine, si transmise par la Police
 );
 CREATE INDEX idx_dossier_tribunal ON dossier_judiciaire(tribunal_id);
 
@@ -456,9 +456,9 @@ CREATE TABLE jugement (
 );
 CREATE INDEX idx_jugement_dossier ON jugement(dossier_id);
 
--- ───────────────────────────────────────────────
--- 11. DOMAINE SANTÉ
--- ───────────────────────────────────────────────
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+-- 11. DOMAINE SANTÃ‰
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 CREATE TABLE etablissement_sante (
   etablissement_id TEXT PRIMARY KEY,
@@ -472,7 +472,7 @@ CREATE TABLE etablissement_sante (
 
 CREATE TABLE patient (
   patient_id     TEXT PRIMARY KEY,
-  numero_national VARCHAR(20) UNIQUE, -- lien optionnel vers le registre national d'identité
+  numero_national VARCHAR(20) UNIQUE, -- lien optionnel vers le registre national d'identitÃ©
   nom            VARCHAR(100) NOT NULL,
   prenom         VARCHAR(100),
   date_naissance DATE,
@@ -483,7 +483,7 @@ CREATE TABLE consultation (
   consultation_id  TEXT PRIMARY KEY,
   patient_id       TEXT NOT NULL REFERENCES patient(patient_id),
   etablissement_id TEXT NOT NULL REFERENCES etablissement_sante(etablissement_id),
-  personnel_person_id TEXT REFERENCES person(person_id), -- agent médical, lié au registre RH de l'État
+  personnel_person_id TEXT REFERENCES person(person_id), -- agent mÃ©dical, liÃ© au registre RH de l'Ã‰tat
   date_consultation TEXT NOT NULL DEFAULT (datetime('now')),
   motif            TEXT,
   diagnostic       TEXT
@@ -502,16 +502,16 @@ CREATE TABLE campagne_vaccination (
   nb_doses_administrees INT DEFAULT 0
 );
 
--- ───────────────────────────────────────────────
--- 12. DOMAINE ÉCONOMIE (Entreprises, Mines, Agriculture, Énergie, Infrastructures, Cadastre)
--- ───────────────────────────────────────────────
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+-- 12. DOMAINE Ã‰CONOMIE (Entreprises, Mines, Agriculture, Ã‰nergie, Infrastructures, Cadastre)
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 CREATE TABLE entreprise (
   entreprise_id   TEXT PRIMARY KEY,
   raison_sociale  VARCHAR(200) NOT NULL,
-  numero_rccm     VARCHAR(50) UNIQUE, -- Registre du Commerce et du Crédit Mobilier
+  numero_rccm     VARCHAR(50) UNIQUE, -- Registre du Commerce et du CrÃ©dit Mobilier
   secteur         VARCHAR(60),
-  capital_etat_pct REAL DEFAULT 0, -- participation de l'État, si entreprise publique/mixte
+  capital_etat_pct REAL DEFAULT 0, -- participation de l'Ã‰tat, si entreprise publique/mixte
   lieu_siege_id   TEXT REFERENCES lieu(lieu_id),
   statut          VARCHAR(20) NOT NULL DEFAULT 'ACTIF'
 );
@@ -532,7 +532,7 @@ CREATE TABLE exploitation_agricole (
   nom             VARCHAR(150),
   lieu_id         TEXT REFERENCES lieu(lieu_id),
   superficie_ha   REAL,
-  filiere         VARCHAR(60), -- café, cacao, manioc, maïs, élevage...
+  filiere         VARCHAR(60), -- cafÃ©, cacao, manioc, maÃ¯s, Ã©levage...
   proprietaire    VARCHAR(200)
 );
 
@@ -565,17 +565,17 @@ CREATE TABLE parcelle_cadastrale (
   litige_en_cours BOOLEAN NOT NULL DEFAULT false
 );
 
--- ───────────────────────────────────────────────
--- 13. SÉCURITÉ RENFORCÉE — MFA et PKI
---     (mfa_enabled/mfa_secret existent déjà sur `person`; on ajoute ici
---      la journalisation des évènements MFA, les codes de secours,
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+-- 13. SÃ‰CURITÃ‰ RENFORCÃ‰E â€” MFA et PKI
+--     (mfa_enabled/mfa_secret existent dÃ©jÃ  sur `person`; on ajoute ici
+--      la journalisation des Ã©vÃ¨nements MFA, les codes de secours,
 --      et le registre de certificats/signatures PKI)
--- ───────────────────────────────────────────────
+-- â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 CREATE TABLE mfa_backup_code (
   code_id     TEXT PRIMARY KEY,
   person_id   TEXT NOT NULL REFERENCES person(person_id),
-  code_hash   TEXT NOT NULL, -- haché (bcrypt), jamais stocké en clair
+  code_hash   TEXT NOT NULL, -- hachÃ© (bcrypt), jamais stockÃ© en clair
   utilise     BOOLEAN NOT NULL DEFAULT false,
   created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
@@ -607,13 +607,13 @@ CREATE TABLE pki_signature (
   certificate_id  TEXT NOT NULL REFERENCES pki_certificate(certificate_id),
   document_id     TEXT REFERENCES document(document_id),
   decision_id     TEXT REFERENCES decision(decision_id),
-  signature_hash  TEXT NOT NULL, -- empreinte cryptographique du document signé
+  signature_hash  TEXT NOT NULL, -- empreinte cryptographique du document signÃ©
   signed_at       TEXT NOT NULL DEFAULT (datetime('now')),
   CHECK (document_id IS NOT NULL OR decision_id IS NOT NULL) -- une signature porte sur au moins un objet
 );
 CREATE INDEX idx_pki_sig_cert ON pki_signature(certificate_id);
 
--- ═══ FIN DE L'EXTENSION — 18 nouvelles tables (4 Justice, 4 Santé, 6 Économie, 4 Sécurité) ═══
+-- â•â•â• FIN DE L'EXTENSION â€” 18 nouvelles tables (4 Justice, 4 SantÃ©, 6 Ã‰conomie, 4 SÃ©curitÃ©) â•â•â•
 
 -- ============================================
 -- Sprint 2C - 31 tables ajoutees (motifs A-D)
@@ -1014,6 +1014,33 @@ CREATE INDEX idx_notification_destinataire ON notification(destinataire_id);
 
 
 -- Table: personne_role
+-- Table: personne
+CREATE TABLE personne (
+  personne_id TEXT PRIMARY KEY,
+  matricule TEXT,
+  nom TEXT NOT NULL,
+  prenom TEXT NOT NULL,
+  date_naissance TEXT,
+  lieu_naissance TEXT,
+  sexe TEXT CHECK (sexe IN ('M','F')),
+  numero_identite_nationale TEXT,
+  email TEXT,
+  telephone TEXT,
+  photo_url TEXT,
+  password_hash TEXT NOT NULL,
+  mfa_active INTEGER NOT NULL DEFAULT 0,
+  mfa_secret TEXT,
+  langue_preferee TEXT NOT NULL DEFAULT 'fr',
+  fuseau_horaire TEXT NOT NULL DEFAULT 'Africa/Kinshasa',
+  statut TEXT NOT NULL DEFAULT 'ACTIF',
+  date_derniere_connexion TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  tentatives_echouees INTEGER NOT NULL DEFAULT 0,
+  verrouille_jusqu_a TEXT
+);
+CREATE INDEX idx_personne_email ON personne(email);
+
 CREATE TABLE personne_role (
   personne_role_id TEXT PRIMARY KEY,
   personne_id TEXT NOT NULL REFERENCES personne(personne_id),
