@@ -227,3 +227,43 @@ Ces deux dettes ont des causes et des correctifs distincts et sont traitées sé
 - DEBT-0001 — Table personne absente
 
 
+
+## Statut mis a jour (correctif applique)
+
+**Statut :** Resolved
+
+Deux points d'usage actif de l'ancien modele de permission ont ete
+corriges dans src/server.js :
+
+- hasPermission() : interrogeait p.code (colonne inexistante) via la
+  table de jonction role_permission (vide, obsolete). Corrige pour
+  interroger permission.entite / permission.action, avec permission.role_id
+  comme lien direct vers role.
+- /api/me : meme correctif applique a la resolution des pages accessibles
+  par utilisateur.
+
+Portee non couverte par ce correctif (a noter, pas a assumer comme resolu) :
+- server.js:263 reference encore role_permission dans la liste de tables
+  utilisee pour la generation de routes CRUD generiques. Non investigue ici ;
+  la table etant vide, l'impact fonctionnel attendu est nul (route retournant
+  une liste vide), mais ce point n'a pas ete verifie directement.
+
+## Validation
+
+- Tests RBAC precedemment en echec (perimetre Presidence/Gouvernorat,
+  verification permission /api/ministeres) passent desormais.
+- Recherche ciblee sur les echecs restants (403, FORBIDDEN,
+  PERMISSION_DENIED, AUTHORIZATION, p.code, role_permission) : aucune
+  correspondance.
+- Suite de tests : 37 tests, 27 reussis, 10 echecs.
+- Les 10 echecs restants sont confines aux domaines governance et nocode
+  (ecarts d'assertion, reponses 404, tables absentes) - signatures sans
+  rapport avec le modele de permission, hors perimetre de DEBT-0002.
+
+## Piste identifiee pour un futur chantier (non ouverte comme dette a ce stade)
+
+Le test "aucune table ne doit etre absente/en erreur" (governance.test.js)
+signale 5 tables citees dans le schema mais absentes ou en erreur en base
+reelle : rnsj_texte, rnsj_relation, rnsj_modification,
+ref_tribunal_grande_instance, dossier_agent_rh. Cause racine non
+diagnostiquee. A investiguer avant toute qualification en dette technique.

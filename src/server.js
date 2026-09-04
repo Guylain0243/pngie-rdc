@@ -1,15 +1,15 @@
-process.on('unhandledRejection', (e) => {
+﻿process.on('unhandledRejection', (e) => {
   require('fs').appendFileSync('erreur-500.log', '\n[unhandledRejection] ' + new Date().toISOString() + '\n' + e.stack + '\n');
 });
 process.on('uncaughtException', (e) => {
   require('fs').appendFileSync('erreur-500.log', '\n[uncaughtException] ' + new Date().toISOString() + '\n' + e.stack + '\n');
 });
 
-// PNGIE-RDC — Backend fonctionnel
-// Authentification réelle (bcrypt async + JWT), RBAC vérifié côté serveur,
-// journal d'audit chaîné par hash, moteur de base de données double
-// (SQLite pour le dev/tests, PostgreSQL pour la production — voir src/db.js),
-// rate limiting distribué (Redis en production, mémoire locale en dev — voir src/rateLimiter.js).
+// PNGIE-RDC â€” Backend fonctionnel
+// Authentification rÃ©elle (bcrypt async + JWT), RBAC vÃ©rifiÃ© cÃ´tÃ© serveur,
+// journal d'audit chaÃ®nÃ© par hash, moteur de base de donnÃ©es double
+// (SQLite pour le dev/tests, PostgreSQL pour la production â€” voir src/db.js),
+// rate limiting distribuÃ© (Redis en production, mÃ©moire locale en dev â€” voir src/rateLimiter.js).
 const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcrypt');
@@ -25,10 +25,10 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ── Barrière d'accès supplémentaire, avant même l'écran de connexion ──
-// Activée uniquement si GATE_USER et GATE_PASS sont définis (utile surtout
-// quand le serveur est exposé publiquement, via un tunnel par exemple).
-// Comparaison en temps constant pour éviter les attaques par mesure de timing.
+// â”€â”€ BarriÃ¨re d'accÃ¨s supplÃ©mentaire, avant mÃªme l'Ã©cran de connexion â”€â”€
+// ActivÃ©e uniquement si GATE_USER et GATE_PASS sont dÃ©finis (utile surtout
+// quand le serveur est exposÃ© publiquement, via un tunnel par exemple).
+// Comparaison en temps constant pour Ã©viter les attaques par mesure de timing.
 const GATE_USER = process.env.GATE_USER;
 const GATE_PASS = process.env.GATE_PASS;
 if (GATE_USER && GATE_PASS) {
@@ -58,11 +58,11 @@ if (GATE_USER && GATE_PASS) {
       if (userOk && passOk) return next();
     }
     res.set('WWW-Authenticate', 'Basic realm="PNGIE-RDC - Acces restreint"');
-    res.status(401).send('Accès refusé.');
+    res.status(401).send('AccÃ¨s refusÃ©.');
   });
-  console.log('✓ Barrière d\'accès HTTP activée (GATE_USER/GATE_PASS définis)');
+  console.log('âœ“ BarriÃ¨re d\'accÃ¨s HTTP activÃ©e (GATE_USER/GATE_PASS dÃ©finis)');
 } else {
-  console.log('⚠ Barrière d\'accès HTTP NON activée — GATE_USER/GATE_PASS non définis (recommandé si exposé publiquement)');
+  console.log('âš  BarriÃ¨re d\'accÃ¨s HTTP NON activÃ©e â€” GATE_USER/GATE_PASS non dÃ©finis (recommandÃ© si exposÃ© publiquement)');
 }
 
 app.use(express.static(require('path').join(__dirname, '..', 'public')));
@@ -75,30 +75,33 @@ if (!JWT_SECRET || JWT_SECRET.length < 32) {
 const TOKEN_TTL = '8h';
 
 // Enveloppe les handlers async pour que toute erreur (y compris une panne DB)
-// retourne un 500 propre au lieu de faire planter le processus entier —
-// jamais testé explicitement avant cette migration, corrigé ici.
+// retourne un 500 propre au lieu de faire planter le processus entier â€”
+// jamais testÃ© explicitement avant cette migration, corrigÃ© ici.
 const wrap = (fn) => (req, res, next) => fn(req, res, next).catch(next);
 
 // audit() deplacee vers src/lib/audit.js (module partage) le 2026-08-01
 
 async function hasPermission(roles, permCode) {
   if (!permCode) return true;
+  const lastColon = permCode.lastIndexOf(':');
+  const entite = permCode.slice(0, lastColon);
+  const action = permCode.slice(lastColon + 1);
   for (const roleCode of roles) {
     const row = await db.get(`
-      SELECT 1 FROM role_permission rp JOIN role r ON r.role_id=rp.role_id
-      JOIN permission p ON p.permission_id=rp.permission_id
-      WHERE r.code=? AND p.code=?`, [roleCode, permCode]);
+      SELECT 1 FROM permission p
+      JOIN role r ON r.role_id = p.role_id
+      WHERE r.code = ? AND p.entite = ? AND p.action = ?`, [roleCode, entite, action]);
     if (row) return true;
   }
   return false;
 }
 
-// ─── POST /api/auth/login — authentification réelle ───
+// â”€â”€â”€ POST /api/auth/login â€” authentification rÃ©elle â”€â”€â”€
 app.use('/api', require('../routes-generated/public_institutions.routes'));
 
 app.post('/api/auth/login', wrap(async (req, res) => {
   const rateLimitEnabled = process.env.RATE_LIMIT_DISABLED !== "true"; const blocked = rateLimitEnabled ? await checkLimit(req.ip, 10, 900) : false;
-  if (blocked) return res.status(429).json({ error: 'Trop de tentatives. Réessayez plus tard.' });
+  if (blocked) return res.status(429).json({ error: 'Trop de tentatives. RÃ©essayez plus tard.' });
 
   const { email, password } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
@@ -150,7 +153,7 @@ app.post('/api/auth/logout', wrap(async (req, res) => {
   res.json({ message: 'Deconnexion reussie.' });
 }));
 
-// ─── Middleware d'authentification ───
+// â”€â”€â”€ Middleware d'authentification â”€â”€â”€
 // --- Middleware d'authentification (implementation unique, partagee) ---
 const requireAuth = require('./middleware/requireAuth');
 app.use('/api', (req, res, next) => {
@@ -161,13 +164,13 @@ app.use('/api', (req, res, next) => {
 });
 const resoudreRoleDepuisJWT = require('./middleware/resoudreRoleDepuisJWT');
 
-// ─── Middleware RBAC ───
+// â”€â”€â”€ Middleware RBAC â”€â”€â”€
 function requirePermission(permCode) {
   return wrap(async (req, res, next) => {
     const allowed = await hasPermission(req.user.roles, permCode);
     if (!allowed) {
       await audit(req.user.sub, 'ACCESS_DENIED', 'permission', null, { permCode });
-      return res.status(403).json({ error: 'Accès refusé pour votre rôle.' });
+      return res.status(403).json({ error: 'AccÃ¨s refusÃ© pour votre rÃ´le.' });
     }
     next();
   });
@@ -177,11 +180,12 @@ app.get('/api/me', requireAuth, wrap(async (req, res) => {
   const person = await db.get('SELECT person_id,nom,prenom,email FROM person WHERE person_id=?', [req.user.sub]);
   const placeholders = req.user.roles.map(() => '?').join(',');
   const rows = await db.all(`
-    SELECT DISTINCT p.code FROM role_permission rp
-    JOIN role r ON r.role_id = rp.role_id
-    JOIN permission p ON p.permission_id = rp.permission_id
+    SELECT DISTINCT p.entite, p.action FROM permission p
+    JOIN role r ON r.role_id = p.role_id
     WHERE r.code IN (${placeholders})`, req.user.roles);
-  const pages = rows.map(r => r.code.replace('page:', '').replace(':read', ''));
+  const pages = rows
+    .filter(r => r.entite.startsWith('page:') && r.action === 'read')
+    .map(r => r.entite.replace('page:', ''));
   res.json({ person, roles: req.user.roles, pages });
 }));
 
@@ -210,7 +214,7 @@ app.get('/api/organigramme', requireAuth, wrap(async (req, res) => {
 }));
 
 app.get('/api/audit', requireAuth, wrap(async (req, res) => {
-  if (!req.user.roles.includes('PR') && !req.user.roles.includes('PM')) return res.status(403).json({ error: 'Réservé à la Présidence.' });
+  if (!req.user.roles.includes('PR') && !req.user.roles.includes('PM')) return res.status(403).json({ error: 'RÃ©servÃ© Ã  la PrÃ©sidence.' });
   const rows = await db.all('SELECT log_id,action,entite,created_at FROM audit_log ORDER BY log_id DESC LIMIT 50');
   res.json(rows);
 }));
@@ -289,9 +293,9 @@ app.get('/api/db-summary', requireAuth, wrap(async (req, res) => {
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'pngie-rdc-backend', db_driver: db.driver }));
 
-// ═══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // AGENTS IA
-// ═══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 app.get('/api/agents', requireAuth, wrap(async (req, res) => {
   const agents = await db.all(`SELECT agent_id, code, nom, type_agent AS role_ia, statut FROM agent_ia WHERE statut='ACTIF'`);
@@ -306,7 +310,7 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
 
   if (agent.permission_code && !(await hasPermission(req.user.roles, agent.permission_code))) {
     await audit(req.user.sub, 'ACCESS_DENIED', 'ai_agent', agent.agent_id, {});
-    return res.status(403).json({ error: 'Votre rôle n\'a pas accès à cet agent.' });
+    return res.status(403).json({ error: 'Votre rÃ´le n\'a pas accÃ¨s Ã  cet agent.' });
   }
 
   const { message } = req.body || {};
@@ -322,12 +326,12 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
   res.status(result.ok ? 200 : 502).json(result);
 }));
 
-// ═══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 // NO-CODE
-// ═══════════════════════════════════════════════════════════
+// â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 function parseDefinition(raw) {
-  // PostgreSQL (JSONB) renvoie déjà un objet ; SQLite (TEXT) renvoie une chaîne à parser.
+  // PostgreSQL (JSONB) renvoie dÃ©jÃ  un objet ; SQLite (TEXT) renvoie une chaÃ®ne Ã  parser.
   return typeof raw === 'string' ? JSON.parse(raw) : raw;
 }
 
@@ -367,11 +371,11 @@ app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
 
 const PORT = process.env.PORT || 4000;
 if (require.main === module) {
-  app.listen(PORT, () => console.log(`✓ PNGIE-RDC backend démarré sur http://localhost:${PORT} (BDD: ${db.driver})`));
+  app.listen(PORT, () => console.log(`âœ“ PNGIE-RDC backend dÃ©marrÃ© sur http://localhost:${PORT} (BDD: ${db.driver})`));
 }
 module.exports = app;
 
-// ── Government Meta Platform : branchement du routeur genere (Facture) ──
+// â”€â”€ Government Meta Platform : branchement du routeur genere (Facture) â”€â”€
 // Resolution du role depuis le JWT, montee UNE SEULE FOIS pour toutes les routes /api protegees.
 // Remplace progressivement les blocs inline dupliques ci-dessous (en cours de nettoyage).
 app.use('/api', resoudreRoleDepuisJWT);
@@ -489,9 +493,9 @@ app.use('/api', rniCommandementRouter);
 app.use('/api', require('./domains/governance/decision.routes'));
 app.use('/api', require('./domains/governance/cockpit.routes'));
 
-// ─── Gestionnaire d'erreurs global : jamais de plantage silencieux du process ───
+// â”€â”€â”€ Gestionnaire d'erreurs global : jamais de plantage silencieux du process â”€â”€â”€
 app.use((err, req, res, next) => {
-  console.error('Erreur non gérée:', err);
+  console.error('Erreur non gÃ©rÃ©e:', err);
   if (res.headersSent) return next(err);
   res.status(500).json({ error: 'Erreur interne du serveur.' });
 });
