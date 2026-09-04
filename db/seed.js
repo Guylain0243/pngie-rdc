@@ -110,6 +110,32 @@ async function main() {
   await db.run(ORG_SQL, [presidenceId,'PRESIDENCE','Présidence de la République',1,null,0,
     'Vision, stratégie, arbitrage, supervision nationale.']);
 
+  // ------------------------------------------------------------------
+  // TEMPORAIRE
+  // Synchronisation minimale avec le nouveau modele "institution"
+  // afin de satisfaire les FK utilisees par agent_ia.
+  //
+  // TODO Sprint suivant : remplacer completement le seed organization
+  // par un seed institution.
+  // ------------------------------------------------------------------
+
+  await db.run(
+    `INSERT INTO institution (
+        institution_id,
+        code,
+        nom,
+        type_institution,
+        niveau_hierarchique
+     ) VALUES (?,?,?,?,?)`,
+    [
+      presidenceId,
+      'PRESIDENCE',
+      'Présidence de la République',
+      'PRESIDENCE',
+      0
+    ]
+  );
+
   const primatureId = uuid();
   await db.run(ORG_SQL, [primatureId,'PRIMATURE','Primature',2,presidenceId,1,
     'Coordination interministérielle, exécution du Programme du Gouvernement.']);

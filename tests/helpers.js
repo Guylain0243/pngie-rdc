@@ -17,6 +17,13 @@ const BASE_URL = `http://localhost:${TEST_PORT}`;
 const testEnv = { ...process.env };
 delete testEnv.DATABASE_URL;
 
+// Idem pour GATE_USER / GATE_PASS : si elles sont definies au niveau
+// utilisateur Windows, la barriere d'acces HTTP de src/server.js s'active
+// sur le serveur de test et bloque le healthcheck /api/health (401),
+// provoquant un timeout de 5s sur chaque test.
+delete testEnv.GATE_USER;
+delete testEnv.GATE_PASS;
+
 let serverProcess = null;
 
 async function startTestServer() {

@@ -123,7 +123,7 @@ app.post('/api/auth/login', wrap(async (req, res) => {
   const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
   await db.run(
     `INSERT INTO session_utilisateur (session_id, personne_id, token_hash, adresse_ip, user_agent, date_debut, date_expiration, statut)
-     VALUES (?, ?, ?, ?, ?, NOW(), NOW() + INTERVAL '8 hours', 'ACTIF')`,
+     VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now', '+8 hours'), 'ACTIF')`,
     [sessionId, person.person_id, tokenHash, req.ip, req.headers['user-agent'] || null]
   );
 
@@ -153,7 +153,12 @@ app.post('/api/auth/logout', wrap(async (req, res) => {
 // ─── Middleware d'authentification ───
 // --- Middleware d'authentification (implementation unique, partagee) ---
 const requireAuth = require('./middleware/requireAuth');
-app.use('/api', requireAuth);
+app.use('/api', (req, res, next) => {
+  if (req.path === '/health') {
+    return next();
+  }
+  return requireAuth(req, res, next);
+});
 const resoudreRoleDepuisJWT = require('./middleware/resoudreRoleDepuisJWT');
 
 // ─── Middleware RBAC ───
