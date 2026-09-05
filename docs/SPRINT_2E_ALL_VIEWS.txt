@@ -1,0 +1,7 @@
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2622:CREATE VIEW public.meta_permission WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2802:CREATE VIEW public.organization WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2838:CREATE VIEW public.permission_compat WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2881:CREATE VIEW public.person WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2914:CREATE VIEW public.person_role WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:4370:CREATE VIEW public.rnso_hierarchie WITH (security_invoker='true') AS
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:4725:CREATE VIEW public.role_permission WITH (security_invoker='true') AS

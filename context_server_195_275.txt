@@ -1,0 +1,81 @@
+﻿ 195:     .filter(r => r.entite.startsWith('page:') && r.action === 'read')
+ 196:     .map(r => r.entite.replace('page:', ''));
+ 197:   res.json({ person, roles: req.user.roles, pages });
+ 198: }));
+ 199: 
+ 200: app.get('/api/ministeres', requireAuth, requirePermission('page:ministeres:read'), wrap(async (req, res) => {
+ 201:   const rows = await db.all(`
+ 202:     SELECT o.nom, ot.libelle AS type, o.description
+ 203:     FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+ 204:     WHERE ot.code = 'MINISTERE' ORDER BY o.nom`);
+ 205:   await audit(null, 'READ', 'ministeres', null, { count: rows.length, personne_id: req.user.sub });
+ 206:   res.json(rows);
+ 207: }));
+ 208: 
+ 209: app.get('/api/provinces', requireAuth, requirePermission('page:provinces:read'), wrap(async (req, res) => {
+ 210:   const rows = await db.all(`
+ 211:     SELECT o.nom, o.code FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+ 212:     WHERE ot.code = 'PROVINCE' ORDER BY o.nom`);
+ 213:   res.json(rows);
+ 214: }));
+ 215: 
+ 216: app.get('/api/organigramme', requireAuth, wrap(async (req, res) => {
+ 217:   const rows = await db.all(`
+ 218:     SELECT o.organization_id, o.nom, ot.libelle AS type, o.niveau, o.parent_id, o.description
+ 219:     FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+ 220:     WHERE o.niveau <= 1 ORDER BY o.niveau`);
+ 221:   res.json(rows);
+ 222: }));
+ 223: 
+ 224: app.get('/api/audit', requireAuth, wrap(async (req, res) => {
+ 225:   if (!req.user.roles.includes('PR') && !req.user.roles.includes('PM')) return res.status(403).json({ error: 'RÃ©servÃ© Ã  la PrÃ©sidence.' });
+ 226:   const rows = await db.all('SELECT log_id,action,entite,created_at FROM audit_log ORDER BY log_id DESC LIMIT 50');
+ 227:   res.json(rows);
+ 228: }));
+ 229: 
+ 230: app.get('/api/gouvernance/cycle', requireAuth, requirePermission('page:institutions:read'), wrap(async (req, res) => {
+ 231:   const [instructions, rapports, controles, recommandations, decisions, suivis] = await Promise.all([
+ 232:     db.all(`SELECT i.instruction_id,i.titre,i.type,i.statut,i.echeance, eo.nom AS emetteur, dest.nom AS destinataire
+ 233:             FROM instruction i
+ 234:             JOIN organization eo ON eo.organization_id = i.emetteur_org_id
+ 235:             JOIN organization dest ON dest.organization_id = i.destinataire_org_id`),
+ 236:     db.all(`SELECT r.rapport_id,r.titre,r.synthese,r.periode,r.instruction_id, o.nom AS organisation, d.nom AS destinataire
+ 237:             FROM rapport r
+ 238:             JOIN organization o ON o.organization_id = r.organization_id
+ 239:             LEFT JOIN organization d ON d.organization_id = r.destinataire_org_id`),
+ 240:     db.all(`SELECT c.controle_id,c.type,c.objet,c.statut, oc.nom AS organe_controle, ocl.nom AS organisation_controlee,
+ 241:             am.conclusion, am.rapport_final
+ 242:             FROM controle c
+ 243:             JOIN organization oc ON oc.organization_id = c.organe_controle_id
+ 244:             JOIN organization ocl ON ocl.organization_id = c.organisation_controlee_id
+ 245:             LEFT JOIN audit_mission am ON am.controle_id = c.controle_id`),
+ 246:     db.all(`SELECT rec.recommandation_id,rec.libelle,rec.priorite, o.nom AS organisation_responsable
+ 247:             FROM recommandation rec
+ 248:             LEFT JOIN organization o ON o.organization_id = rec.organisation_responsable_id`),
+ 249:     db.all(`SELECT dec.decision_id,dec.titre,dec.type, o.nom AS organisation
+ 250:             FROM decision dec JOIN organization o ON o.organization_id = dec.organization_id`),
+ 251:     db.all(`SELECT suivi_id,statut,commentaire,updated_at FROM suivi`),
+ 252:   ]);
+ 253:   res.json({ instructions, rapports, controles, recommandations, decisions, suivis });
+ 254: }));
+ 255: 
+ 256: app.get('/api/integrations', requireAuth, wrap(async (req, res) => {
+ 257:   const [systemes, flux] = await Promise.all([
+ 258:     db.all(`SELECT s.systeme_id,s.nom,s.categorie,s.fournisseur,s.protocole,s.statut_connexion, o.nom AS organisation
+ 259:             FROM systeme_externe s LEFT JOIN organization o ON o.organization_id = s.organization_id
+ 260:             ORDER BY s.categorie, s.nom`),
+ 261:     db.all(`SELECT f.flux_id,f.sens,f.objet,f.frequence, s.nom AS systeme
+ 262:             FROM integration_flux f JOIN systeme_externe s ON s.systeme_id = f.systeme_id`),
+ 263:   ]);
+ 264:   res.json({ systemes, flux });
+ 265: }));
+ 266: 
+ 267: app.get('/api/db-summary', requireAuth, wrap(async (req, res) => {
+ 268:   const tables = [
+ 269:     'pouvoir','organization_type','organization','unit','position','person','assignment',
+ 270:     'responsabilite','organization_responsabilite','mission','organization_mission',
+ 271:     'gov_relation','process','process_step','activite','programme','projet',
+ 272:     'role','permission','role_permission','person_role',
+ 273:     'portal','dashboard','module','menu','page','widget','kpi','kpi_valeur',
+ 274:     'ai_agent','ai_conversation','ai_message','nocode_app','nocode_submission',
+ 275:     'audit_log','instruction','plan_action','rapport','controle','audit_mission',

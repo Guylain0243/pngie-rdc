@@ -1,0 +1,26 @@
+> C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2881:CREATE VIEW public.person WITH (security_invoker='true') AS
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2882: SELECT personne_id AS person_id,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2883:    matricule,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2884:    nom,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2885:    prenom,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2886:    email,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2887:    password_hash,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2888:    statut,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2889:    created_at
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2890:   FROM public.personne;
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2891:
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2892:
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2893:--
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2894:-- Name: personne_role; Type: TABLE; Schema: public; Owner: -
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2895:--
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2896:
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2897:CREATE TABLE public.personne_role (
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2898:    personne_role_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2899:    personne_id uuid NOT NULL,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2900:    role_id uuid NOT NULL,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2901:    scope_institution_id uuid,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2902:    date_attribution timestamp with time zone DEFAULT now() NOT NULL,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2903:    date_expiration timestamp with time zone,
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2904:    statut character varying(20) DEFAULT 'ACTIF'::character varying NOT NULL
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2905:);
+  C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2906:

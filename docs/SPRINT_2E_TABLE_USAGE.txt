@@ -1,0 +1,402 @@
+C:\pngie-rdc\pngie-backend\routes-generated\accord_cooperation.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\accord_cooperation.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\accord_cooperation.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\accord_cooperation.routes.js:91:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\accord_cooperation.routes.js:123:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\affectation.routes.js:27:      JOIN personne pe ON pe.personne_id = a.personne_id
+C:\pngie-rdc\pngie-backend\routes-generated\agent.routes.js:57:router.post("/agents-rh", exigerPermission("agent", "CREATE"), validate({ body: schemaAgentBody }), exigerPortee({ type: "institution", source: "body.institution_id" }), async (req, res) => {
+C:\pngie-rdc\pngie-backend\routes-generated\agent.routes.js:79:// MODIFICATION - verifie l institution actuelle de l agent ET la nouvelle institution_id cible
+C:\pngie-rdc\pngie-backend\routes-generated\agent.routes.js:80:router.put("/agents-rh/:id", validate({ params: { id: { type: "uuid", required: true } }, body: schemaAgentBody }), exigerPermission("agent", "UPDATE"), exigerPortee({ type: "agent", source: "params.id" }), exigerPortee({ type: "institution", source: "body.institution_id" }), async (req, res) => {
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:3:// Liste les personnes actives avec leur poste, unite et institution.
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:15:router.get('/annuaire', exigerPermission('personne', 'READ'), async (req, res) => {
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:35:      FROM personne p
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:39:      JOIN institution i ON i.institution_id = u.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:70:router.get('/annuaire/:id', exigerPermission('personne', 'READ'), async (req, res) => {
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:80:      FROM personne p
+C:\pngie-rdc\pngie-backend\routes-generated\annuaire.routes.js:84:      JOIN institution i ON i.institution_id = u.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:19:const CHAMPS = ["institution","objet","montant_estime","statut"];
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:20:const CHAMPS_OBLIGATOIRES = ["institution","objet"];
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\appel_offres.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\autorisation_industrielle.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_culturel_protege.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\bien_patrimonial.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\certificat_pki.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:33:// DETAIL d'une decision + ses actions par institution
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:40:       JOIN institution i ON i.institution_id = da.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:50:// CREATION : la decision + une ligne decision_action par institution concernee, en transaction
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:57:    return sendError(res, 400, "VALIDATION_ERROR", "Au moins une institution concernee est requise.");
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:60:    return sendError(res, 400, "VALIDATION_ERROR", "Identifiants d'institution invalides.", { invalides });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_gouvernementale.routes.js:87:// MISE A JOUR d'une action (declaration d'avancement par une institution)
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:19:const CHAMPS = ["institution","objet","type","statut"];
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:20:const CHAMPS_OBLIGATOIRES = ["institution","objet","type"];
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\decision_institutionnelle.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_douaniere.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\declaration_fiscale.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_administratif.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_agent_rh.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_entreprise.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_judiciaire.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_logistique_defense.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_projet_investissement.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_projet_investissement.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_projet_investissement.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_projet_investissement.routes.js:91:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_projet_investissement.routes.js:123:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_recouvrement.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\dossier_scolaire.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ecriture_comptable.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\enquete_statistique.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\etude_impact_environnemental.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\exploitation_agricole.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:88:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\facture.routes.js:120:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\federation_sportive.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\immatriculation_vehicule.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\incident_securitaire.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:6:// Verifie que l'utilisateur a le droit de consulter l'institution demandee dans l'URL.
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:16:  res.status(403).json({ error: "Acces refuse a cette institution." });
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:25:      FROM institution
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:45:// TABLEAU DE BORD GENERIQUE D'UNE INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:51:      FROM institution WHERE institution_id = ?
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:54:    if (!inst) return res.status(404).json({ error: "Institution introuvable" });
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:69:      LEFT JOIN personne pe ON pe.personne_id = a.personne_id
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_dashboard.routes.js:83:      institution: inst,
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:5:// FICHE COMPLETE D'UNE INSTITUTION : organigramme (unites + postes) + relations
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:10:    const institution = await db.get(
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:13:       FROM institution WHERE institution_id = ?`,
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:17:    if (!institution) {
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:18:      return res.status(404).json({ error: "Institution introuvable" });
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:83:    // Relations directes institution -> institution (sortantes)
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:88:       JOIN institution i ON i.institution_id = r.institution_cible_id
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:89:       WHERE r.mode = 'INSTITUTION' AND r.institution_source_id = ?`,
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:93:    // Relations directes institution -> institution (entrantes)
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:98:       JOIN institution i ON i.institution_id = r.institution_source_id
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:99:       WHERE r.mode = 'INSTITUTION' AND r.institution_cible_id = ?`,
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:103:    // Relations generiques par type d'institution (mode TYPE_INSTITUTION)
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:108:      [institution.type_institution, institution.type_institution]
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_fiche.routes.js:112:      institution,
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_validation.routes.js:17:  institution: { table: 'institution', pk: 'institution_id' },
+C:\pngie-rdc\pngie-backend\routes-generated\institutions_validation.routes.js:61:creerRouteDemande('institution');
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_commerciale.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\licence_telecom.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:19:const CHAMPS = ["institution","exercice","programme","montant_alloue","statut"];
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:20:const CHAMPS_OBLIGATOIRES = ["institution","exercice"];
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ligne_budgetaire.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\me_poste.routes.js:6:// Institution > Unite > Fonction, sans second mot de passe (lecture directe via req.user.sub)
+C:\pngie-rdc\pngie-backend\routes-generated\me_poste.routes.js:15:      JOIN personne pe ON pe.personne_id = a.personne_id
+C:\pngie-rdc\pngie-backend\routes-generated\me_poste.routes.js:22:      return res.json({ personne_id: personneId, poste_intitule: null, unite: null, institution: null, message: "Aucun poste actif rattachÃ© Ã  cet utilisateur" });
+C:\pngie-rdc\pngie-backend\routes-generated\me_poste.routes.js:29:      JOIN institution i ON i.institution_id = u.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\me_poste.routes.js:42:      institution: poste ? poste.institution_nom : null,
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:19:const CHAMPS = ["beneficiaire","montant","institution","statut"];
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:20:const CHAMPS_OBLIGATOIRES = ["beneficiaire","institution"];
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ordre_paiement.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\permis_minier.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\plan_developpement.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\plan_developpement.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\plan_developpement.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\plan_developpement.routes.js:91:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\plan_developpement.routes.js:123:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:8:// ARBORESCENCE : institution -> unite -> postes, filtree par perimetre de l utilisateur
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:13:      return res.status(403).json({ error: "Aucune institution de rattachement trouvee pour cet utilisateur" });
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:21:      FROM institution i
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:63:      JOIN institution i ON i.institution_id = u.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:76:      JOIN personne pe ON pe.personne_id = a.personne_id
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:87:        FROM personne_role pr JOIN role r ON r.role_id = pr.role_id
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:94:          SELECT DISTINCT entite, action FROM permission
+C:\pngie-rdc\pngie-backend\routes-generated\poste_hierarchie.routes.js:112:        unite: poste.unite_nom, institution: poste.institution_nom
+C:\pngie-rdc\pngie-backend\routes-generated\projet_recherche.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\projet_recherche.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\projet_recherche.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\projet_recherche.routes.js:91:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\projet_recherche.routes.js:123:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\public_institutions.routes.js:11:      FROM institution
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\raccordement_energetique.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\reclamation_citoyenne.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\ref_tribunal_paix.routes.js:6://   - Écriture : restreinte par permission dédiée (voir exigerPermission)
+C:\pngie-rdc\pngie-backend\routes-generated\ref_tribunal_paix.routes.js:49:// LISTE — lecture ouverte à toute institution authentifiée, pas de filtre
+C:\pngie-rdc\pngie-backend\routes-generated\relations.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\relations.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\relations.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\relations.routes.js:91:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\relations.routes.js:123:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:6://           pas générer cette route automatiquement : son scope 'INSTITUTION'
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:14://         -> institution.institution_id
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:22:// Source de l'institution courante : la même que government-builder.js,
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:24:// pour ne pas introduire une deuxième façon de résoudre "l'institution de
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:27:// Convention de permission : exigerPermission(table, 'READ' | 'WRITE'),
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:70:// Résout l'institution de l'utilisateur authentifié, à partir du même
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:77:// Vérifie que le poste_id donné appartient bien à l'institution fournie.
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:90:// LISTE — cloisonnée par institution via JOIN poste -> structure.
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:94:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:111:// DETAIL — cloisonné par institution via JOIN.
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:115:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:132:// CREATION — le poste_id fourni doit appartenir à l'institution courante.
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:140:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:147:            return res.status(403).json({ error: 'Le poste indique n\'appartient pas a votre institution' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:172:// à l'institution courante.
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:176:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:194:                return res.status(403).json({ error: 'Le nouveau poste indique n\'appartient pas a votre institution' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:228:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:250:// l'institution courante (vérifié ci-dessus pour DETAIL). Ici on ne
+C:\pngie-rdc\pngie-backend\routes-generated\rnso_affectation.routes.js:257:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:4:// Scope  : INSTITUTION
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:36:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:48:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:65:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:87:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\routes-generated\signalement_sanitaire.routes.js:119:        if (!instId) return res.status(403).json({ error: 'Institution non resolue pour cet utilisateur' });
+C:\pngie-rdc\pngie-backend\src\aiAgent.js:13:// Chaque "tool" correspond à un endpoint interne déjà protégé par permission.
+C:\pngie-rdc\pngie-backend\src\aiAgent.js:34:// au-delà de ce que la permission de l'agent autorise.
+C:\pngie-rdc\pngie-backend\src\aiAgent.js:38:      SELECT o.nom, o.description FROM organization o
+C:\pngie-rdc\pngie-backend\src\db.js:27:  // propagÃ© Ã  la connexion qui exÃ©cute la requÃªte (RLS par institution).
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:67:     JOIN institution i ON i.institution_id = d.emetteur_institution_id
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:120:     JOIN institution i ON i.institution_id = da.institution_id
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:150:// La table institution n'a pas de colonne province directe. Les provinces
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:151:// sont elles-memes des lignes institution (type_institution = 'PROVINCE').
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:158:       FROM institution WHERE institution_id = ?
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:161:       FROM institution i
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:183:     JOIN institution i ON i.institution_id = d.emetteur_institution_id
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.repository.js:215:// colonne institution dupliquee sur entity_event.
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.service.js:9:  // meme permission READ plutot que d'en inventer une nouvelle.
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.service.js:12:    throw new decisionService.ErreurMetier(ERROR_CODES.FORBIDDEN, "Permission refusee : acces au Cockpit.");
+C:\pngie-rdc\pngie-backend\src\domains\governance\cockpit.service.js:67:  // MI/GV seront restreints a leur propre institution -- ce n'est pas une
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.repository.js:5:// filtrage par institution est explicite ici, pas delegue a PostgreSQL.
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.repository.js:11:     FROM personne_role pr
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.repository.js:12:     JOIN permission p ON p.role_id = pr.role_id
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.repository.js:57:     JOIN institution i ON i.institution_id = da.institution_id
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:18:    throw new ErreurMetier(ERROR_CODES.FORBIDDEN, `Permission refusee : ${entite}.${action}`);
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:43:// des pouvoirs) -- jamais filtre par institution.
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:108:// permission autorise l'ACTION pour PR/PM/MI/GV, cette verification
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:134:      "Vous ne pouvez annuler qu'une decision de votre propre institution, ou de votre perimetre hierarchique (PR/PM)."
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:155:// --- Actions (avancement par institution) ----------------------------------
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:161:  // Une institution ne declare l'avancement que de sa propre action -- PR/PM
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:163:  // jamais ce code avec succes ; MI/GV sont restreints a leur propre institution.
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.service.js:165:    throw new ErreurMetier(ERROR_CODES.FORBIDDEN_INSTITUTION, "Vous ne pouvez modifier que l'avancement de votre propre institution.");
+C:\pngie-rdc\pngie-backend\src\domains\governance\decision.validators.js:14:    erreurs.push("institutionsConcernees requis (au moins une institution, tableau d'UUID).");
+C:\pngie-rdc\pngie-backend\src\domains\journal\journal.repository.js:105:     FROM personne_role pr
+C:\pngie-rdc\pngie-backend\src\domains\journal\journal.repository.js:106:     JOIN permission p ON p.role_id = pr.role_id
+C:\pngie-rdc\pngie-backend\src\domains\journal\journal.service.js:18:    throw new ErreurMetier(ERROR_CODES.FORBIDDEN, `Permission refusee : journal.${action}`);
+C:\pngie-rdc\pngie-backend\src\lib\errors.js:11://   403 FORBIDDEN                — authentifié mais permission refusée
+C:\pngie-rdc\pngie-backend\src\lib\errors.js:12://   403 FORBIDDEN_INSTITUTION    — authentifié, permission ok, mais institution non autorisée
+C:\pngie-rdc\pngie-backend\src\middleware\requireAuth.js:6:// personne_role.scope_institution_id, puis propagation via requestContext.run().
+C:\pngie-rdc\pngie-backend\src\middleware\requireAuth.js:42:  // Resolution unique de l'institution de portee (scope_institution_id),
+C:\pngie-rdc\pngie-backend\src\middleware\requireAuth.js:43:  // toujours via bypass RLS : la lecture de personne_role se heurterait
+C:\pngie-rdc\pngie-backend\src\middleware\requireAuth.js:55:          'SELECT scope_institution_id FROM personne_role WHERE personne_id = ?::uuid AND scope_institution_id IS NOT NULL LIMIT 1',
+C:\pngie-rdc\pngie-backend\src\notification-engine.js:50:            `SELECT p.person_id FROM person_role pr JOIN role r ON r.role_id = pr.role_id JOIN person p ON p.person_id = pr.person_id WHERE r.code = ?`,
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:6://   requireAuth -> validate() -> permission RNI (meta_permission) ->
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:20:const { estAutoriseSurInstitution } = require('./services/institution-authority');
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:56:    sendError(res, 'FORBIDDEN_INSTITUTION', "Vous n'êtes pas autorisé à représenter cette institution.");
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:69:    const institutions = await db.all(`SELECT institution_id, code, nom FROM institution ORDER BY nom`);
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:86:       JOIN institution i ON i.institution_id = l.institution_id
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:94:       JOIN institution i ON i.institution_id = l.institution_parent_id
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:117:      return sendError(res, 'VALIDATION_ERROR', "Une institution ne peut pas être son propre parent.");
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:186:       JOIN institution e ON e.institution_id = i.emetteur_institution_id
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:187:       JOIN institution d ON d.institution_id = i.destinataire_institution_id
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:204:       JOIN institution e ON e.institution_id = i.emetteur_institution_id
+C:\pngie-rdc\pngie-backend\src\rni-commandement-routes.js:205:       JOIN institution d ON d.institution_id = i.destinataire_institution_id
+C:\pngie-rdc\pngie-backend\src\security\hierarchy-service.js:2:// Calcule les institutions visibles depuis une institution donnee.
+C:\pngie-rdc\pngie-backend\src\security\hierarchy-service.js:4:// RATTACHEMENT_CONSTITUTIONNEL : ne se propage PAS. Seule l institution
+C:\pngie-rdc\pngie-backend\src\security\hierarchy-service.js:5:// directement liee en source voit l institution rattachee - pas d heritage
+C:\pngie-rdc\pngie-backend\src\security\hierarchy-service.js:16:      SELECT institution_id FROM institution WHERE institution_id = ?
+C:\pngie-rdc\pngie-backend\src\security\resource-resolver.js:2:// Resout l institution de rattachement d une ressource, quel que soit son type.
+C:\pngie-rdc\pngie-backend\src\security\resource-resolver.js:40:  institution: institutionIdentite
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:2:// Resout le perimetre institutionnel d une personne :
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:3:// personne -> affectation active -> poste -> unite -> institution
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:21:  // porte directement par personne_role (cf. migrations 008/009).
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:24:    FROM personne_role
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:34:// = true sans avoir d'institution propre (ex. Analyste Cockpit). Lecture
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:41:    FROM personne_role pr
+C:\pngie-rdc\pngie-backend\src\security\scope-resolver.js:51:    const rows = await db.all(`SELECT institution_id FROM institution`);
+C:\pngie-rdc\pngie-backend\src\security-engine.js:25: * Middleware Express : exige qu'une permission soit accordee pour continuer.
+C:\pngie-rdc\pngie-backend\src\security-engine.js:38:                    error: `Permission refusee : le role "${roleCode}" ne peut pas faire "${action}" sur "${entity}"`
+C:\pngie-rdc\pngie-backend\src\server.js:88:      SELECT 1 FROM role_permission rp JOIN role r ON r.role_id=rp.role_id
+C:\pngie-rdc\pngie-backend\src\server.js:89:      JOIN permission p ON p.permission_id=rp.permission_id
+C:\pngie-rdc\pngie-backend\src\server.js:106:  const person = await db.get('SELECT * FROM person WHERE email = ? AND statut = ?', [email, 'ACTIF']);
+C:\pngie-rdc\pngie-backend\src\server.js:107:  const passwordOk = person ? await bcrypt.compare(password, person.password_hash) : false;
+C:\pngie-rdc\pngie-backend\src\server.js:108:  if (!person || !passwordOk) {
+C:\pngie-rdc\pngie-backend\src\server.js:109:    await audit(person ? person.person_id : null, 'LOGIN_FAILED', 'person', person ? person.person_id : null, { email });
+C:\pngie-rdc\pngie-backend\src\server.js:114:    SELECT r.code, r.nom, r.categorie FROM person_role pr
+C:\pngie-rdc\pngie-backend\src\server.js:115:    JOIN role r ON r.role_id = pr.role_id WHERE pr.person_id = ?`, [person.person_id]));
+C:\pngie-rdc\pngie-backend\src\server.js:118:    { sub: person.person_id, email: person.email, roles: roles.map(r => r.code) },
+C:\pngie-rdc\pngie-backend\src\server.js:127:    [sessionId, person.person_id, tokenHash, req.ip, req.headers['user-agent'] || null]
+C:\pngie-rdc\pngie-backend\src\server.js:130:  await audit(person.person_id, 'LOGIN_SUCCESS', 'person', person.person_id, {});
+C:\pngie-rdc\pngie-backend\src\server.js:131:  res.json({ token, person: { nom: person.nom, prenom: person.prenom, email: person.email }, roles });
+C:\pngie-rdc\pngie-backend\src\server.js:149:  await audit(decoded.sub, 'LOGOUT', 'person', decoded.sub, {});
+C:\pngie-rdc\pngie-backend\src\server.js:169:      await audit(req.user.sub, 'ACCESS_DENIED', 'permission', null, { permCode });
+C:\pngie-rdc\pngie-backend\src\server.js:177:  const person = await db.get('SELECT person_id,nom,prenom,email FROM person WHERE person_id=?', [req.user.sub]);
+C:\pngie-rdc\pngie-backend\src\server.js:180:    SELECT DISTINCT p.code FROM role_permission rp
+C:\pngie-rdc\pngie-backend\src\server.js:182:    JOIN permission p ON p.permission_id = rp.permission_id
+C:\pngie-rdc\pngie-backend\src\server.js:185:  res.json({ person, roles: req.user.roles, pages });
+C:\pngie-rdc\pngie-backend\src\server.js:191:    FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:199:    SELECT o.nom, o.code FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:207:    FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:222:            JOIN organization eo ON eo.organization_id = i.emetteur_org_id
+C:\pngie-rdc\pngie-backend\src\server.js:223:            JOIN organization dest ON dest.organization_id = i.destinataire_org_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:226:            JOIN organization o ON o.organization_id = r.organization_id
+C:\pngie-rdc\pngie-backend\src\server.js:227:            LEFT JOIN organization d ON d.organization_id = r.destinataire_org_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:231:            JOIN organization oc ON oc.organization_id = c.organe_controle_id
+C:\pngie-rdc\pngie-backend\src\server.js:232:            JOIN organization ocl ON ocl.organization_id = c.organisation_controlee_id
+C:\pngie-rdc\pngie-backend\src\server.js:236:            LEFT JOIN organization o ON o.organization_id = rec.organisation_responsable_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:238:            FROM decision dec JOIN organization o ON o.organization_id = dec.organization_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:247:            FROM systeme_externe s LEFT JOIN organization o ON o.organization_id = s.organization_id
+C:\pngie-rdc\pngie-backend\src\server.js:257:    'pouvoir','organization_type','organization','unit','position','person','assignment',
+C:\pngie-rdc\pngie-backend\src\server.js:260:    'role','permission','role_permission','person_role',
+C:\pngie-rdc\pngie-backend\src\server.js:267:    'institution','unite_organisationnelle','poste','affectation',
+C:\pngie-rdc\pngie-backend\src\server.js:484:// (permission/personne_role). L'ancienne route (../routes-generated/
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:6:// unité organisationnelle -> institution (autorité DIRECTE),
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:13:// de vérité pour savoir si une personne peut agir au nom d'une
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:14:// institution donnée.
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:17://   const { estAutoriseSurInstitution, getInstitutionsAutorisees } = require('../services/institution-authority');
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:22:// --- Autorité directe : affectation active de la personne ---
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:43://   - la personne est bien la délégataire (pas la délégante)
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:45://   - delegation_perimetre couvre explicitement (institution, entity, action)
+C:\pngie-rdc\pngie-backend\src\services\institution-authority.js:75:// --- API publique 2 : la personne peut-elle agir sur CETTE institution précise ? ---

@@ -1,0 +1,6 @@
+C:\pngie-rdc\pngie-backend\docs\DATABASE_INVENTORY.md:181:| person | person_id | personne | personne_id |
+C:\pngie-rdc\pngie-backend\docs\DATABASE_INVENTORY.md:184:| person_role | person_id | personne_role | personne_id |
+C:\pngie-rdc\pngie-backend\docs\DEBT-0001-personne-manquante.md:77:- Une migration destinée à créer `personne` existe quelque part dans le projet mais n'a jamais été exécutée.
+C:\pngie-rdc\pngie-backend\docs\DEBT-0001-personne-manquante.md:84:- Existe-t-il une migration SQL destinée à créer `personne`, non exécutée ou non intégrée au schéma généré ?
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2882: SELECT personne_id AS person_id,
+C:\pngie-rdc\pngie-backend\docs\phase0-schema-postgres-brut.sql:2916:    personne_id AS person_id,

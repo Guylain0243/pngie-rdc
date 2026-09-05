@@ -1,0 +1,13 @@
+agent_ia
+assignment
+mission
+organization
+organization_mission
+organization_type
+permission
+person
+person_role
+position
+pouvoir
+role
+unit

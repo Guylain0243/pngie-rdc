@@ -1,0 +1,29 @@
+C:\pngie-rdc\pngie-backend\src\aiAgent.js:38:      SELECT o.nom, o.description FROM organization o
+C:\pngie-rdc\pngie-backend\src\notification-engine.js:50:            `SELECT p.person_id FROM person_role pr JOIN role r ON r.role_id = pr.role_id JOIN person p ON p.person_id = pr.person_id WHERE r.code = ?`,
+C:\pngie-rdc\pngie-backend\src\server.js:106:  const person = await db.get('SELECT * FROM person WHERE email = ? AND statut = ?', [email, 'ACTIF']);
+C:\pngie-rdc\pngie-backend\src\server.js:107:  const passwordOk = person ? await bcrypt.compare(password, person.password_hash) : false;
+C:\pngie-rdc\pngie-backend\src\server.js:108:  if (!person || !passwordOk) {
+C:\pngie-rdc\pngie-backend\src\server.js:109:    await audit(person ? person.person_id : null, 'LOGIN_FAILED', 'person', person ? person.person_id : null, { email });
+C:\pngie-rdc\pngie-backend\src\server.js:114:    SELECT r.code, r.nom, r.categorie FROM person_role pr
+C:\pngie-rdc\pngie-backend\src\server.js:115:    JOIN role r ON r.role_id = pr.role_id WHERE pr.person_id = ?`, [person.person_id]));
+C:\pngie-rdc\pngie-backend\src\server.js:118:    { sub: person.person_id, email: person.email, roles: roles.map(r => r.code) },
+C:\pngie-rdc\pngie-backend\src\server.js:127:    [sessionId, person.person_id, tokenHash, req.ip, req.headers['user-agent'] || null]
+C:\pngie-rdc\pngie-backend\src\server.js:130:  await audit(person.person_id, 'LOGIN_SUCCESS', 'person', person.person_id, {});
+C:\pngie-rdc\pngie-backend\src\server.js:131:  res.json({ token, person: { nom: person.nom, prenom: person.prenom, email: person.email }, roles });
+C:\pngie-rdc\pngie-backend\src\server.js:149:  await audit(decoded.sub, 'LOGOUT', 'person', decoded.sub, {});
+C:\pngie-rdc\pngie-backend\src\server.js:177:  const person = await db.get('SELECT person_id,nom,prenom,email FROM person WHERE person_id=?', [req.user.sub]);
+C:\pngie-rdc\pngie-backend\src\server.js:185:  res.json({ person, roles: req.user.roles, pages });
+C:\pngie-rdc\pngie-backend\src\server.js:191:    FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:199:    SELECT o.nom, o.code FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:207:    FROM organization o JOIN organization_type ot ON ot.id = o.type_id
+C:\pngie-rdc\pngie-backend\src\server.js:222:            JOIN organization eo ON eo.organization_id = i.emetteur_org_id
+C:\pngie-rdc\pngie-backend\src\server.js:223:            JOIN organization dest ON dest.organization_id = i.destinataire_org_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:226:            JOIN organization o ON o.organization_id = r.organization_id
+C:\pngie-rdc\pngie-backend\src\server.js:227:            LEFT JOIN organization d ON d.organization_id = r.destinataire_org_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:231:            JOIN organization oc ON oc.organization_id = c.organe_controle_id
+C:\pngie-rdc\pngie-backend\src\server.js:232:            JOIN organization ocl ON ocl.organization_id = c.organisation_controlee_id
+C:\pngie-rdc\pngie-backend\src\server.js:236:            LEFT JOIN organization o ON o.organization_id = rec.organisation_responsable_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:238:            FROM decision dec JOIN organization o ON o.organization_id = dec.organization_id`),
+C:\pngie-rdc\pngie-backend\src\server.js:247:            FROM systeme_externe s LEFT JOIN organization o ON o.organization_id = s.organization_id
+C:\pngie-rdc\pngie-backend\src\server.js:257:    'pouvoir','organization_type','organization','unit','position','person','assignment',
+C:\pngie-rdc\pngie-backend\src\server.js:260:    'role','permission','role_permission','person_role',

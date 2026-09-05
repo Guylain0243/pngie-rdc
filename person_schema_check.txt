@@ -1,0 +1,11 @@
+﻿
+  db\schema.sqlite.sql:157:);
+  db\schema.sqlite.sql:158:
+> db\schema.sqlite.sql:159:CREATE TABLE person (
+  db\schema.sqlite.sql:160:  person_id TEXT PRIMARY KEY,
+  db\schema.sqlite.sql:161:  matricule TEXT UNIQUE,
+  db\schema.sqlite.sql:162:  nom TEXT NOT NULL,
+  db\schema.sqlite.sql:163:  prenom TEXT,
+  db\schema.sqlite.sql:164:  email TEXT UNIQUE NOT NULL,
+
+
