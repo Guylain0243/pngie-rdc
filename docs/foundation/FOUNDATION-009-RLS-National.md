@@ -1,4 +1,4 @@
-# FOUNDATION-009 — RLS National (Row-Level Security)
+﻿# FOUNDATION-009 — RLS National (Row-Level Security)
 
 **Statut :** Proposé — en attente de validation. *(Révision v2 : réconcilié avec `AUDIT_RLS_PRE_SWITCH.md` et `BUG_G_RLS_SCOPE_NATIONAL.md`.)*
 **Date :** 2026-09-05
@@ -59,19 +59,43 @@ que `security_invoker=true` figure bien dans `reloptions`.
 - **Intérim :** *(inchangé)* une Affectation d'intérim suit la même politique RLS que l'Affectation du titulaire.
 - **Rôles/périmètres à portée nationale — tranché par l'audit (Bug G) :** lorsqu'un périmètre est national par nature (`scope_institution_id IS NULL`, ex. rôles MI/PM/PR/AN/GV/SN dans le RBAC existant), une policy RLS comparant ce champ à `current_setting('app.current_institution_id')` avec l'opérateur `=` classe ces lignes comme invisibles, car en SQL `NULL = NULL` est indéterminé (jamais vrai) — y compris au moment de la connexion, avant sélection d'une institution. **Décision confirmée et déjà appliquée (validée par 77/77 tests E2E) :** utiliser l'opérateur `IS NOT DISTINCT FROM` plutôt que `=` dans toute policy RLS comparant un champ de périmètre nullable à `current_setting`. Cette règle s'applique par extension à toute future policy RLS du RNPST portant sur un champ de périmètre potentiellement NULL (ex. un Poste ou une Fonction à portée nationale, si ce cas existe).
 
-## C.5 Points nécessitant une décision (mise à jour v2)
+## C.5 Décisions de gouvernance retenues
 
-| # | Question | Statut v2 |
-|---|---|---|
-| 1 | Filtrage sur périmètre *actuel* vs union des périmètres historiques (cohérence avec l'Historique RNPST §2.6) | **Toujours ouvert.** Aucun des deux audits disponibles ne traite ce point — il est spécifique au RNPST et ne recoupe pas les tables déjà auditées (`personne_role`, `document`). À trancher séparément. |
-| 2 | Réconciliation avec `BUG_G_RLS_SCOPE_NATIONAL.md` / `AUDIT_RLS_PRE_SWITCH.md` | **Traité par cette révision** — voir §C.2bis et §C.4. |
-| 3 | Bypass RLS complet vs policy explicite pour le périmètre national | **Tranché par la pratique déjà validée** (§C.4) : policy explicite avec `IS NOT DISTINCT FROM`, pas de bypass superuser. Cohérent avec la recommandation initiale de ce document. |
-| 4 | *(nouveau, issu de l'audit — R2)* Une policy RLS sur un champ de périmètre doit-elle bloquer strictement (0 ligne) l'accès d'un compte sans périmètre renseigné, ou prévoir un fallback explicite (comme déjà présent sur `institution` et `index_recherche_global` dans le système existant) ? | **Ouvert, arbitrage métier requis** (ce n'est pas une décision technique). Signalé dans l'audit comme bloquant potentiel de connexion pour tout compte réel sans `scope_institution_id` renseigné — donc pertinent dès la conception des policies RNPST, pas seulement pour le système existant. |
-| 5 | *(nouveau)* Stratégie de peuplement des champs de périmètre nullable (quand doivent-ils être renseignés : création de compte ? Affectation ? jamais pour les rôles nationaux ?) | **Ouvert, arbitrage métier requis.** Directement lié au point 4 : sans règle claire de peuplement, aucun fallback ni contrainte stricte ne peut être validé sereinement. |
+> **Statut des décisions**
+> Les décisions ci-dessous constituent la position architecturale retenue pour le PNGIE. Leur mise en œuvre technique est normative. Les paramètres dépendant de la réglementation nationale restent configurables afin de permettre leur adaptation sans remettre en cause le métamodèle.
 
-## C.6 Décision de principe — périmètre national (résumé)
+### C.5.1 Historique vs périmètre courant
 
-Pour éviter que cette question ne se reproduise indépendamment pour chaque nouvelle table du RNPST : **toute policy RLS future doit systématiquement utiliser `IS NOT DISTINCT FROM` plutôt que `=`** dès qu'elle compare une colonne de périmètre pouvant légitimement être NULL (portée nationale) à un `current_setting`. C'est désormais la règle par défaut de ce document, pas une exception au cas par cas.
+**Décision retenue :** séparation stricte entre deux modes de filtrage :
+- **Donnée courante :** filtrée selon le périmètre *courant* de l'utilisateur (périmètre actif au moment de la requête).
+- **Historique :** filtrée selon le périmètre *enregistré au moment de l'événement* — l'Institution/Unité telle qu'elle était au moment où l'Affectation concernée était active — jamais selon le périmètre actuel de la personne qui consulte.
+
+**Implication technique à vérifier lors de l'implémentation :** cette décision suppose que le périmètre (institution_id / unite_id) soit conservé de façon stable sur chaque enregistrement historique d'Affectation, et non recalculé dynamiquement à la lecture à partir d'un état courant qui aurait pu changer depuis (ex. une Unité renommée, déplacée, ou fusionnée). Le modèle RNPST actuel (Historique des affectations, §2.6) doit être relu pour confirmer qu'il permet de retrouver le périmètre exact tel qu'il était à la clôture d'une Affectation — sinon une historisation explicite du périmètre lui-même sera nécessaire, en plus de l'Affectation.
+
+### C.5.2 Comptes sans périmètre
+
+**Décision retenue :** blocage strict, sans exception.
+
+```
+scope absent → accès refusé → message explicite
+```
+
+Jamais d'élargissement implicite de l'accès en cas de périmètre absent. Le Bug G (`BUG_G_RLS_SCOPE_NATIONAL.md`) a montré concrètement qu'un élargissement implicite (ici, une comparaison NULL mal gérée en SQL) peut devenir une faille de sécurité plutôt qu'une simple gêne fonctionnelle.
+
+**Précision de cohérence avec le patch déjà validé (§C.4) :** cette décision ne contredit pas la correction déjà appliquée sur `personne_role_scope_institution` (opérateur `IS NOT DISTINCT FROM`). Les rôles à portée nationale (`scope_institution_id IS NULL` **par conception**, ex. MI/PM/PR/AN/GV/SN) ne sont pas des comptes « sans périmètre » au sens de cette décision : leur périmètre est explicitement national, un état valide et prévu — pas une donnée manquante. La décision C.5.2 s'applique au cas où un périmètre *devrait* exister mais fait défaut par erreur ou omission : dans ce cas, refus strict et message explicite, jamais de fallback silencieux qui masquerait l'anomalie.
+
+### C.5.3 Peuplement de `scope_institution_id`
+
+**Décision retenue :** le champ devient obligatoire pour toute Affectation nécessitant un périmètre institutionnel. Le peuplement est réalisé automatiquement :
+- à la création de l'Affectation ;
+- lors d'un changement d'Affectation ;
+- lors d'une migration de données.
+
+Jamais de saisie manuelle dans plusieurs points du système différents — une seule source de vérité, dérivée de la chaîne déjà établie (`affectation.poste_id → poste.unite_id → institution`).
+
+## C.6 Décision de principe — périmètre national (résumé, mis à jour)
+
+Cette règle reste la référence par défaut de ce document : **toute policy RLS future doit systématiquement utiliser `IS NOT DISTINCT FROM` plutôt que `=`** dès qu'elle compare une colonne de périmètre pouvant légitimement être NULL (portée nationale, C.5.2) à un `current_setting`. Ce n'est plus une exception au cas par cas mais une règle normative de ce document.
 
 ## C.7 Protocole de déploiement RLS (repris de l'audit, applicable au RNPST)
 

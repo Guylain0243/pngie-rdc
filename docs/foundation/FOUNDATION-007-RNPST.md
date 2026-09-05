@@ -200,12 +200,44 @@ avec FOUNDATION-002 §4.6.
 
 ## 8. Gouvernance
 
-- [ ] Qui valide la création d'une nouvelle Fonction au catalogue national ?
-- [ ] Qui approuve un organigramme (création/suppression de Poste) ?
-- [ ] Durée maximale d'un Intérim avant obligation de nomination définitive : à définir.
-- [ ] Gouvernance de la Vacance prolongée (alerte, escalade) : à définir.
+> **Statut des décisions**
+> Les décisions ci-dessous constituent la position architecturale retenue pour le PNGIE. Leur mise en œuvre technique est normative. Les paramètres dépendant de la réglementation nationale (durées, autorités compétentes, procédures administratives) restent configurables afin de permettre leur adaptation sans remettre en cause le métamodèle.
 
----
+### 8.1 Validation d'une nouvelle Fonction
+
+**Décision retenue :** la création, la modification ou la suppression d'une Fonction relève de l'autorité nationale responsable du référentiel des fonctions publiques. Une institution peut créer des Postes, mais ne crée jamais de nouvelles Fonctions.
+
+```
+Fonction → Catalogue national
+Poste    → Institution
+```
+
+Ce principe garantit que les statistiques nationales transverses permises par la Fonction (RNPST §2.2) restent cohérentes dans le temps, sans fragmentation en doublons locaux.
+
+### 8.2 Validation d'un organigramme
+
+**Décision retenue :** chaque Institution demeure propriétaire de son organigramme interne (création/suppression de Postes). En revanche :
+- la structure doit respecter le métamodèle national (FOUNDATION-002) ;
+- les types de structures sont nationaux (FOUNDATION-004, RNSO) ;
+- la hiérarchie interne est validée par l'institution concernée.
+
+```
+État        → définit le modèle
+Institution → définit son organigramme
+```
+
+### 8.3 Durée maximale d'un Intérim
+
+**Décision retenue :** aucune durée réglementaire n'est figée dans ce document. Le RNPST expose un paramètre de configuration national pour cette durée, avec une **valeur par défaut de 12 mois**, ajustable par la réglementation en vigueur sans modification du métamodèle.
+
+### 8.4 Vacance prolongée
+
+**Décision retenue :** après une durée paramétrable, le système déclenche automatiquement, par paliers :
+1. une alerte automatique ;
+2. une notification RH ;
+3. une remontée au tableau de bord national.
+
+Aucune fermeture automatique du Poste n'est déclenchée par ce mécanisme — la Vacance reste un indicateur de pilotage, jamais une action correctrice automatique sur les données.
 
 ## 9. Historisation
 
