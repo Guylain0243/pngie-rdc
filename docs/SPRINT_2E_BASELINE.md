@@ -52,3 +52,16 @@ que DEBT-0001/DEBT-0002 avant toute correction.
 - Prochain bloc : migration progressive de server.js, une zone
   fonctionnelle a la fois (authentification, sessions, roles,
   organigramme), avec validation complete des 37 tests apres chaque etape
+
+## Methode de validation
+
+Avant d'interpreter une variation de la baseline (27/37) comme une
+regression ou un correctif reel :
+
+1. executer la suite complete des 37 tests ;
+2. executer immediatement une seconde fois la meme suite ;
+3. ne conclure que si les deux executions convergent.
+
+En cas de divergence entre les deux executions, traiter le resultat
+comme une instabilite (flake) et diagnostiquer cette instabilite avant
+toute modification du code ou de la documentation.
