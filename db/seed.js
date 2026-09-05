@@ -125,6 +125,12 @@ async function main() {
 // --------------------------------------------------------------------
 
   const primatureId = uuid();
+  if (db.driver === 'sqlite') {
+    await db.run(
+      'INSERT INTO institution (institution_id, code, nom, type_institution, niveau_hierarchique) VALUES (?,?,?,?,?)',
+      [presidenceId, 'PRESIDENCE', 'Presidence de la Republique', 'PRESIDENCE', 0]
+    );
+  }
   await db.run(ORG_SQL, [primatureId,'PRIMATURE','Primature',2,presidenceId,1,
     'Coordination interministérielle, exécution du Programme du Gouvernement.']);
 
