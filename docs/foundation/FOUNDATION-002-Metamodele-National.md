@@ -1,9 +1,9 @@
-# FOUNDATION-002 — Métamodèle National du PNGIE
+﻿# FOUNDATION-002 — Métamodèle National du PNGIE
 
 **Statut :** Proposé — en attente de validation. Revue d'architecture effectuée le 2026-09-05 (cohérence terminologique et relationnelle avec FOUNDATION-003/004 vérifiée).
 **Date :** 2026-09-05
 **Type :** Document fondateur (stable) — voir FOUNDATION-000 pour la distinction FOUNDATION/ADR
-**Dépendance non résolue :** ce document présuppose une vision d'ensemble du PNGIE qui n'est pas encore formalisée en FOUNDATION-001 (Vision). À rédiger avant de considérer la série FOUNDATION comme complète.
+**Dépendance résolue :** ce document présupposait une vision d'ensemble du PNGIE, désormais formalisée en FOUNDATION-001 (Vision), voir docs/foundation/FOUNDATION-001-Vision.md.
 **Portée :** Ce document définit le langage commun du PNGIE. Aucun développement, aucune migration de données, aucune décision de schéma ne devrait s'écarter des définitions ci-dessous sans passer par une révision explicite de ce document.
 
 ---
