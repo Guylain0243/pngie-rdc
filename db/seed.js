@@ -113,30 +113,16 @@ async function main() {
     'Vision, stratégie, arbitrage, supervision nationale.']);
 
   // ------------------------------------------------------------------
-  // TEMPORAIRE
-  // Synchronisation minimale avec le nouveau modele "institution"
-  // afin de satisfaire les FK utilisees par agent_ia.
-  //
-  // TODO Sprint suivant : remplacer completement le seed organization
-  // par un seed institution.
-  // ------------------------------------------------------------------
-
-  await db.run(
-    `INSERT INTO institution (
-        institution_id,
-        code,
-        nom,
-        type_institution,
-        niveau_hierarchique
-     ) VALUES (?,?,?,?,?)`,
-    [
-      presidenceId,
-      'PRESIDENCE',
-      'Présidence de la République',
-      'PRESIDENCE',
-      0
-    ]
-  );
+// --------------------------------------------------------------------
+// NOTE : l'INSERT INTO institution correspondant est desormais gere
+// automatiquement par le trigger PostgreSQL trg_organization_insert
+// (fn_organization_insert_instead), qui synchronise organization -> institution
+// a chaque insertion. Un INSERT explicite ici provoquait une violation
+// de institution_code_key (doublon). Ne pas reintroduire sans verifier
+// d'abord le trigger sur la table organization.
+// TODO Sprint suivant : remplacer completement le seed organization
+// par un seed institution natif.
+// --------------------------------------------------------------------
 
   const primatureId = uuid();
   await db.run(ORG_SQL, [primatureId,'PRIMATURE','Primature',2,presidenceId,1,
@@ -249,9 +235,10 @@ for (const [roleCode, pages] of Object.entries(ROLE_PAGES)) {
     await db.run(`INSERT INTO personne (personne_id,matricule,nom,prenom,email,password_hash) VALUES (?,?,?,?,?,?)`,
       [pid, 'AG-'+code, nom, 'Démo', code.toLowerCase()+'@rdc.gouv.cd', hash]);
     await db.run(`INSERT INTO personne_role (personne_role_id,personne_id,role_id,scope_institution_id) VALUES (?,?,?,?)`, [uuid(), pid, roleIds[code], null]);
-    await db.run(`INSERT INTO person (person_id,matricule,nom,prenom,email,password_hash) VALUES (?,?,?,?,?,?)`,
-      [pid, 'AG-'+code, nom, 'Démo', code.toLowerCase()+'@rdc.gouv.cd', hash]);
-    await db.run('INSERT INTO person_role (person_role_id,person_id,role_id,scope_org_id) VALUES (?,?,?,?)', [uuid(), pid, roleIds[code], null]);
+    // NOTE : person est une vue auto-updatable (PostgreSQL) qui redirige
+    // automatiquement vers personne. Un INSERT INTO person explicite ici
+    // provoquait une violation de personne_email_key (doublon).
+    // Ne pas reintroduire sans verifier d'abord la definition de la vue person.
   }
 
   const AGENT_SQL = `INSERT INTO agent_ia (agent_id,code,nom,type_agent,institution_id,modele_reference,perimetre_donnees,statut) VALUES (?,?,?,?,?,?,?,?)`;
