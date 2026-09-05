@@ -185,7 +185,7 @@ function requirePermission(permCode) {
 }
 
 app.get('/api/me', requireAuth, wrap(async (req, res) => {
-  const person = await db.get('SELECT person_id,nom,prenom,email FROM person WHERE person_id=?', [req.user.sub]);
+  const person = await db.get('SELECT personne_id,nom,prenom,email FROM personne WHERE personne_id=?', [req.user.sub]);
   const placeholders = req.user.roles.map(() => '?').join(',');
   const rows = await db.all(`
     SELECT DISTINCT p.entite, p.action FROM permission p
