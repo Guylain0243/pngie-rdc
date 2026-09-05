@@ -98,29 +98,68 @@ active par Poste.
 
 ---
 
-## 4bis. Validation du modèle existant
+## 4bis. Résolution des décisions d'architecture (mise à jour)
 
-Confrontation entre les définitions conceptuelles ci-dessus et le
-schéma réel (table poste, ffectation, code applicatif).
+**Statut de la mise à jour :** Proposé — en attente de validation.
+**Date :** 2026-09-05
 
-### ✅ Conforme au métamodèle
 
-- Poste rattaché à une unité organisationnelle (unite_id REFERENCES unite_organisationnelle), cohérent avec FOUNDATION-002 §4.4.
-- Affectation relie exactement une Personne et un Poste (personne_id, poste_id), cohérent avec FOUNDATION-002 §4.5.
-- Champ 	ype_affectation (défaut TITULAIRE) déjà prêt pour porter la valeur INTERIM définie en §2.5.
-- Unicité d'affectation active par Poste garantie par un index unique partiel en base (uq_affectation_poste_active, voir src/services/institution-authority.js), pas seulement par la couche applicative.
-- La chaîne Personne -> Affectation active -> Poste -> Unité -> Institution est déjà documentée dans le code (scope-resolver.js, institution-authority.js), cohérente avec FOUNDATION-002 §3 et §7.
+## A.1 Rappel des deux points en suspens
 
-### ⚠️ Points nécessitant une décision d'architecture
+| # | Point | Constat |
+|---|---|---|
+| 1 | Colonne `categorie` sur `poste` | Texte libre, utilisé activement (annuaire, fiches institution, hiérarchie), joue informellement le rôle prévu pour Fonction (§2.2), sans catalogue national contrôlé. |
+| 2 | Colonne `nombre_postes_autorises` | Utilisée activement (fiche institution), suggère qu'un Poste peut représenter un pool de positions identiques — ce que la définition actuelle de Poste (FOUNDATION-002 §4.4, position unique) ne permet pas. |
 
-- **Colonne categorie sur poste** : utilisée activement (annuaire, fiches institution, hiérarchie des postes) mais comme simple texte libre, sans catalogue national contrôlé. Joue informellement une partie du rôle prévu pour Fonction (§2.2). Décision à prendre : migrer vers une vraie relation onction_id, ou faire cohabiter les deux notions avec des périmètres distincts.
-- **Colonne 
-ombre_postes_autorises** : utilisée activement (fiche institution). Suggère qu'un enregistrement poste peut représenter un pool de positions identiques (effectif autorisé), ce qui n'est pas prévu par la définition actuelle de Poste (FOUNDATION-002 §4.4 : `position unique`). Décision à prendre : étendre la définition de Poste pour couvrir cet usage, ou introduire une notion distincte d'effectif autorisé.
+## A.2 Décision — Point 1 : `categorie` → `fonction_id`
 
-### 📝 Dette technique identifiée
+**Décision retenue :** migrer vers une vraie relation, ne pas faire cohabiter les deux notions.
 
-- Tables position, position_competence (0 ligne) et position_responsabilite, position_droit_acces, position_menu, position_document, position_interaction, position_kpi (tables absentes de la base malgré un script de création les visant) : vestige probable d'un chantier antérieur, sans lien avéré avec le RNPST. Une seule référence active trouvée dans le code (src/server.js:269), à documenter séparément dans docs/debt/.
+**Justification :** le concept Fonction est déjà spécifié en détail en RNPST §2.2 (code stable, catalogue national, cycle de vie propre). Laisser `categorie` en texte libre à côté d'un `fonction_id` structuré créerait deux sources de vérité concurrentes pour la même information — exactement le type d'ambiguïté que FOUNDATION-002 §Portée interdit sans révision explicite. La cohabitation n'est donc pas retenue comme option durable ; elle n'est tolérée que comme état transitoire de migration (voir A.4).
+
+**Modèle cible :**
+- `poste.fonction_id` — clé étrangère vers le catalogue national des Fonctions (RNPST §2.2), NOT NULL à terme.
+- `poste.categorie` — conservée en lecture seule le temps de la migration, marquée `DEPRECATED`, supprimée en fin de campagne (voir A.4).
+
+**Conséquence sur le RNPST :** aucune, cette décision confirme et opérationnalise ce qui était déjà prévu en §2.2 ; elle ne modifie pas la définition de Fonction elle-même.
+
+## A.3 Décision — Point 2 : `nombre_postes_autorises` → notion distincte d'Effectif autorisé
+
+**Décision retenue :** ne pas étendre la définition de Poste (l'invariant « position unique » de FOUNDATION-002 §4.4 est structurant pour Occupation, Vacance et Affectation — l'affaiblir casserait la cohérence du RNPST entier). Introduire à la place un concept distinct.
+
+**Justification :** un Poste occupé/vacant répond à la question « qui occupe quoi, ici et maintenant ». Un effectif autorisé répond à une question différente : « combien de positions de ce type sont-elles budgétairement/légalement permises dans cette unité ». Ce sont deux couches d'information complémentaires, pas la même entité à des granularités différentes.
+
+**Modèle cible :**
+
+| | |
+|---|---|
+| **Nouveau concept** | Effectif autorisé |
+| **Définition** | Nombre maximal de Postes d'une Fonction donnée pouvant exister simultanément dans une Unité organisationnelle donnée. |
+| **Modélisation** | Table `effectif_autorise(fonction_id, unite_id, nombre_autorise, date_effet)`. |
+| **Rôle** | Sert de référence de planification et de contrôle : la création d'un nouveau Poste (fonction_id, unite_id) devrait être bloquée ou signalée si elle dépasse `nombre_autorise` pour ce couple. |
+| **Relation avec `nombre_postes_autorises` existant** | Le champ actuel sur la fiche institution devient un agrégat dérivé (somme des `nombre_autorise` sur les unités de l'institution), pas une donnée saisie indépendamment — évite la désynchronisation entre le total affiché et le détail par unité/fonction. |
+| **Contrainte** | Le nombre de Postes actifs (non supprimés) pour un couple (fonction_id, unite_id) ne devrait pas dépasser `nombre_autorise` — alerte de gouvernance plutôt que contrainte bloquante en base, pour ne pas casser les données existantes hors norme (voir A.4). |
+
+**Conséquence sur le RNPST :** ajout d'un concept complémentaire, aucune redéfinition de Poste, Occupation ou Vacance.
+
+## A.4 Plan de migration (les deux points)
+
+1. Créer le catalogue national des Fonctions (table dédiée) et la table `effectif_autorise`, si non déjà présentes.
+2. Peupler `poste.fonction_id` par correspondance manuelle depuis les valeurs actuelles de `categorie` (script de mapping, validé métier — un même libellé de `categorie` peut recouvrir plusieurs Fonctions selon le contexte, à vérifier au cas par cas).
+3. Peupler `effectif_autorise` à partir des valeurs actuelles de `nombre_postes_autorises`, réparties par unité et fonction (nécessite une reprise de données, pas un calcul automatique fiable).
+4. Marquer `poste.categorie` et le `nombre_postes_autorises` brut de la fiche institution comme `DEPRECATED` (lecture seule, dérivés du nouveau modèle).
+5. Suppression physique des colonnes dépréciées dans une version ultérieure, après une période de cohabitation dont la durée reste à fixer par la gouvernance (cf. Partie B, §8 gouvernance déjà ouverte sur les délais similaires — Intérim, Vacance prolongée).
+
+## A.5 Validation (Partie A)
+
+| Rôle | Nom | Date | Statut |
+|---|---|---|---|
+| Rédaction | — | 2026-09-05 | Proposé |
+| Validation métier | *(à compléter)* | | En attente |
 | Validation technique | *(à compléter)* | | En attente |
+
+---
+
 # FOUNDATION-007 — Référentiel National des Postes et Affectations (RNPST)
 
 **Statut :** Proposé — en attente de validation.
