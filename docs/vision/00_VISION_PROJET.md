@@ -1,3 +1,5 @@
+> Statut : CANONIQUE
+> Dernière révision : 2026-09-05
 # PNGIE-RDC â€” Vision du projet
 
 ## Objectif

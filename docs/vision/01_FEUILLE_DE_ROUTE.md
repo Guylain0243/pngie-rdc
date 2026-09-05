@@ -1,3 +1,6 @@
+> Statut : CANONIQUE
+> Remplace : vision/archive/PNGIE_Roadmap_v1.0.md
+> Dernière révision : 2026-09-05
 # PNGIE-RDC â€” Feuille de route
 
 Ce document donne une vue d'ensemble des grandes Ã©tapes du projet, du

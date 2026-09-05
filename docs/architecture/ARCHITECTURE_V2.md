@@ -1,3 +1,5 @@
+> Statut : CANONIQUE
+> Derni�re r�vision : 2026-08-07
 # PNGIE-RDC — Architecture v2 (document de référence technique)
 
 > Document vivant. Statut global : 🟡 En construction — Section 4 (Cartographie PostgreSQL / Sécurité) amorcée à partir des audits RLS existants (AUDIT_RLS_PRE_SWITCH.md, résumés de session Chantier B). Toutes les autres sections sont en squelette, à compléter au fil des prochaines sessions.

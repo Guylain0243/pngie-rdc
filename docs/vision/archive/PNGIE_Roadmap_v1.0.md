@@ -1,4 +1,7 @@
-ï»¿# PNGIE-RDC - Feuille de route strategique v1.0
+> Statut : HISTORIQUE
+> Remplacé par : docs/vision/01_FEUILLE_DE_ROUTE.md (section "Programmes stratégiques")
+> Conserver pour référence uniquement.
+# PNGIE-RDC - Feuille de route strategique v1.0
 
 Programme 1 - Securite (en cours) : PNGIE, RBAC, ScopeResolver, RNG Phase 1, Organigrammes, Affectations FAITS. Migration RLS Production = priorite immediate.
 
