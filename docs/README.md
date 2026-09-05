@@ -1,13 +1,22 @@
-# Documentation PNGIE
+Ôªø# Documentation PNGIE
 
-| Dossier | RÈpond ‡ la question |
+| Dossier | R√©pond √† la question |
 |---|---|
-| foundation/ | Quels sont les concepts mÈtier ? |
-| adr/ | Pourquoi une dÈcision d'architecture a-t-elle ÈtÈ prise ? |
+| vision/ | Pourquoi existe le PNGIE, et quelle est la feuille de route ? |
+| foundation/ | Quels sont les concepts m√©tier ? |
+| adr/ | Pourquoi une d√©cision d'architecture a-t-elle √©t√© prise ? |
 | architecture/ | Comment tout s'articule ? |
-| inventory/ | Quel est l'Ètat observÈ du systËme ? |
-| audits/ | Quels problËmes ont ÈtÈ identifiÈs ? |
+| audits/ | Quels probl√®mes ont √©t√© identifi√©s ? |
+| inventory/ | Quel est l'√©tat observ√© du syst√®me ? |
+| journal/ | Que s'est-il pass√©, sprint par sprint ? |
+| sessions/ | Que s'est-il pass√©, session par session ? |
+| debt/ | Quelle dette technique reste √† traiter ? |
 | sprint/ | Que fait-on maintenant ? |
+| specs/ | (√† documenter) |
+| standard/ | (√† documenter) |
+| deployment/ | (√† documenter) |
+| software/ | (√† documenter) |
 
-Voir `architecture/ARCHITECTURE_MASTER.md` pour la carte globale
-des fondations et leur Ètat d'avancement.
+Voir `architecture/ARCHITECTURE_V2.md` pour la r√©f√©rence d'architecture
+en cours de consolidation, et `vision/01_FEUILLE_DE_ROUTE.md` pour la
+feuille de route.
