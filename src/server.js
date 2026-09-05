@@ -106,19 +106,23 @@ app.post('/api/auth/login', wrap(async (req, res) => {
   const { email, password } = req.body || {};
   if (!email || !password) return res.status(400).json({ error: 'Email et mot de passe requis.' });
 
-  const person = await db.get('SELECT * FROM person WHERE email = ? AND statut = ?', [email, 'ACTIF']);
+  const person = await db.get('SELECT * FROM personne WHERE email = ? AND statut = ?', [email, 'ACTIF']);
   const passwordOk = person ? await bcrypt.compare(password, person.password_hash) : false;
   if (!person || !passwordOk) {
-    await audit(person ? person.person_id : null, 'LOGIN_FAILED', 'person', person ? person.person_id : null, { email });
+    // DETTE CONNUE (voir resume Sprint 2E) : audit_log.person_id reference encore
+    // l'ancienne table 'person', incompatible avec les UUID de 'personne'.
+    // En attendant la migration de cette FK (hors perimetre Bloc 1 etape 1),
+    // on passe null et on conserve la tracabilite dans le detail JSON.
+    await audit(null, 'LOGIN_FAILED', 'person', null, { email, personne_id: person ? person.personne_id : null });
     return res.status(401).json({ error: 'Identifiants invalides.' });
   }
 
   const roles = await requestContext.run({ bypassRls: true }, async () => db.all(`
-    SELECT r.code, r.nom, r.categorie FROM person_role pr
-    JOIN role r ON r.role_id = pr.role_id WHERE pr.person_id = ?`, [person.person_id]));
+    SELECT r.code, r.nom, r.categorie FROM personne_role pr
+    JOIN role r ON r.role_id = pr.role_id WHERE pr.personne_id = ?`, [person.personne_id]));
 
   const token = jwt.sign(
-    { sub: person.person_id, email: person.email, roles: roles.map(r => r.code) },
+    { sub: person.personne_id, email: person.email, roles: roles.map(r => r.code) },
     JWT_SECRET, { expiresIn: TOKEN_TTL }
   );
 
@@ -127,10 +131,14 @@ app.post('/api/auth/login', wrap(async (req, res) => {
   await db.run(
     `INSERT INTO session_utilisateur (session_id, personne_id, token_hash, adresse_ip, user_agent, date_debut, date_expiration, statut)
      VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now', '+8 hours'), 'ACTIF')`,
-    [sessionId, person.person_id, tokenHash, req.ip, req.headers['user-agent'] || null]
+    [sessionId, person.personne_id, tokenHash, req.ip, req.headers['user-agent'] || null]
   );
 
-  await audit(person.person_id, 'LOGIN_SUCCESS', 'person', person.person_id, {});
+  // DETTE CONNUE (voir resume Sprint 2E) : audit_log.person_id reference encore
+// l'ancienne table 'person', incompatible avec les UUID de 'personne'.
+// En attendant la migration de cette FK (hors perimetre Bloc 1 etape 1),
+// on passe null et on conserve la tracabilite dans le detail JSON.
+await audit(null, 'LOGIN_SUCCESS', 'person', null, { personne_id: person.personne_id });
   res.json({ token, person: { nom: person.nom, prenom: person.prenom, email: person.email }, roles });
 }));
 
@@ -149,7 +157,7 @@ app.post('/api/auth/logout', wrap(async (req, res) => {
     `UPDATE session_utilisateur SET statut = 'REVOQUEE', date_revocation = NOW() WHERE token_hash = ? AND statut = 'ACTIF'`,
     [tokenHash]
   );
-  await audit(decoded.sub, 'LOGOUT', 'person', decoded.sub, {});
+  await audit(null, 'LOGOUT', 'person', decoded.sub, { personne_id: decoded.sub });
   res.json({ message: 'Deconnexion reussie.' });
 }));
 
@@ -169,7 +177,7 @@ function requirePermission(permCode) {
   return wrap(async (req, res, next) => {
     const allowed = await hasPermission(req.user.roles, permCode);
     if (!allowed) {
-      await audit(req.user.sub, 'ACCESS_DENIED', 'permission', null, { permCode });
+      await audit(null, 'ACCESS_DENIED', 'permission', null, { permCode, personne_id: req.user.sub });
       return res.status(403).json({ error: 'AccÃ¨s refusÃ© pour votre rÃ´le.' });
     }
     next();
@@ -194,7 +202,7 @@ app.get('/api/ministeres', requireAuth, requirePermission('page:ministeres:read'
     SELECT o.nom, ot.libelle AS type, o.description
     FROM organization o JOIN organization_type ot ON ot.id = o.type_id
     WHERE ot.code = 'MINISTERE' ORDER BY o.nom`);
-  await audit(req.user.sub, 'READ', 'ministeres', null, { count: rows.length });
+  await audit(null, 'READ', 'ministeres', null, { count: rows.length, personne_id: req.user.sub });
   res.json(rows);
 }));
 
@@ -309,7 +317,7 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
   if (!agent) return res.status(404).json({ error: 'Agent introuvable.' });
 
   if (agent.permission_code && !(await hasPermission(req.user.roles, agent.permission_code))) {
-    await audit(req.user.sub, 'ACCESS_DENIED', 'ai_agent', agent.agent_id, {});
+    await audit(null, 'ACCESS_DENIED', 'ai_agent', agent.agent_id, { personne_id: req.user.sub });
     return res.status(403).json({ error: 'Votre rÃ´le n\'a pas accÃ¨s Ã  cet agent.' });
   }
 
@@ -322,7 +330,7 @@ app.post('/api/agents/:id/chat', requireAuth, wrap(async (req, res) => {
   await db.run(`INSERT INTO agent_ia_interaction (interaction_id, agent_id, personne_id, requete, reponse) VALUES (?,?,?,?,?)`,
     [interactionId, agent.agent_id, req.user.sub, message, result.ok ? result.reply : null]);
 
-  await audit(req.user.sub, result.ok ? 'AI_CHAT' : 'AI_CHAT_FAILED', 'agent_ia', agent.agent_id, { interactionId });
+  await audit(null, result.ok ? 'AI_CHAT' : 'AI_CHAT_FAILED', 'agent_ia', agent.agent_id, { interactionId, personne_id: req.user.sub });
   res.status(result.ok ? 200 : 502).json(result);
 }));
 
@@ -365,7 +373,7 @@ app.post('/api/nocode/apps/:id/submit', requireAuth, wrap(async (req, res) => {
   const instanceId = crypto.randomUUID();
   await db.run(`INSERT INTO nocode_workflow_instance (instance_id, workflow_id, etape_courante_id, donnees, statut) VALUES (?,?,?,?,?)`,
     [instanceId, appRow.app_id, premiereEtape ? premiereEtape.etape_id : null, JSON.stringify(data), 'EN_COURS']);
-  await audit(req.user.sub, 'NOCODE_SUBMIT', 'nocode_workflow', appRow.app_id, { instanceId });
+  await audit(null, 'NOCODE_SUBMIT', 'nocode_workflow', appRow.app_id, { instanceId, personne_id: req.user.sub });
   res.json({ ok: true, submission_id: instanceId });
 }));
 
