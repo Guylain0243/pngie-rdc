@@ -73,7 +73,17 @@ Répartition par niveau : niveau 0 → 4 institutions ; niveau 1 → 34 institut
 
 **Rattachement vérifié des 26 Provinces et des 42 Ministères** : les deux ensembles sont, sans exception, rattachés à la Primature (`PRIMATURE`). Aucune province ni aucun ministère n'a de rattachement différent.
 
-**Point ouvert restant (question métier, pas technique) :** le rattachement des Provinces à la Primature reflète l'organisation actuelle des données, héritée de l'ancien modèle `organization`. Il reste à confirmer avec le métier si cela correspond à l'organisation constitutionnelle réelle de la RDC (décentralisation territoriale), ou si les Provinces devraient à terme relever d'un rattachement distinct (par exemple directement de la Présidence, en miroir du Parlement). Cette question n'affecte pas la validité du RNI en tant que tel, mais mérite d'être tranchée avant toute automatisation de règles métier fondées sur cette hiérarchie (ex. permissions en cascade, agrégations budgétaires).
+**Décision actée (2026-09-05) :** les Ministères ne sont pas rattachés au Ministère de l'Intérieur ni à un autre ministère. Ils sont des institutions distinctes, dotées chacune de compétences propres, placées sous la **coordination gouvernementale** de la Primature — pas sous une subordination hiérarchique de type administratif.
+
+**Point ouvert reformulé (question de modélisation, plus large que la seule question des Provinces) :** la hiérarchie du RNI doit-elle représenter uniquement la structure institutionnelle (« qui appartient à qui », relation `institution_parent_id`), ou également des relations fonctionnelles distinctes — coordination, tutelle, contrôle — qui ne se réduisent pas à un simple lien parent/enfant ?
+
+Deux relations candidates, à des niveaux différents :
+- `institution_parent_id` : décrit la structure institutionnelle stricte (ce que le schéma actuel modélise).
+- `autorite_tutelle_id` (proposé, non implémenté) : décrit une relation de coordination ou de tutelle fonctionnelle, potentiellement différente du rattachement institutionnel strict. Par exemple, la Primature coordonne les Ministères sans nécessairement en être le « parent » institutionnel au sens strict ; un Ministère peut exercer une tutelle administrative sur certains établissements publics sans qu'il y ait rattachement institutionnel formel.
+
+**Recommandation (à valider) :** représenter les deux relations séparément plutôt que de forcer toute nuance institutionnelle dans une seule colonne `parent_id`. Ceci reste à trancher avant toute automatisation de règles métier fondées sur la hiérarchie (permissions en cascade, agrégations budgétaires, chaîne de validation documentaire).
+
+**Sur les Provinces spécifiquement :** elles sont des collectivités territoriales dotées d'une autonomie prévue par la Constitution — elles ne sont pas des « ministères décentralisés » et ne devraient pas être modélisées comme un sous-ensemble de la Primature au même titre que les Ministères. Leur rattachement exact (à la Présidence directement ? à une entité distincte de coordination territoriale ?) reste à trancher, cohérent avec le point ouvert ci-dessus.
 
 ---
 
@@ -102,7 +112,9 @@ Une entité appartient au RNI si et seulement si elle remplit les trois conditio
 ## 6. Actions ouvertes avant validation finale
 
 - [x] Confirmer nommément le rattachement hiérarchique exact des 5 `INSTITUTION_CONTROLE` — fait, voir §3
-- [ ] **Décision métier requise** : confirmer si le rattachement Provinces → Primature reflète l'organisation constitutionnelle réelle de la RDC, ou s'il s'agit d'un raccourci technique hérité de l'ancien modèle `organization` (voir §3, point ouvert restant)
+- [x] Trancher si les Ministères sont rattachés au Ministère de l'Intérieur — non, décision actée : coordination gouvernementale par la Primature, voir §3
+- [ ] **Décision d'architecture requise** : la hiérarchie du RNI doit-elle représenter uniquement la structure institutionnelle, ou également des relations fonctionnelles distinctes (coordination, tutelle, contrôle) via un champ séparé type `autorite_tutelle_id` ? (voir §3)
+- [ ] **Décision métier requise** : rattachement exact des Provinces (collectivités territoriales autonomes, pas des « ministères décentralisés » — ne devraient probablement pas dépendre de la Primature au même titre que les Ministères)
 - [ ] Valider la convention d'URN proposée (`urn:rdc:rni:<code-en-minuscules>`)
 - [ ] Décider si ce document doit également couvrir les ETD (Entités Territoriales Décentralisées) mentionnées dans le vocabulaire PNGIE 2040, absentes des 80 lignes actuelles
 
