@@ -81,3 +81,8 @@ docs/sessions/
 tests/fixtures/
 server_err.txt
 _tmp_008_committed.sql
+run*.txt
+run_after_fix.txt
+person_schema_check.txt
+context_server_195_275.txt
+seed_avant.js
