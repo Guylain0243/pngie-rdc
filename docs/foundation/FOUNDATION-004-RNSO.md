@@ -25,14 +25,9 @@ Sans RNSO, toute tentative de modéliser un organigramme interne (cabinet, direc
 
 ## 2. Définition d'une Organisation
 
-Une **Organisation** est une subdivision interne d'une Institution, sans existence juridique autonome : elle agit exclusivement au nom et pour le compte de l'Institution qui la porte.
+**Source unique de la définition : FOUNDATION-002 §4.2.** Ce document n'en reprend pas la définition — il en détaille l'application concrète (structure interne, rattachement, gouvernance).
 
-Différence essentielle avec une Institution (RNI) :
-| | Institution | Organisation |
-|---|---|---|
-| Existence juridique | Autonome (loi, décret, Constitution) | Aucune — dépend entièrement de l'Institution porteuse |
-| Création/suppression | Acte officiel externe | Décision interne (arrêté ministériel, note de service) |
-| Peut exister seule | Oui | Non — rattachement obligatoire |
+Rappel synthétique (non normatif, voir FOUNDATION-002 pour le texte de référence) : une Organisation est une subdivision interne d'une Institution, sans existence juridique autonome — elle agit exclusivement au nom et pour le compte de l'Institution qui la porte, contrairement à l'Institution elle-même qui peut exister seule (voir FOUNDATION-003).
 
 ---
 

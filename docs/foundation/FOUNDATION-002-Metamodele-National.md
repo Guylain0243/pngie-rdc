@@ -1,8 +1,9 @@
 # FOUNDATION-002 — Métamodèle National du PNGIE
 
-**Statut :** Proposé — en attente de validation
+**Statut :** Proposé — en attente de validation. Revue d'architecture effectuée le 2026-09-05 (cohérence terminologique et relationnelle avec FOUNDATION-003/004 vérifiée).
 **Date :** 2026-09-05
 **Type :** Document fondateur (stable) — voir FOUNDATION-000 pour la distinction FOUNDATION/ADR
+**Dépendance non résolue :** ce document présuppose une vision d'ensemble du PNGIE qui n'est pas encore formalisée en FOUNDATION-001 (Vision). À rédiger avant de considérer la série FOUNDATION comme complète.
 **Portée :** Ce document définit le langage commun du PNGIE. Aucun développement, aucune migration de données, aucune décision de schéma ne devrait s'écarter des définitions ci-dessous sans passer par une révision explicite de ce document.
 
 ---
@@ -65,7 +66,7 @@ Chaque concept est décrit selon le même gabarit : **Définition · Rôle · Cy
 | **Rôle** | Point d'ancrage de toute l'action publique : porte les compétences, la hiérarchie administrative, et sert de racine pour l'imputation budgétaire, documentaire et décisionnelle. |
 | **Cycle de vie** | Création (loi, décret, ordonnance) → Activité → éventuelle Suspension/Fusion/Suppression (toujours par acte officiel, jamais par simple suppression technique). |
 | **Identifiant métier** | Code court stable (ex. `PRESIDENCE`, `MIN_3`), voir §5 pour le modèle d'identification complet. |
-| **Relations** | Une Institution peut avoir une Institution parente (`institution_parent_id`) ; possède zéro, une ou plusieurs Organisations. |
+| **Relations** | Une Institution peut avoir une Institution parente (`institution_parent_id`) ; possède zéro, une ou plusieurs Organisations. *Cette relation simple ne couvre pas toutes les nuances observées (coordination gouvernementale, tutelle administrative) — voir FOUNDATION-003 §3 pour l'approfondissement de ce point, actuellement en question ouverte.* |
 | **Contraintes** | Une Institution ne peut pas être son propre parent (contrainte déjà présente dans le code, `rni-commandement-routes.js`). Le type (`type_institution`) doit appartenir à un vocabulaire contrôlé (voir FOUNDATION-003). |
 | **Référentiel d'appartenance** | RNI — Référentiel National des Institutions. |
 | **Exemples vérifiés dans les données actuelles** | Présidence, Primature, 42 ministères (ex. « Justice et Garde des Sceaux »), 26 provinces, Assemblée Nationale, Sénat, Cour Constitutionnelle, Cour de Cassation, Conseil d'État, 5 institutions d'appui et de contrôle. |
