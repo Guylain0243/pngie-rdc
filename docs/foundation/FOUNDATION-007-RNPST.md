@@ -1,4 +1,33 @@
 ﻿# FOUNDATION-007 — Référentiel National des Postes et Affectations (RNPST)
+| Validation technique | *(à compléter)* | | En attente |
+| Validation métier | *(à compléter)* | | En attente — actions §8 à lever |
+
+---
+
+## 4bis. Validation du modèle existant
+
+Confrontation entre les définitions conceptuelles ci-dessus et le
+schéma réel (table poste, ffectation, code applicatif).
+
+### ✅ Conforme au métamodèle
+
+- Poste rattaché à une unité organisationnelle (unite_id REFERENCES unite_organisationnelle), cohérent avec FOUNDATION-002 §4.4.
+- Affectation relie exactement une Personne et un Poste (personne_id, poste_id), cohérent avec FOUNDATION-002 §4.5.
+- Champ 	ype_affectation (défaut TITULAIRE) déjà prêt pour porter la valeur INTERIM définie en §2.5.
+- Unicité d'affectation active par Poste garantie par un index unique partiel en base (uq_affectation_poste_active, voir src/services/institution-authority.js), pas seulement par la couche applicative.
+- La chaîne Personne -> Affectation active -> Poste -> Unité -> Institution est déjà documentée dans le code (scope-resolver.js, institution-authority.js), cohérente avec FOUNDATION-002 §3 et §7.
+
+### ⚠️ Points nécessitant une décision d'architecture
+
+- **Colonne categorie sur poste** : utilisée activement (annuaire, fiches institution, hiérarchie des postes) mais comme simple texte libre, sans catalogue national contrôlé. Joue informellement une partie du rôle prévu pour Fonction (§2.2). Décision à prendre : migrer vers une vraie relation onction_id, ou faire cohabiter les deux notions avec des périmètres distincts.
+- **Colonne 
+ombre_postes_autorises** : utilisée activement (fiche institution). Suggère qu'un enregistrement poste peut représenter un pool de positions identiques (effectif autorisé), ce qui n'est pas prévu par la définition actuelle de Poste (FOUNDATION-002 §4.4 : `position unique`). Décision à prendre : étendre la définition de Poste pour couvrir cet usage, ou introduire une notion distincte d'effectif autorisé.
+
+### 📝 Dette technique identifiée
+
+- Tables position, position_competence (0 ligne) et position_responsabilite, position_droit_acces, position_menu, position_document, position_interaction, position_kpi (tables absentes de la base malgré un script de création les visant) : vestige probable d'un chantier antérieur, sans lien avéré avec le RNPST. Une seule référence active trouvée dans le code (src/server.js:269), à documenter séparément dans docs/debt/.
+| Validation technique | *(à compléter)* | | En attente |
+# FOUNDATION-007 — Référentiel National des Postes et Affectations (RNPST)
 
 **Statut :** Proposé — en attente de validation.
 **Date :** 2026-09-05
