@@ -61,9 +61,19 @@ Niveau 0 (racines, parent_id = null) — 4 institutions
 
 Répartition par niveau : niveau 0 → 4 institutions ; niveau 1 → 34 institutions ; niveau 2 → 42 institutions.
 
-**Note sur les 5 `INSTITUTION_CONTROLE` :** leur position exacte dans la hiérarchie (rattachement direct ou indirect) n'a pas encore été vérifiée nommément lors de l'analyse du 2026-09-05. À documenter précisément avant validation finale de ce document (voir §6, action ouverte).
+**Rattachement vérifié des 5 `INSTITUTION_CONTROLE`** (confirmé le 2026-09-05, toutes rattachées directement à la Présidence) :
 
-**Note sur les Provinces :** leur rattachement hiérarchique à la Primature (plutôt qu'à un niveau distinct de gouvernance territoriale) est une observation du schéma actuel, pas nécessairement une décision définitive — à confirmer avec le métier avant validation.
+| Code | Nom |
+|---|---|
+| `CTRL_0` | Cour des Comptes |
+| `CTRL_1` | Inspection Générale des Finances (IGF) |
+| `CTRL_2` | Inspection Générale de l'Administration (IGA) |
+| `CTRL_3` | CENI |
+| `CTRL_4` | ANR |
+
+**Rattachement vérifié des 26 Provinces et des 42 Ministères** : les deux ensembles sont, sans exception, rattachés à la Primature (`PRIMATURE`). Aucune province ni aucun ministère n'a de rattachement différent.
+
+**Point ouvert restant (question métier, pas technique) :** le rattachement des Provinces à la Primature reflète l'organisation actuelle des données, héritée de l'ancien modèle `organization`. Il reste à confirmer avec le métier si cela correspond à l'organisation constitutionnelle réelle de la RDC (décentralisation territoriale), ou si les Provinces devraient à terme relever d'un rattachement distinct (par exemple directement de la Présidence, en miroir du Parlement). Cette question n'affecte pas la validité du RNI en tant que tel, mais mérite d'être tranchée avant toute automatisation de règles métier fondées sur cette hiérarchie (ex. permissions en cascade, agrégations budgétaires).
 
 ---
 
@@ -91,8 +101,8 @@ Une entité appartient au RNI si et seulement si elle remplit les trois conditio
 
 ## 6. Actions ouvertes avant validation finale
 
-- [ ] Confirmer nommément le rattachement hiérarchique exact des 5 `INSTITUTION_CONTROLE`
-- [ ] Confirmer avec le métier si le rattachement Provinces → Primature reflète l'organisation constitutionnelle réelle de la RDC, ou s'il s'agit d'un raccourci technique hérité de l'ancien modèle `organization`
+- [x] Confirmer nommément le rattachement hiérarchique exact des 5 `INSTITUTION_CONTROLE` — fait, voir §3
+- [ ] **Décision métier requise** : confirmer si le rattachement Provinces → Primature reflète l'organisation constitutionnelle réelle de la RDC, ou s'il s'agit d'un raccourci technique hérité de l'ancien modèle `organization` (voir §3, point ouvert restant)
 - [ ] Valider la convention d'URN proposée (`urn:rdc:rni:<code-en-minuscules>`)
 - [ ] Décider si ce document doit également couvrir les ETD (Entités Territoriales Décentralisées) mentionnées dans le vocabulaire PNGIE 2040, absentes des 80 lignes actuelles
 
